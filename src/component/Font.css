@@ -2,3 +2,15 @@
     font-family: 'Ganpan';
     src: url('./fonts/KCC-Ganpan.woff');
 }
+@font-face{
+    font-family: 'Boa';
+    src: url('./fonts/BoaConstruktorBold.ttf');
+}
+@font-face {
+    font-family:'NFL' ;
+    src: url('./fonts/NFL_Jacksonville_Jaguars[1].ttf');
+}
+@font-face {
+    font-family: 'YesGothicM';
+    src: url('./fonts/YES24GothicM.ttf');
+}
