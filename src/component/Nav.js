@@ -6,15 +6,34 @@ export default function Nav(){
     return (
         <Container>
             <Navbar>
-                <Navi activeClassName="active" exact to="/team">
-                    팀 구하기
+                <Navi activeClassName="active" exact to="/soccer">
+                    축구/풋살
                 </Navi>
-                <Navi activeClassName="active" to="/player">
-                    용병 구하기
+                <Navi activeClassName="active" to="/footvolleyball">
+                    족구
+                </Navi>                
+                <Navi activeClassName="active" to="/basketball">
+                    농구
                 </Navi>
-                <Navi activeClassName="active" to="/match">
-                    매칭 시스템
+                <Navi activeClassName="active" to="/volleyball">
+                    배구
                 </Navi>
+                <Navi activeClassName="active" to="/tabletennis">
+                    탁구
+                </Navi>
+                <Navi activeClassName="active" to="/tennis">
+                    테니스
+                </Navi>
+                <Navi activeClassName="active" to="/badminton">
+                    배드민턴
+                </Navi>
+                <Navi activeClassName="active" to="/bowling">
+                    볼링
+                </Navi> 
+                <Navi activeClassName="active" to="/etc">
+                    기타
+                </Navi>
+                                         
             </Navbar>
         </Container>
     )

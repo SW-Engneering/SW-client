@@ -59,7 +59,7 @@ const Navi = styled(NavLink)`
     text-decoration: none;
 `;
 const Divider = styled.span`
-    margin: 0 2vw;
+    margin: 0 15px;
     color: white;
 `;
 export default Footer;

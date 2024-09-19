@@ -6,6 +6,7 @@ import styled from 'styled-components';
 import Header from './component/Header';
 import Nav from './component/Nav';
 import Home from './component/Home';
+import Signup from './component/Signup';
 import Team from './component/Team';
 import Login from './component/Login';
 import Footer from './component/Footer';
@@ -25,6 +26,7 @@ function App() {
             <Route path="/team" element={<Team />} />
             <Route path="/player" element={<Player/>}/>
             <Route path='/match' element={<Match/>}/>
+            <Route path='/signup' element={<Signup/>}/>
           </Routes>
         </InsideContainer>
         <Footer />
