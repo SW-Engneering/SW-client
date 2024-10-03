@@ -1,24 +1,17 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
+import ball from '../picture/ball.png';
 
 export default function Nav() {
     return (
         <Container>
-            <Navbar>
-                <Navi activeClassName="active" exact to="/member">
-                    팀원 구하기
-                </Navi>
-                <Navi activeClassName="active" to="/team">
-                    팀 구하기
-                </Navi>
-                <Navi activeClassName="active" to="/match">
-                    팀 매칭하기
-                </Navi>
-                <Navi activeClassName="active" to="/management">
-                    팀 관리
-                </Navi>
-            </Navbar>
+            <a href="/">
+                <LogoContainer>
+                    Sport
+                    <LogoImage />
+                     Match
+                </LogoContainer>
+            </a>
         </Container>
     );
 }
@@ -29,20 +22,26 @@ const Container = styled.div`
     align-items: center;
     width: 100%;
     padding: 7px 0px;
-    background-color: #d9d9d9;
+    background-color: white;
+
 `;
-const Navbar = styled.div`
-    font-size: 13px;
-    margin: 8px;
-    gap: 5vw;
+
+const LogoImage = styled.div`
+    background-image: url(${ball});
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    height: 60px;
+    width: 60px;
 `;
-const Navi = styled(NavLink)`
-    word-spacing: 5px;
-    color: #000000;
-    font-size: 13px;
-    margin: 8px;
-    text-decoration: none;
-    &.active {
-        text-decoration: underline;
-    }
+
+const LogoContainer = styled.div`
+    display: flex;
+    flex-direction: row;
+    font-size: 60px;
+    font-family: NFL;
+    color: black;
+    justify-content: center;
+    margin-left: 610px;
 `;
+
