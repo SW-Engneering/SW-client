@@ -1,56 +1,40 @@
-import React from "react"
-import { NavLink } from "react-router-dom"
-import styled from "styled-components"
+import React from 'react';
+import { NavLink } from 'react-router-dom';
+import styled from 'styled-components';
 
-export default function Nav(){
+export default function Nav() {
     return (
         <Container>
             <Navbar>
-                <Navi activeClassName="active" exact to="/soccer">
-                    축구/풋살
+                <Navi activeClassName="active" exact to="/member">
+                    팀원 구하기
                 </Navi>
-                <Navi activeClassName="active" to="/footvolleyball">
-                    족구
-                </Navi>                
-                <Navi activeClassName="active" to="/basketball">
-                    농구
+                <Navi activeClassName="active" to="/team">
+                    팀 구하기
                 </Navi>
-                <Navi activeClassName="active" to="/volleyball">
-                    배구
+                <Navi activeClassName="active" to="/match">
+                    팀 매칭하기
                 </Navi>
-                <Navi activeClassName="active" to="/tabletennis">
-                    탁구
+                <Navi activeClassName="active" to="/management">
+                    팀 관리
                 </Navi>
-                <Navi activeClassName="active" to="/tennis">
-                    테니스
-                </Navi>
-                <Navi activeClassName="active" to="/badminton">
-                    배드민턴
-                </Navi>
-                <Navi activeClassName="active" to="/bowling">
-                    볼링
-                </Navi> 
-                <Navi activeClassName="active" to="/etc">
-                    기타
-                </Navi>
-                                         
             </Navbar>
         </Container>
-    )
+    );
 }
 
 const Container = styled.div`
-    display : flex;
-    justify-content : left;
+    display: flex;
+    justify-content: left;
     align-items: center;
-    width:100%;
+    width: 100%;
     padding: 7px 0px;
-    background-color:#d9d9d9;
+    background-color: #d9d9d9;
 `;
 const Navbar = styled.div`
-    font-size:13px;
-    margin:8px;
-    gap:5vw;
+    font-size: 13px;
+    margin: 8px;
+    gap: 5vw;
 `;
 const Navi = styled(NavLink)`
     word-spacing: 5px;
