@@ -1,15 +1,19 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import { useNavigate } from 'react-router-dom';
 
 export default function Login() {
     const [id, setId] = useState("");
     const [password, setPassword] = useState("");
+    const [userState, setUserState] = useState(false);
+    const navigate = useNavigate();
 
     const handleLogin = () => {
-        // 로그인 처리 로직을 여기에 추가
+        setUserState(true);
+        navigate(`/u/${id}`)
         console.log("로그인 시도:", { id, password });
     };
-
+    
     return (
         
         <Container>

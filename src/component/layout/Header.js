@@ -1,18 +1,38 @@
 import styled from 'styled-components';
-import { NavLink } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
 
 export default function Header() {
+    const location = useLocation(); 
+    const [id, setId] = useState(null);
+
+    useEffect(() => {
+        let currentPath = window.location.pathname;
+        let parts = currentPath.split('/');
+        let ocidFromUrl = parts[2];
+
+        // ocidFromUrl이 undefined일 경우 id를 null로 설정
+        setId(ocidFromUrl ? ocidFromUrl : null);
+    }, [location]);
+
+    const guestMenu = [
+        { to: '/login', text: '로그인' },
+        { to: '/signup', text: '회원가입' }
+    ];
+    const userMenu = [
+        { to: '/mypage', text: '안녕하세요' }
+    ];
+    
+    // id가 null이 아닐 때 userMenu를 사용하도록 수정
+    const menuItems = id === null ? guestMenu : userMenu;
+
     return (
         <Container>
-            <span>
-                <a href="/login">
-                    <LoginContainer>로그인</LoginContainer>
-                </a>
-                <Divider>|</Divider>
-                <a href="/signup">
-                    <LoginContainer>회원가입</LoginContainer>
-                </a>
-            </span>
+            {menuItems.map((item) => (
+                <NaviMenu key={item.to} to={item.to} active={location.pathname === item.to}>
+                    <NaviText>{item.text}</NaviText>
+                </NaviMenu>
+            ))}
         </Container>
     );
 }
@@ -29,13 +49,19 @@ const Container = styled.div`
     max-width: 100%;
 `;
 
-const LoginContainer = styled.div`
-    font-family: YesGothicM;
-    display: inline-block;
+const NaviMenu = styled(Link)`
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
     color: white;
-    text-align: right;
+    flex: 1;
+    font-weight: ${({ active }) => (active ? 'bold' : 'normal')};
+    font-size: ${({ active }) => (active ? '12px' : '10px')};
 `;
-const Divider = styled.span`
-    margin: 0 5px;
-    color: white;
+
+const NaviText = styled.div`
+    // 하단네비바 텍스트 스타일
 `;
