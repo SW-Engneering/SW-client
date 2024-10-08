@@ -20,7 +20,7 @@ export default function Header() {
         { to: '/signup', text: '회원가입' }
     ];
     const userMenu = [
-        { to: '/mypage', text: '안녕하세요' }
+        { to: `/u/${id}/mypage`, text: `안녕하세요 ${id}님` }
     ];
     
     // id가 null이 아닐 때 userMenu를 사용하도록 수정
