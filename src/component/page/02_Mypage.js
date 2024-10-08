@@ -95,6 +95,7 @@ export default function MyPage() {
                     <UserNameContainer>{id}</UserNameContainer>
                     <UserPos>포지션</UserPos>
                     <UserEmail>이메일</UserEmail>
+                    <OneLineContainer>자기소개</OneLineContainer>
                 </UserDetails>
             </UserContainer>
             <ToolContainer>{renderInformationContainer()}</ToolContainer>
@@ -128,7 +129,7 @@ const LinkContainer = styled.div`
     display: block;
     text-decoration: none;
     color: black;
-    font-size: 1.875rem;
+    font-size: 1.5rem;
     margin-bottom: 15px;
     background-color: ${(props) => (props.isSelected ? '#adb5bd' : '#white')};
     cursor: pointer;
@@ -163,8 +164,8 @@ const UserNameContainer = styled.div`
     margin-left: 30px;
 `;
 const UserImage = styled.div`
-    width: 100px;
-    height: 100px;
+    width: 120px;
+    height: 120px;
     background-image: url(${Avata});
     background-size: cover;
     background-position: center;
@@ -172,12 +173,19 @@ const UserImage = styled.div`
     margin-right: 40px;
 `;
 const UserPos = styled.div`
-    font-size:1.5rem;
-    margin-left: 38px;
+    font-size:1.3rem;
+    margin-left: 50%;
+    width:100%;
 `;
 const UserEmail = styled.div`
-    font-size:1.5rem;
-    margin-left: 38px;
+    font-size:1.3rem;
+    margin-left: 50%;
+    width:100%;
+`;
+const OneLineContainer = styled.div`
+    font-size:1.1rem;
+    margin-left: 50%;
+    width:100%;
 `;
 const ToolContainer = styled.div`
     display: flex;
