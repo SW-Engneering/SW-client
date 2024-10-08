@@ -33,7 +33,7 @@ export default function Home() {
         speed: 500,
         slidesToShow: 1,
         arrows: true,
-        autoplay:true,
+        autoplay: true,
         autoplaySpeed : 5000,
         prevArrow: <Arrow src={LeftArrow} alt="Previous" />,
         nextArrow: <Arrow src={RightArrow} alt="Next" />
@@ -73,15 +73,16 @@ export default function Home() {
 }
 
 const Container = styled.div`
-  padding :30px;
-  position: relative; /* 자식 요소의 위치를 기준으로 설정 */
-  max-width: 100%;
+    padding: 50px 300px;
+    position: relative; /* 자식 요소의 위치를 기준으로 설정 */
+    max-width: 100%;
 `;
 const SliderContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 60%;
+  width: auto;
+  max-width: 100%;
   font-size: 24px;
   text-align: center; 
   font-family: Ganpan;  
@@ -113,7 +114,7 @@ const Navi = styled(NavLink)`
 `;
 
 const Image = styled.img`
-    width: 60%;
+    width: 90%;
     height: auto;
     object-fit: contain;
 `;
