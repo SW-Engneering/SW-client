@@ -4,8 +4,8 @@ import styled from "styled-components";
 import 'slick-carousel/slick/slick.css';
 import "slick-carousel/slick/slick-theme.css";
 import '../css/Font.css';
-import LeftArrow from '../picture/Left_arrow.png'; // 좌측 화살표 이미지 경로
-import RightArrow from '../picture/Right_arrow.png'; // 우측 화살표 이미지 경로
+import LeftArrow from '../images/Left_arrow.png'; // 좌측 화살표 이미지 경로
+import RightArrow from '../images/Right_arrow.png'; // 우측 화살표 이미지 경로
 
 export default function Home() {
     const settings = {

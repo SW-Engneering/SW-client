@@ -7,12 +7,14 @@ import Header from './component/layout/Header';
 import Nav from './component/layout/Nav';
 import Home from './component/layout/Home';
 import Signup from './component/page/01_Signup';
-import Team from './component/page/Team';
 import Login from './component/page/01_Login';
 import Footer from './component/layout/Footer';
+import Mypage from './component/page/02_Mypage';
 import Mamber from './component/page/02_Member';
 import Management from './component/page/02_Management';
 import Match from './component/page/02_Match';
+import Team from './component/page/02_Team';
+
 
 function App() {
     return (
@@ -24,6 +26,7 @@ function App() {
                     <Routes>
                         <Route path="/" element={<Home />} />
                         <Route path="/u/:id" element={<Home/>}/>
+                        <Route path="/u/:id/mypage" element={<Mypage/>}/>
                         <Route path="/login" element={<Login />} />
                         <Route path="/member" element={<Mamber />} />
                         <Route path="/team" element={<Team />} />
