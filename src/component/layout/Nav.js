@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { NavLink } from 'react-router-dom';
 import ball from '../picture/ball.png';
 
 export default function Nav() {
@@ -12,6 +13,20 @@ export default function Nav() {
                      Match
                 </LogoContainer>
             </a>
+            <Navbar>
+                <Navi activeClassName="active" exact to="/member" fontFamily="Boa">
+                    팀원 구하기
+                </Navi>
+                <Navi activeClassName="active" to="/team" fontFamily="Boa">
+                    팀 구하기
+                </Navi>
+                <Navi activeClassName="active" to="/match" fontFamily="Boa">
+                    팀 매칭하기
+                </Navi>
+                <Navi activeClassName="active" to="/management" fontFamily="Boa">
+                    팀 관리
+                </Navi>
+            </Navbar>
         </Container>
     );
 }
@@ -23,6 +38,7 @@ const Container = styled.div`
     width: 100%;
     padding: 7px 0px;
     background-color: white;
+    border-bottom: 2px solid black; /* 하단 검은색 줄 */
 
 `;
 
@@ -42,6 +58,24 @@ const LogoContainer = styled.div`
     font-family: NFL;
     color: black;
     justify-content: center;
-    margin-left: 610px;
+    margin-left: 40px;
+`;
+
+const Navbar = styled.div`
+    font-size: 20px;
+    margin: 5px;
+    margin-left: 100px;
+    gap: 5vw;
+`;
+const Navi = styled(NavLink)`
+    word-spacing: 5px;
+    color: #000000;
+    font-size: 15px;
+    font-family: ${(props) => props.fontFamily || 'inherit'};
+    margin: 50px;
+    text-decoration: none;
+    &.active {
+        text-decoration: underline;
+    }
 `;
 
