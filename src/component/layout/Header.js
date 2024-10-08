@@ -42,10 +42,10 @@ const Container = styled.div`
     justify-content: flex-end; /* 오른쪽 끝으로 배치 */
     align-items: center;
     color: white;
-    background-color: black;
+    background-color: white;
     height: 20px;
     font-size: 15px;
-    padding: 7px 20px; /* 좌우 패딩 추가 */
+    padding: 7px 30px; /* 좌우 패딩 추가 */
     max-width: 100%;
 `;
 
@@ -56,10 +56,10 @@ const NaviMenu = styled(Link)`
     justify-content: center;
     align-items: center;
     text-decoration: none;
-    color: white;
-    flex: 1;
+    color: black;
+    margin: 30px;
     font-weight: ${({ active }) => (active ? 'bold' : 'normal')};
-    font-size: ${({ active }) => (active ? '12px' : '10px')};
+    font-size: ${({ active }) => (active ? '15px' : '13px')};
 `;
 
 const NaviText = styled.div`

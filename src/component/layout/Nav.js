@@ -6,6 +6,7 @@ import ball from '../images/ball.png';
 export default function Nav() {
     return (
         <Container>
+            
             <a href="/">
                 <LogoContainer>
                     Sport
@@ -13,19 +14,29 @@ export default function Nav() {
                      Match
                 </LogoContainer>
             </a>
+            
+            
             <Navbar>
-                <Navi activeClassName="active" exact to="/member" fontFamily="Boa">
-                    팀원 구하기
-                </Navi>
-                <Navi activeClassName="active" to="/team" fontFamily="Boa">
-                    팀 구하기
-                </Navi>
-                <Navi activeClassName="active" to="/match" fontFamily="Boa">
-                    팀 매칭하기
-                </Navi>
-                <Navi activeClassName="active" to="/management" fontFamily="Boa">
-                    팀 관리
-                </Navi>
+                <NaviContainer>
+                    <Navi activeClassName="active" exact to="/member">
+                        팀원 구하기
+                    </Navi>
+                </NaviContainer>
+                <NaviContainer>
+                    <Navi activeClassName="active" to="/team">
+                        팀 구하기
+                    </Navi>
+                </NaviContainer>
+                <NaviContainer>
+                    <Navi activeClassName="active" to="/match">
+                        팀 매칭하기
+                    </Navi>
+                </NaviContainer>
+                <NaviContainer>
+                    <Navi activeClassName="active" to="/management">
+                        팀 관리
+                    </Navi>
+                </NaviContainer>
             </Navbar>
         </Container>
     );
@@ -36,9 +47,8 @@ const Container = styled.div`
     justify-content: left;
     align-items: center;
     width: 100%;
-    padding: 7px 0px;
     background-color: white;
-    border-bottom: 2px solid black; /* 하단 검은색 줄 */
+    border-bottom: 0.1px solid grey; /* 하단 회색 줄 */
 
 `;
 
@@ -47,35 +57,52 @@ const LogoImage = styled.div`
     background-position: center;
     background-repeat: no-repeat;
     background-size: contain;
-    height: 60px;
-    width: 60px;
+    height: 50px;
+    width: 50px;
 `;
 
 const LogoContainer = styled.div`
     display: flex;
     flex-direction: row;
-    font-size: 60px;
+    align-item: center;
+    font-size: 50px;
     font-family: NFL;
     color: black;
     justify-content: center;
-    margin-left: 40px;
+    padding: 0px 100px;
+    margin-bottom: 10px;
+    text-decorations: none;
 `;
 
 const Navbar = styled.div`
     font-size: 20px;
-    margin: 5px;
-    margin-left: 100px;
+    margin-left: 150px;
     gap: 5vw;
+    display: flex;
 `;
+
+const NaviContainer = styled.div`
+    display: flex;
+
+    
+    &:hover {
+        color: blue; /* 마우스 오버 시 글자 색상 */
+        text-decoration: underline; /* 마우스 오버 시 밑줄 추가 */
+    }
+
+    &.active {
+        color: blue;
+        text-decoration: underline; /* 활성화된 링크에 밑줄 추가 */
+    }
+`;
+
 const Navi = styled(NavLink)`
-    word-spacing: 5px;
+    
     color: #000000;
     font-size: 15px;
     font-family: ${(props) => props.fontFamily || 'inherit'};
-    margin: 50px;
     text-decoration: none;
-    &.active {
-        text-decoration: underline;
-    }
+    
+    
 `;
 

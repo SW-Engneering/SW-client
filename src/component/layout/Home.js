@@ -1,6 +1,7 @@
 import React from "react";
 import Slider from "react-slick";
 import styled from "styled-components";
+import { NavLink } from "react-router-dom";
 import 'slick-carousel/slick/slick.css';
 import "slick-carousel/slick/slick-theme.css";
 import '../css/Font.css';
@@ -9,6 +10,7 @@ import RightArrow from '../images/Right_arrow.png'; // 우측 화살표 이미�
 import Member from "../page/02_Member";
 import Team from "../page/02_Team";
 import Match from "../page/02_Match";
+import 챙 from "../images/챙.jpg";
 
 export default function Home() {
     const MatchRenderContainer = () => {
@@ -31,7 +33,7 @@ export default function Home() {
         speed: 500,
         slidesToShow: 1,
         arrows: true,
-        autoplay:true,
+        autoplay: true,
         autoplaySpeed : 5000,
         prevArrow: <Arrow src={LeftArrow} alt="Previous" />,
         nextArrow: <Arrow src={RightArrow} alt="Next" />
@@ -41,7 +43,9 @@ export default function Home() {
         <Container>
             <Slider {...settings}>
                 <SliderContainer>
-                    첫번째 화면
+                    <Navi activeClassName="active" to="/member">
+                        <Image src={챙} alt="팀원 구하기" />
+                    </Navi>
                 </SliderContainer>
                 <SliderContainer>
                     두번째 화면
@@ -69,15 +73,16 @@ export default function Home() {
 }
 
 const Container = styled.div`
-  padding :30px;
-  position: relative; /* 자식 요소의 위치를 기준으로 설정 */
-  max-width: 100%;
+    padding: 50px 300px;
+    position: relative; /* 자식 요소의 위치를 기준으로 설정 */
+    max-width: 100%;
 `;
 const SliderContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 100px;
+  width: auto;
+  max-width: 100%;
   font-size: 24px;
   text-align: center; 
   font-family: Ganpan;  
@@ -100,4 +105,16 @@ const BulletinContainer = styled.div`
     flex:1;
     width:30%;
     aspect-ratio: 1;
+`;
+
+const Navi = styled(NavLink)`
+    display: flex;
+    justify-content: center;
+    align-item: center;
+`;
+
+const Image = styled.img`
+    width: 90%;
+    height: auto;
+    object-fit: contain;
 `;
