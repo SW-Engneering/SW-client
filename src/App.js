@@ -6,7 +6,6 @@ import styled from 'styled-components';
 import Header from './component/layout/Header';
 import Nav from './component/layout/Nav';
 import Home from './component/layout/Home';
-import Menu from './component/layout/Menu';
 import Signup from './component/page/01_Signup';
 import Login from './component/page/01_Login';
 import Footer from './component/layout/Footer';
@@ -23,7 +22,6 @@ function App() {
             <Container>
                 <Header />
                 <Nav />
-                <Menu />
                 <InsideContainer>
                     <Routes>
                         <Route path="/" element={<Home />} />
