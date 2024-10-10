@@ -26,14 +26,6 @@ export default function Login() {
         console.log("로그인 시도:", { id, password });
     };
 
-    const handleLogout = () => {
-        // 로그아웃 처리
-        Cookies.remove('userId');
-        setUserState(false);
-        setId('');
-        setPassword('');
-    };
-
     return (
         <Container>
             <LoginContainer>로그인</LoginContainer>

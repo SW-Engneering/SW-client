@@ -1,8 +1,10 @@
 import styled from 'styled-components';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
+import Cookies from 'js-cookie';
 
 export default function Header() {
+    const navigate = useNavigate();
     const location = useLocation(); 
     const [id, setId] = useState(null);
 
@@ -15,12 +17,20 @@ export default function Header() {
         setId(ocidFromUrl ? ocidFromUrl : null);
     }, [location]);
 
+    const handleLogout = () => {
+        // 로그아웃 처리
+        Cookies.remove('userId');
+        setId(null); // id를 null로 설정하여 메뉴 업데이트
+        navigate('/');
+    };
+
     const guestMenu = [
         { to: '/login', text: '로그인' },
         { to: '/signup', text: '회원가입' }
     ];
     const userMenu = [
-        { to: `/u/${id}/mypage`, text: `안녕하세요 ${id}님` }
+        { to: `/u/${id}/mypage`, text: `안녕하세요 ${id}님` },
+        { to: '/', text: '로그아웃', onClick: handleLogout } 
     ];
     
     // id가 null이 아닐 때 userMenu를 사용하도록 수정
@@ -29,9 +39,14 @@ export default function Header() {
     return (
         <Container>
             {menuItems.map((item) => (
-                <NaviMenu key={item.to} to={item.to} active={location.pathname === item.to}>
-                    <NaviText>{item.text}</NaviText>
-                </NaviMenu>
+        <NaviMenu 
+            key={item.to} 
+            to={item.to} 
+            active={location.pathname === item.to} 
+            onClick={item.onClick ? (e) => { e.preventDefault(); item.onClick(); } : undefined}
+        >
+            <NaviText>{item.text}</NaviText>
+        </NaviMenu>
             ))}
         </Container>
     );
