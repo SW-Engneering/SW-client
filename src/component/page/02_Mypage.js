@@ -1,4 +1,4 @@
-import React, { useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import styled from 'styled-components';
@@ -12,7 +12,7 @@ import Inquiry from './03_Inquiry';
 import DefaultPage from './03_DefaultPage';
 
 export default function MyPage() {
-    const location = useLocation(); 
+    const location = useLocation();
     const [id, setId] = useState(null);
 
     useEffect(() => {
@@ -39,69 +39,65 @@ export default function MyPage() {
             case 'Schedule':
                 return <Schedule />;
             default:
-                return <DefaultPage/>;
+                return <DefaultPage />;
         }
     };
     const [activeTab, setActiveTab] = useState(null);
     return (
-    <Container>
-        <LeftContainer>
-            <ImformationContainer>
-                <MypageContaer>
-                <Link 
-                    to={`/u/${id}/mypage`} 
-                    style={{ textDecoration: 'none', color: 'black' }} 
-                    onClick={() => setActiveTab(null)}
-                >
-                    마이페이지
-                </Link>
-                </MypageContaer>
-                <Link to={`/u/${id}/mypage`} style={{ textDecoration: 'none' }}>
-                    <LinkContainer onClick={() => setActiveTab('Account')} isSelected={activeTab === 'Account'}>
-                        내 정보 수정
-                    </LinkContainer>
-                </Link>
-                <Link to={`/u/${id}/mypage`} style={{ textDecoration: 'none' }}>
-                    <LinkContainer onClick={() => setActiveTab('Mytext')} isSelected={activeTab === 'Mytext'}>
-                        내 게시글 관리
-                    </LinkContainer>
-                </Link>
-                <Link to={`/u/${id}/mypage`} style={{ textDecoration: 'none' }}>
-                    <LinkContainer onClick={() => setActiveTab('Favorite')} isSelected={activeTab === 'Favorite'}>
-                        즐겨찾기한 글
-                    </LinkContainer>
-                </Link>
-                <Link to={`/u/${id}/mypage`} style={{ textDecoration: 'none' }}>
-                    <LinkContainer onClick={() => setActiveTab('Schedule')} isSelected={activeTab === 'Schedule'}>
-                        일정관리
-                    </LinkContainer>
-                </Link>
-                <Link to={`/u/${id}/mypage`} style={{ textDecoration: 'none' }}>
-                    <LinkContainer onClick={() => setActiveTab('Review')} isSelected={activeTab === 'Review'}>
-                        리뷰 관리
-                    </LinkContainer>
-                </Link>
-                <Link to={`/u/${id}/mypage`} style={{ textDecoration: 'none' }}>
-                    <LinkContainer onClick={() => setActiveTab('Inquiry')} isSelected={activeTab === 'Inquiry'}>
-                        내 문의 내역
-                    </LinkContainer>
-                </Link>
-            </ImformationContainer>
-        </LeftContainer>
-        <RightContainer>
-            <UserContainer>
-                <UserImage />
-                <UserDetails>
-                    <UserNameContainer>{id}</UserNameContainer>
-                    <UserPos>포지션</UserPos>
-                    <UserEmail>이메일</UserEmail>
-                    <OneLineContainer>자기소개</OneLineContainer>
-                </UserDetails>
-            </UserContainer>
-            <ToolContainer>{renderInformationContainer()}</ToolContainer>
-        </RightContainer>
-    </Container>
-);
+        <Container>
+            <LeftContainer>
+                <ImformationContainer>
+                    <MypageContaer>
+                        <Link to={`/u/${id}/mypage`} style={{ textDecoration: 'none', color: 'black' }} onClick={() => setActiveTab(null)}>
+                            마이페이지
+                        </Link>
+                    </MypageContaer>
+                    <Link to={`/u/${id}/mypage`} style={{ textDecoration: 'none' }}>
+                        <LinkContainer onClick={() => setActiveTab('Account')} isSelected={activeTab === 'Account'}>
+                            내 정보 수정
+                        </LinkContainer>
+                    </Link>
+                    <Link to={`/u/${id}/mypage`} style={{ textDecoration: 'none' }}>
+                        <LinkContainer onClick={() => setActiveTab('Mytext')} isSelected={activeTab === 'Mytext'}>
+                            내 게시글 관리
+                        </LinkContainer>
+                    </Link>
+                    <Link to={`/u/${id}/mypage`} style={{ textDecoration: 'none' }}>
+                        <LinkContainer onClick={() => setActiveTab('Favorite')} isSelected={activeTab === 'Favorite'}>
+                            즐겨찾기한 글
+                        </LinkContainer>
+                    </Link>
+                    <Link to={`/u/${id}/mypage`} style={{ textDecoration: 'none' }}>
+                        <LinkContainer onClick={() => setActiveTab('Schedule')} isSelected={activeTab === 'Schedule'}>
+                            일정관리
+                        </LinkContainer>
+                    </Link>
+                    <Link to={`/u/${id}/mypage`} style={{ textDecoration: 'none' }}>
+                        <LinkContainer onClick={() => setActiveTab('Review')} isSelected={activeTab === 'Review'}>
+                            리뷰 관리
+                        </LinkContainer>
+                    </Link>
+                    <Link to={`/u/${id}/mypage`} style={{ textDecoration: 'none' }}>
+                        <LinkContainer onClick={() => setActiveTab('Inquiry')} isSelected={activeTab === 'Inquiry'}>
+                            내 문의 내역
+                        </LinkContainer>
+                    </Link>
+                </ImformationContainer>
+            </LeftContainer>
+            <RightContainer>
+                <UserContainer>
+                    <UserImage />
+                    <UserDetails>
+                        <UserNameContainer>{id}</UserNameContainer>
+                        <UserPos>포지션</UserPos>
+                        <UserEmail>이메일</UserEmail>
+                        <OneLineContainer>자기소개</OneLineContainer>
+                    </UserDetails>
+                </UserContainer>
+                <ToolContainer>{renderInformationContainer()}</ToolContainer>
+            </RightContainer>
+        </Container>
+    );
 }
 
 const Container = styled.div`
@@ -154,10 +150,11 @@ const UserContainer = styled.div`
     flex-direction: row;
     align-items: center;
     margin-bottom: 30px;
+    margin-bottom: 5%;
 `;
 const UserDetails = styled.div`
-    display:flex;
-    flex-direction:column;
+    display: flex;
+    flex-direction: column;
 `;
 const UserNameContainer = styled.div`
     font-size: 2.1rem;
@@ -173,19 +170,19 @@ const UserImage = styled.div`
     margin-right: 40px;
 `;
 const UserPos = styled.div`
-    font-size:1.3rem;
+    font-size: 1.3rem;
     margin-left: 50%;
-    width:100%;
+    width: 100%;
 `;
 const UserEmail = styled.div`
-    font-size:1.3rem;
+    font-size: 1.3rem;
     margin-left: 50%;
-    width:100%;
+    width: 100%;
 `;
 const OneLineContainer = styled.div`
-    font-size:1.1rem;
+    font-size: 1.1rem;
     margin-left: 50%;
-    width:100%;
+    width: 100%;
 `;
 const ToolContainer = styled.div`
     display: flex;
