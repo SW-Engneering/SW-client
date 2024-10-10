@@ -11,6 +11,8 @@ import Member from "../page/02_Member";
 import Team from "../page/02_Team";
 import Match from "../page/02_Match";
 import 챙 from "../images/챙.jpg";
+import 빵 from "../images/adfs.jpg";
+import 젼 from "../images/sdfsdf.jpg";
 
 export default function Home() {
     const MatchRenderContainer = () => {
@@ -48,10 +50,14 @@ export default function Home() {
                     </Navi>
                 </SliderContainer>
                 <SliderContainer>
-                    두번째 화면
+                    <Navi activeClassName="active" to="/team">
+                        <Image src={빵} alt="팀 구하기" />
+                    </Navi>
                 </SliderContainer>
                 <SliderContainer>
-                    세번째 화면
+                    <Navi activeClassName="active" to="/team">
+                        <Image src={젼} alt="팀 매칭하기" />
+                    </Navi>
                 </SliderContainer>
                 <SliderContainer>
                     네번째 화면

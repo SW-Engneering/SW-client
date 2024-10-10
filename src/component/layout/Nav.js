@@ -100,6 +100,7 @@ const Navi = styled(NavLink)`
     
     color: #000000;
     font-size: 15px;
+    font-weight: bold;
     font-family: ${(props) => props.fontFamily || 'inherit'};
     text-decoration: none;
     
