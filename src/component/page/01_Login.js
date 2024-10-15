@@ -1,21 +1,32 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie';
 
 export default function Login() {
-    const [id, setId] = useState("");
-    const [password, setPassword] = useState("");
+    const [id, setId] = useState(null);
+    const [password, setPassword] = useState(null);
     const [userState, setUserState] = useState(false);
     const navigate = useNavigate();
 
+    useEffect(() => {
+        // 컴포넌트가 마운트될 때 쿠키에서 로그인 상태를 확인
+        const cookieId = Cookies.get('userId');
+        if (cookieId) {
+            setUserState(true);
+            navigate(`/u/${cookieId}`);
+        }
+    }, [navigate]);
+
     const handleLogin = () => {
+        // 로그인 처리 (여기서는 단순히 쿠키에 사용자 ID를 저장)
+        Cookies.set('userId', id, { expires: 7 }); // 7일 동안 유지
         setUserState(true);
-        navigate(`/u/${id}`)
+        navigate(`/u/${id}`);
         console.log("로그인 시도:", { id, password });
     };
-    
+
     return (
-        
         <Container>
             <LoginContainer>로그인</LoginContainer>
             <InputContainer>
@@ -37,7 +48,6 @@ export default function Login() {
             <LoginButton onClick={handleLogin}>로그인</LoginButton>
             <Signup href="/signup">회원가입</Signup>
         </Container>
-        
     );
 }
 
@@ -64,21 +74,20 @@ const InputContainer = styled.div`
     margin-bottom: 15px;
 `;
 
-
 const IdInput = styled.input`
-    width: calc(100% - 1px);  /* 오른쪽 여백을 추가 */
+    width: calc(100% - 1px);
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
-    box-sizing: border-box;  /* padding과 border를 포함 */
+    box-sizing: border-box;
 `;
 
 const PasswordInput = styled.input`
-    width: calc(100% - 1px);  /* 오른쪽 여백을 추가 */
+    width: calc(100% - 1px);
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
-    box-sizing: border-box;  /* padding과 border를 포함 */
+    box-sizing: border-box;
 `;
 
 const LoginButton = styled.button`
@@ -94,10 +103,11 @@ const LoginButton = styled.button`
     &:hover {
         background-color: #0056b3;
     }
-    margin-bottom:10px;
+    margin-bottom: 10px;
 `;
+
 const Signup = styled.a`
-    width:100%;
-    color:gray;
-    text-align:right;
+    width: 100%;
+    color: gray;
+    text-align: right;
 `;
