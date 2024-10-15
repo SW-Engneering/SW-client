@@ -14,6 +14,7 @@ import Mamber from './component/page/02_Member';
 import Management from './component/page/02_Management';
 import Match from './component/page/02_Match';
 import Team from './component/page/02_Team';
+import Vote from './component/page/02_Vote';
 
 
 function App() {
@@ -33,6 +34,7 @@ function App() {
                         <Route path="/match" element={<Match />} />
                         <Route path="/management" element={<Management />} />
                         <Route path="/signup" element={<Signup />} />
+                        <Route path="/vote" element={<Vote/>}/>
                     </Routes>
                 </InsideContainer>
                 <Footer />

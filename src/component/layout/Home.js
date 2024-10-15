@@ -10,9 +10,8 @@ import RightArrow from '../images/Right_arrow.png'; // 우측 화살표 이미�
 import Member from "../page/02_Member";
 import Team from "../page/02_Team";
 import Match from "../page/02_Match";
-import 챙 from "../images/챙.jpg";
-import 빵 from "../images/adfs.jpg";
-import 젼 from "../images/sdfsdf.jpg";
+import 팀원 from "../images/팀원구하기.png";
+import 팀 from "../images/팀구하기.png";
 
 export default function Home() {
     const MatchRenderContainer = () => {
@@ -47,18 +46,16 @@ export default function Home() {
             <Slider {...settings}>
                 <SliderContainer>
                     <Navi activeClassName="active" to="/member">
-                        <Image src={챙} alt="팀원 구하기" />
+                        <Image src={팀원} alt="팀원 구하기" />
                     </Navi>
                 </SliderContainer>
                 <SliderContainer>
                     <Navi activeClassName="active" to="/team">
-                        <Image src={빵} alt="팀 구하기" />
+                        <Image src={팀} alt="팀 구하기" />
                     </Navi>
                 </SliderContainer>
                 <SliderContainer>
-                    <Navi activeClassName="active" to="/team">
-                        <Image src={젼} alt="팀 매칭하기" />
-                    </Navi>
+                    ㅁㅇㄹㄴㅇ
                 </SliderContainer>
                 <SliderContainer>
                     네번째 화면

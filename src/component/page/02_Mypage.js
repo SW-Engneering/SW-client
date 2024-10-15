@@ -106,30 +106,31 @@ const Container = styled.div`
     max-width: 100%;
     padding: 0 10%;
     height: auto;
-`;
+`;  
 const LeftContainer = styled.div`
     min-width: 19%;
-    font-size: 1.875rem;
+    font-size: 2.5vw; /* Adjusted font size */
     padding-top: 3%;
     margin-right: 20px;
     padding-left: 20px;
-    border-right: 2px solid black;
+    border-right: 1px solid black;
 `;
 
 const MypageContaer = styled.div`
     font-weight: bold;
     margin-bottom: 25px;
+    font-size: 2vw; /* Adjusted font size */
 `;
 
 const LinkContainer = styled.div`
     display: block;
     text-decoration: none;
     color: black;
-    font-size: 1.5rem;
+    font-size: 1.7vw; /* Adjusted font size */
     margin-bottom: 15px;
     background-color: ${(props) => (props.isSelected ? '#adb5bd' : '#white')};
     cursor: pointer;
-    &hover {
+    &:hover {
         background-color: #adb5bd;
     }
 `;
@@ -157,30 +158,35 @@ const UserDetails = styled.div`
     flex-direction: column;
 `;
 const UserNameContainer = styled.div`
-    font-size: 2.1rem;
+    font-size: 3vw; /* Adjusted font size */
     margin-left: 30px;
 `;
 const UserImage = styled.div`
-    width: 120px;
-    height: 120px;
+    width: 15vw; /* 뷰포트 너비의 15% */
+    height: 15vw; /* 뷰포트 너비의 15% */
+    max-width: 120px; /* 최대 너비 */
+    max-height: 120px; /* 최대 높이 */
     background-image: url(${Avata});
     background-size: cover;
     background-position: center;
     border-radius: 50%;
     margin-right: 40px;
 `;
+
 const UserPos = styled.div`
-    font-size: 1.3rem;
+    font-size: 1.5vw; /* Adjusted font size */
     margin-left: 50%;
     width: 100%;
 `;
+
 const UserEmail = styled.div`
-    font-size: 1.3rem;
+    font-size: 1.5vw; /* Adjusted font size */
     margin-left: 50%;
     width: 100%;
 `;
+
 const OneLineContainer = styled.div`
-    font-size: 1.1rem;
+    font-size: 1.2vw; /* Adjusted font size */
     margin-left: 50%;
     width: 100%;
 `;
