@@ -34,7 +34,7 @@ function App() {
                         <Route path="/match" element={<Match />} />
                         <Route path="/management" element={<Management />} />
                         <Route path="/signup" element={<Signup />} />
-                        <Route path="/vote" element={<Vote/>}/>
+                        <Route path="/  " element={<Vote/>}/>
                     </Routes>
                 </InsideContainer>
                 <Footer />

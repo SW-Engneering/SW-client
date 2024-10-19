@@ -19,7 +19,6 @@ export default function Login() {
     }, [navigate]);
 
     const handleLogin = () => {
-        // 로그인 처리 (여기서는 단순히 쿠키에 사용자 ID를 저장)
         Cookies.set('userId', id, { expires: 7 }); // 7일 동안 유지
         setUserState(true);
         navigate(`/u/${id}`);
