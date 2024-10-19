@@ -7,11 +7,11 @@ import 'slick-carousel/slick/slick-theme.css';
 import '../css/Font.css';
 import LeftArrow from '../images/Left_arrow.png'; // 좌측 화살표 이미지 경로
 import RightArrow from '../images/Right_arrow.png'; // 우측 화살표 이미지 경로
-import Member from "../page/02_Member";
-import Team from "../page/02_Team";
-import Match from "../page/02_Match";
-import 팀원 from "../images/팀원구하기.png";
-import 팀 from "../images/팀구하기.png";
+import Member from '../page/02_Member';
+import Team from '../page/02_Team';
+import Match from '../page/02_Match';
+import 팀원 from '../images/팀원구하기.png';
+import 팀 from '../images/팀구하기.png';
 
 export default function Home() {
     const MatchRenderContainer = () => {
@@ -54,18 +54,10 @@ export default function Home() {
                         <Image src={팀} alt="팀 구하기" />
                     </Navi>
                 </SliderContainer>
-                <SliderContainer>
-                    ㅁㅇㄹㄴㅇ
-                </SliderContainer>
-                <SliderContainer>
-                    네번째 화면
-                </SliderContainer>
-                <SliderContainer>
-                    다섯번째 화면
-                </SliderContainer>
-                <SliderContainer>
-                    여섯번째 화면
-                </SliderContainer>
+                <SliderContainer>ㅁㅇㄹㄴㅇ</SliderContainer>
+                <SliderContainer>네번째 화면</SliderContainer>
+                <SliderContainer>다섯번째 화면</SliderContainer>
+                <SliderContainer>여섯번째 화면</SliderContainer>
             </Slider>
             <RenderContainer>
                 <BulletinContainer>{TeamRenderContainer()}</BulletinContainer>
@@ -115,7 +107,7 @@ const Navi = styled(NavLink)`
     align-items: center; /* align-item -> align-items로 수정 */
 `;
 const Image = styled.img`
-    width: 90%;
+    width: 50%;
     height: auto;
     object-fit: contain;
 `;
