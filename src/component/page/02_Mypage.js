@@ -106,7 +106,7 @@ const Container = styled.div`
     max-width: 100%;
     padding: 0 10%;
     height: auto;
-`;  
+`;
 const LeftContainer = styled.div`
     min-width: 19%;
     font-size: 2.5vw; /* Adjusted font size */
@@ -119,14 +119,14 @@ const LeftContainer = styled.div`
 const MypageContaer = styled.div`
     font-weight: bold;
     margin-bottom: 25px;
-    font-size: 2vw; /* Adjusted font size */
+    font-size: 1.5vw; /* Adjusted font size */
 `;
 
 const LinkContainer = styled.div`
     display: block;
     text-decoration: none;
     color: black;
-    font-size: 1.7vw; /* Adjusted font size */
+    font-size: 1.2vw; /* Adjusted font size */
     margin-bottom: 15px;
     background-color: ${(props) => (props.isSelected ? '#adb5bd' : '#white')};
     cursor: pointer;

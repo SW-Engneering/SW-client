@@ -1,0 +1,3 @@
+[submodule "SW-client"]
+    path = SW-client
+    url = https://github.com/SW-Engneering/SW-client.git
