@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
+import userData from '../../UserData';
 import Cookies from 'js-cookie';
 
 export default function Header() {
@@ -14,7 +15,7 @@ export default function Header() {
         let ocidFromUrl = parts[2];
 
         // ocidFromUrl이 undefined일 경우 id를 null로 설정
-        setId(ocidFromUrl ? ocidFromUrl : null);
+        setId(userData.id ? userData.id : null);
     }, [location]);
 
     const handleLogout = () => {

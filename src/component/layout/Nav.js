@@ -64,14 +64,14 @@ const LogoImage = styled.div`
 const LogoContainer = styled.div`
     display: flex;
     flex-direction: row;
-    align-item: center;
+    align-items: center;
     font-size: 50px;
     font-family: NFL;
     color: black;
     justify-content: center;
     padding: 0px 100px;
     margin-bottom: 10px;
-    text-decorations: none;
+    text-decoration: none;
 `;
 
 const Navbar = styled.div`

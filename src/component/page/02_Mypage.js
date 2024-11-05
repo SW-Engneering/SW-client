@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import axios from 'axios';
+import userData from '../../UserData';
 import styled from 'styled-components';
 import Avata from '../images/Generic_avatar.png';
 import Account from './03_Account';
@@ -13,7 +14,7 @@ import DefaultPage from './03_DefaultPage';
 
 export default function MyPage() {
     const location = useLocation();
-    const [id, setId] = useState(null);
+    const [id, setId] = useState(userData.id);
 
     useEffect(() => {
         let currentPath = window.location.pathname;
@@ -88,10 +89,10 @@ export default function MyPage() {
                 <UserContainer>
                     <UserImage />
                     <UserDetails>
-                        <UserNameContainer>{id}</UserNameContainer>
-                        <UserPos>포지션</UserPos>
-                        <UserEmail>이메일</UserEmail>
-                        <OneLineContainer>자기소개</OneLineContainer>
+                        <UserNameContainer>{userData.id}</UserNameContainer>
+                        <UserPos>{userData.position}</UserPos>
+                        <UserEmail>{userData.email}</UserEmail>
+                        <OneLineContainer>{userData.detail}</OneLineContainer>
                     </UserDetails>
                 </UserContainer>
                 <ToolContainer>{renderInformationContainer()}</ToolContainer>
@@ -104,31 +105,30 @@ const Container = styled.div`
     display: flex;
     border-radius: 5px;
     max-width: 100%;
-    padding: 0 10%;
-    height: auto;
-`;  
+    padding: 0;
+`;
 const LeftContainer = styled.div`
     min-width: 19%;
+    box-sizing: border-box;
     font-size: 2.5vw; /* Adjusted font size */
     padding-top: 3%;
-    margin-right: 20px;
-    padding-left: 20px;
+    padding-left: 5.5%;
     border-right: 1px solid black;
 `;
 
 const MypageContaer = styled.div`
     font-weight: bold;
     margin-bottom: 25px;
-    font-size: 2vw; /* Adjusted font size */
+    font-size: 1.5vw; /* Adjusted font size */
 `;
 
 const LinkContainer = styled.div`
     display: block;
     text-decoration: none;
     color: black;
-    font-size: 1.7vw; /* Adjusted font size */
+    font-size: 1.2vw; /* Adjusted font size */
     margin-bottom: 15px;
-    background-color: ${(props) => (props.isSelected ? '#adb5bd' : '#white')};
+    color: ${(props) => (props.isSelected ? '#white' : '#808080')};
     cursor: pointer;
     &:hover {
         background-color: #adb5bd;
@@ -142,16 +142,20 @@ const ImformationContainer = styled.div`
     z-index: 3;
 `;
 const RightContainer = styled.div`
-    min-width: 71%;
-    padding-top: 3%;
-    margin-left: 3%;
+    min-width: 81%;
+    padding : 3% 5% 0 3%;
+    box-sizing: border-box;
+    background-color:#e9ecef;
 `;
 const UserContainer = styled.div`
     display: flex;
     flex-direction: row;
+    border-radius:20px;
     align-items: center;
-    margin-bottom: 30px;
-    margin-bottom: 5%;
+    justify-content:left;
+    margin:0 0 5% 3%;
+    background-color:white;
+    padding:3%;
 `;
 const UserDetails = styled.div`
     display: flex;
@@ -162,35 +166,39 @@ const UserNameContainer = styled.div`
     margin-left: 30px;
 `;
 const UserImage = styled.div`
-    width: 15vw; /* 뷰포트 너비의 15% */
-    height: 15vw; /* 뷰포트 너비의 15% */
-    max-width: 120px; /* 최대 너비 */
-    max-height: 120px; /* 최대 높이 */
+    width: 13vw; 
+    height: 13vw;
+    max-width: 120px;
+    max-height: 120px;
     background-image: url(${Avata});
     background-size: cover;
     background-position: center;
     border-radius: 50%;
-    margin-right: 40px;
+    margin-right: 6%;
 `;
 
 const UserPos = styled.div`
     font-size: 1.5vw; /* Adjusted font size */
-    margin-left: 50%;
+    margin-left: 20%;
     width: 100%;
 `;
 
 const UserEmail = styled.div`
     font-size: 1.5vw; /* Adjusted font size */
-    margin-left: 50%;
+    margin-left: 20%;
     width: 100%;
 `;
 
 const OneLineContainer = styled.div`
     font-size: 1.2vw; /* Adjusted font size */
-    margin-left: 50%;
+    margin-left: 20%;
     width: 100%;
 `;
 const ToolContainer = styled.div`
     display: flex;
     flex-direction: row;
+    margin:3% 0 0 3%;
+    padding:3%;
+    background-color:white;
+    border-radius:20px;
 `;
