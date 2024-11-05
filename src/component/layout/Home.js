@@ -59,10 +59,25 @@ export default function Home() {
                 <SliderContainer>다섯번째 화면</SliderContainer>
                 <SliderContainer>여섯번째 화면</SliderContainer>
             </Slider>
+            <RecentContainer>최근 올라온 글</RecentContainer>
             <RenderContainer>
-                <BulletinContainer>{TeamRenderContainer()}</BulletinContainer>
-                <BulletinContainer>{MemberRenderContainer()}</BulletinContainer>
-                <BulletinContainer>{MatchRenderContainer()}</BulletinContainer>
+                <TeamContainer>
+                    <BulletinContainer>
+                        <BulletinNameContainer>팀원 구하기</BulletinNameContainer>
+                        <BulletinTitleContainer>경산 팀구합니다</BulletinTitleContainer>
+                        <BulletinTitleContainer>경산 팀구합니다</BulletinTitleContainer>
+                    </BulletinContainer>
+                    <BulletinContainer>
+                        <BulletinNameContainer>팀 구하기</BulletinNameContainer>
+                        <BulletinTitleContainer>SC팀 골키퍼 구해요</BulletinTitleContainer>
+                        <BulletinTitleContainer>SC팀 골키퍼 구해요</BulletinTitleContainer>
+                    </BulletinContainer>
+                    <BulletinContainer>
+                        <BulletinNameContainer>팀 매칭하기</BulletinNameContainer>
+                        <BulletinTitleContainer>사동 풋살장에서 16시에 풋살할 팀 모집</BulletinTitleContainer>
+                        <BulletinTitleContainer>사동 풋살장에서 16시에 풋살할 팀 모집</BulletinTitleContainer>
+                    </BulletinContainer>
+                </TeamContainer>
             </RenderContainer>
         </Container>
     );
@@ -91,20 +106,49 @@ const Arrow = styled.img`
     position: absolute;
 `;
 const RenderContainer = styled.div`
-    margin-top: 4%;
     display: flex;
-    width: 90%;
-    margin: 4% auto 0 auto;
+    width: 100%;
+`;
+
+const TeamContainer = styled.div`
+    display: flex;
+    width: 100%;
+`;
+const RecentContainer = styled.div`
+    margin: 6% 0 1% 0;
 `;
 const BulletinContainer = styled.div`
+    display: flex;
+    flex-direction: column;
     flex: 1;
     width: 30%;
     aspect-ratio: 1;
+    text-align: center;
+    &:not(:last-child) {
+        margin-right: 2%;
+    }
 `;
+//최신글 게시판 종류
+const BulletinNameContainer = styled.div`
+    font-weight: bold;
+    padding: 4%;
+    border-top: 2px solid black;
+    border-top-left-radius: 10px;
+    border-left: 0;
+    border-right: 0;
+`;
+//최신글 제목
+const BulletinTitleContainer = styled.div`
+    padding: 1% 0;
+    &:not(:last-child) {
+        border-bottom: dotted 1px black;
+    }
+`;
+
 const Navi = styled(NavLink)`
     display: flex;
     justify-content: center;
-    align-items: center; /* align-item -> align-items로 수정 */
+    align-items: center;
 `;
 const Image = styled.img`
     width: 50%;

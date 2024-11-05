@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import styled from "styled-components";
+import React, { useState, useEffect } from 'react';
+import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 
@@ -14,35 +14,25 @@ export default function Login() {
         const cookieId = Cookies.get('userId');
         if (cookieId) {
             setUserState(true);
-            navigate(`/u/${cookieId}`);
+            navigate(`/`);
         }
     }, [navigate]);
 
     const handleLogin = () => {
         Cookies.set('userId', id, { expires: 7 }); // 7일 동안 유지
         setUserState(true);
-        navigate(`/u/${id}`);
-        console.log("로그인 시도:", { id, password });
+        navigate(`/`);
+        console.log('로그인 시도:', { id, password });
     };
 
     return (
         <Container>
             <LoginContainer>로그인</LoginContainer>
             <InputContainer>
-                <IdInput
-                    type="text"
-                    value={id}
-                    placeholder="아이디"
-                    onChange={(e) => setId(e.target.value)}
-                />
+                <IdInput type="text" value={id} placeholder="아이디" onChange={(e) => setId(e.target.value)} />
             </InputContainer>
             <InputContainer>
-                <PasswordInput
-                    type="password"
-                    value={password}
-                    placeholder="비밀번호"
-                    onChange={(e) => setPassword(e.target.value)}
-                />
+                <PasswordInput type="password" value={password} placeholder="비밀번호" onChange={(e) => setPassword(e.target.value)} />
             </InputContainer>
             <LoginButton onClick={handleLogin}>로그인</LoginButton>
             <Signup href="/signup">회원가입</Signup>

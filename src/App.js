@@ -16,7 +16,6 @@ import Match from './component/page/02_Match';
 import Team from './component/page/02_Team';
 import Vote from './component/page/02_Vote';
 
-
 function App() {
     return (
         <BrowserRouter>
@@ -26,15 +25,15 @@ function App() {
                 <InsideContainer>
                     <Routes>
                         <Route path="/" element={<Home />} />
-                        <Route path="/u/:id" element={<Home/>}/>
-                        <Route path="/u/:id/mypage" element={<Mypage/>}/>
+                        <Route path="/u/:id" element={<Home />} />
+                        <Route path="/u/:id/mypage" element={<Mypage />} />
                         <Route path="/login" element={<Login />} />
                         <Route path="/member" element={<Mamber />} />
                         <Route path="/team" element={<Team />} />
                         <Route path="/match" element={<Match />} />
                         <Route path="/management" element={<Management />} />
                         <Route path="/signup" element={<Signup />} />
-                        <Route path="/  " element={<Vote/>}/>
+                        <Route path="/  " element={<Vote />} />
                     </Routes>
                 </InsideContainer>
                 <Footer />
@@ -53,6 +52,7 @@ const InsideContainer = styled.div`
     flex-grow: 1;
     display: flex;
     flex-direction: column;
+    height: 100%;
 `;
 
 export default App;
