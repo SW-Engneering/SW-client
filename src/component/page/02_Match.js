@@ -45,6 +45,13 @@ export default function Match() {
                     <strong>팀 매칭하기</strong>
                 </SitemapContainer>
             </TitleContainer>
+            <HeaderContainer>
+                    <FirstContainer>글 번호</FirstContainer>
+                    <SecondContainer>제목</SecondContainer>
+                    <ThirdContainer>작성자</ThirdContainer>
+                    <FourthContainer>작성일</FourthContainer>
+                    <FifthContainer>조회수</FifthContainer>
+            </HeaderContainer>
             <ContentContainer>
                 {loading ? (
                     <LoadingMessage>로딩 중...</LoadingMessage>
@@ -88,6 +95,39 @@ const TitleContainer = styled.div`
     display: flex;
     justify-content: space-between;
     border-bottom: 0.1px solid grey; /* 하단 회색 줄 */
+`;
+
+const HeaderContainer = styled.div`
+    display: flex;
+    background-color: #edf3e6;
+    border-bottom: 2px solid #cecece; /* 하단 회색 줄 */
+    padding: 5px;
+`;
+
+const FirstContainer = styled.div` //글번호
+    margin-left:10px;
+    margin-right: 20px;
+`;
+
+const SecondContainer = styled.div` //제목
+    margin-left: 300px;
+    margin-right: 300px;
+`;
+
+
+const ThirdContainer = styled.div`
+
+    margin-right: 100px;
+`;
+
+
+const FourthContainer = styled.div`
+
+`;
+
+
+const FifthContainer = styled.div`
+    margin-left: 100px;
 `;
 
 const TeamContainer = styled.div`

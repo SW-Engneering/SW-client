@@ -14,18 +14,6 @@ import 팀원 from '../images/팀원구하기.png';
 import 팀 from '../images/팀구하기.png';
 
 export default function Home() {
-    const MatchRenderContainer = () => {
-        console.log('매칭 렌더링');
-        return <Match />;
-    };
-    const TeamRenderContainer = () => {
-        console.log('팀 렌더링');
-        return <Team />;
-    };
-    const MemberRenderContainer = () => {
-        console.log('멤버 렌더링');
-        return <Member />;
-    };
 
     const settings = {
         dots: true,
@@ -59,25 +47,41 @@ export default function Home() {
                 <SliderContainer>다섯번째 화면</SliderContainer>
                 <SliderContainer>여섯번째 화면</SliderContainer>
             </Slider>
+            <RecentContainer>최근 올라온 글</RecentContainer>
             <RenderContainer>
-                <BulletinContainer>{TeamRenderContainer()}</BulletinContainer>
-                <BulletinContainer>{MemberRenderContainer()}</BulletinContainer>
-                <BulletinContainer>{MatchRenderContainer()}</BulletinContainer>
+                <TeamContainer>
+                    <BulletinContainer>
+                        <BulletinNameContainer>팀원 구하기</BulletinNameContainer>
+                        <BulletinTitleContainer>경산 팀구합니다</BulletinTitleContainer>
+                        <BulletinTitleContainer>경산 팀구합니다</BulletinTitleContainer>
+                    </BulletinContainer>
+                    <BulletinContainer>
+                        <BulletinNameContainer>팀 구하기</BulletinNameContainer>
+                        <BulletinTitleContainer>SC팀 골키퍼 구해요</BulletinTitleContainer>
+                        <BulletinTitleContainer>SC팀 골키퍼 구해요</BulletinTitleContainer>
+                    </BulletinContainer>
+                    <BulletinContainer>
+                        <BulletinNameContainer>팀 매칭하기</BulletinNameContainer>
+                        <BulletinTitleContainer>사동 풋살장에서 16시에 풋살할 팀 모집</BulletinTitleContainer>
+                        <BulletinTitleContainer>사동 풋살장에서 16시에 풋살할 팀 모집</BulletinTitleContainer>
+                    </BulletinContainer>
+                </TeamContainer>
             </RenderContainer>
         </Container>
     );
 }
 
 const Container = styled.div`
-    padding: 50px 300px;
+    padding: 0 300px;
     position: relative;
     max-width: 100%;
+    border-bottom: 0.1px solid grey; /* 하단 회색 줄 */
 `;
 const SliderContainer = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    width: auto;
+    width: 100%;
     max-width: 100%;
     font-size: 24px;
     text-align: center;
@@ -91,23 +95,52 @@ const Arrow = styled.img`
     position: absolute;
 `;
 const RenderContainer = styled.div`
-    margin-top: 4%;
     display: flex;
-    width: 90%;
-    margin: 4% auto 0 auto;
+    width: 100%;
+`;
+
+const TeamContainer = styled.div`
+    display: flex;
+    width: 100%;
+`;
+const RecentContainer = styled.div`
+    margin: 6% 0 1% 0;
 `;
 const BulletinContainer = styled.div`
+    display: flex;
+    flex-direction: column;
     flex: 1;
     width: 30%;
     aspect-ratio: 1;
+    text-align: center;
+    &:not(:last-child) {
+        margin-right: 2%;
+    }
 `;
+//최신글 게시판 종류
+const BulletinNameContainer = styled.div`
+    font-weight: bold;
+    padding: 4%;
+    border-top: 2px solid black;
+    border-top-left-radius: 10px;
+    border-left: 0;
+    border-right: 0;
+`;
+//최신글 제목
+const BulletinTitleContainer = styled.div`
+    padding: 1% 0;
+    &:not(:last-child) {
+        border-bottom: dotted 1px black;
+    }
+`;
+
 const Navi = styled(NavLink)`
     display: flex;
     justify-content: center;
-    align-items: center; /* align-item -> align-items로 수정 */
+    align-items: center;
 `;
 const Image = styled.img`
-    width: 50%;
-    height: auto;
+    width: 100%;
+    height: ;
     object-fit: contain;
 `;
