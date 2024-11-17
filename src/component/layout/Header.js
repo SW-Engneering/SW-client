@@ -26,7 +26,7 @@ export default function Header() {
         { to: '/signup', text: '회원가입' },
     ];
     const userMenu = [
-        { to: `/u/${id}/mypage`, text: `안녕하세요 ${id}님` },
+        { to: `/mypage`, text: `안녕하세요 ${id}님` },
         { to: '/', text: '로그아웃', onClick: handleLogout },
     ];
 

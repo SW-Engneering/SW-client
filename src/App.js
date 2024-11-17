@@ -25,8 +25,8 @@ function App() {
                 <InsideContainer>
                     <Routes>
                         <Route path="/" element={<Home />} />
-                        <Route path="/u/:id" element={<Home />} />
-                        <Route path="/u/:id/mypage" element={<Mypage />} />
+                        <Route path="/" element={<Home />} />
+                        <Route path="/mypage" element={<Mypage />} />
                         <Route path="/login" element={<Login />} />
                         <Route path="/member" element={<Mamber />} />
                         <Route path="/team" element={<Team />} />

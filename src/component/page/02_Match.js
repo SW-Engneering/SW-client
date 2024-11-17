@@ -1,41 +1,36 @@
-import styled from "styled-components";
-import 배너 from "../images/배너.png";
+import styled from 'styled-components';
+import 배너 from '../images/배너.png';
 
 export default function Match() {
-    return(
+    return (
         <Container>
             <BannerContainer>
                 <Image src={배너} alt="배너" />
             </BannerContainer>
             <TitleContainer>
-                <TeamContainer>
-                    팀 매칭하기
-                </TeamContainer>
+                <TeamContainer>팀 매칭하기</TeamContainer>
                 <SitemapContainer>
                     <a href="/">메인</a>
                     &gt;
                     <strong>팀 매칭하기</strong>
                 </SitemapContainer>
             </TitleContainer>
-            <div>
-                등록된 게시물이 없습니다.
-            </div>
+            <div>등록된 게시물이 없습니다.</div>
         </Container>
     );
 }
 
 const Container = styled.div`
     justify-content: center;
-    align-item: center;
+    align-items: center;
     padding-left: 200px;
     padding-right: 200px;
-
 `;
 
 const BannerContainer = styled.div`
     display: flex;
     justify-content: center;
-    align-item: center;
+    align-items: center;
 `;
 
 const TitleContainer = styled.div`

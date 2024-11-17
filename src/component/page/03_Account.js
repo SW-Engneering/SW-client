@@ -23,9 +23,6 @@ export default function Account() {
                 <TextContainer>자기소개</TextContainer>
                 <InputContainer type="text" />
             </LineContainer>
-            <ButtonContainer>
-                <SubmitButton>제출</SubmitButton>
-            </ButtonContainer>
         </Container>
     );
 }
