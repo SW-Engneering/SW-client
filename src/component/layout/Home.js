@@ -14,18 +14,6 @@ import 팀원 from '../images/팀원구하기.png';
 import 팀 from '../images/팀구하기.png';
 
 export default function Home() {
-    const MatchRenderContainer = () => {
-        console.log('매칭 렌더링');
-        return <Match />;
-    };
-    const TeamRenderContainer = () => {
-        console.log('팀 렌더링');
-        return <Team />;
-    };
-    const MemberRenderContainer = () => {
-        console.log('멤버 렌더링');
-        return <Member />;
-    };
 
     const settings = {
         dots: true,
@@ -84,15 +72,16 @@ export default function Home() {
 }
 
 const Container = styled.div`
-    padding: 50px 300px;
+    padding: 0 300px;
     position: relative;
     max-width: 100%;
+    border-bottom: 0.1px solid grey; /* 하단 회색 줄 */
 `;
 const SliderContainer = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    width: auto;
+    width: 100%;
     max-width: 100%;
     font-size: 24px;
     text-align: center;
@@ -151,7 +140,7 @@ const Navi = styled(NavLink)`
     align-items: center;
 `;
 const Image = styled.img`
-    width: 50%;
-    height: auto;
+    width: 100%;
+    height: ;
     object-fit: contain;
 `;
