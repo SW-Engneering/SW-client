@@ -2,20 +2,19 @@ import React from 'react';
 import styled from 'styled-components';
 import { NavLink } from 'react-router-dom';
 import ball from '../images/ball.png';
+import Cookies from 'js-cookie';
 
 export default function Nav() {
     return (
         <Container>
-            
             <a href="/">
                 <LogoContainer>
                     Sport
                     <LogoImage />
-                     Match
+                    Match
                 </LogoContainer>
             </a>
-            
-            
+
             <Navbar>
                 <NaviContainer>
                     <Navi activeClassName="active" exact to="/member">
@@ -49,7 +48,6 @@ const Container = styled.div`
     width: 100%;
     background-color: white;
     border-bottom: 0.1px solid grey; /* 하단 회색 줄 */
-
 `;
 
 const LogoImage = styled.div`
@@ -84,7 +82,6 @@ const Navbar = styled.div`
 const NaviContainer = styled.div`
     display: flex;
 
-    
     &:hover {
         color: blue; /* 마우스 오버 시 글자 색상 */
         text-decoration: underline; /* 마우스 오버 시 밑줄 추가 */
@@ -97,13 +94,9 @@ const NaviContainer = styled.div`
 `;
 
 const Navi = styled(NavLink)`
-    
     color: #000000;
     font-size: 15px;
     font-weight: bold;
     font-family: ${(props) => props.fontFamily || 'inherit'};
     text-decoration: none;
-    
-    
 `;
-

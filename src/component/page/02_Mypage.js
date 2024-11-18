@@ -14,8 +14,20 @@ import DefaultPage from './03_DefaultPage';
 
 export default function MyPage() {
     const location = useLocation();
-    const [id, setId] = useState(userData.id);
+    const [id, setId] = useState(null);
+    const tabs = [
+        { name: '내 정보 수정', component: <Account /> },
+        { name: '내 게시글 관리', component: <Mytext /> },
+        { name: '즐겨찾기한 글', component: <Favorite /> },
+        { name: '내 문의내역', component: <Inquiry /> },
+        { name: '일정관리', component: <Schedule /> },
+        { name: '회원탈퇴', component: <Review /> },
+    ];
 
+    const renderInformationContainer = () => {
+        const activeTabComponent = tabs.find((tab) => tab.name === activeTab);
+        return activeTabComponent ? activeTabComponent.component : <DefaultPage />;
+    };
     useEffect(() => {
         let currentPath = window.location.pathname;
         let parts = currentPath.split('/');
@@ -25,24 +37,6 @@ export default function MyPage() {
         setId(ocidFromUrl ? ocidFromUrl : null);
     }, [location]);
 
-    const renderInformationContainer = () => {
-        switch (activeTab) {
-            case 'Account':
-                return <Account />;
-            case 'Mytext':
-                return <Mytext />;
-            case 'Favorite':
-                return <Favorite />;
-            case 'Review':
-                return <Review />;
-            case 'Inquiry':
-                return <Inquiry />;
-            case 'Schedule':
-                return <Schedule />;
-            default:
-                return <DefaultPage />;
-        }
-    };
     const [activeTab, setActiveTab] = useState(null);
     return (
         <Container>
@@ -53,46 +47,20 @@ export default function MyPage() {
                             마이페이지
                         </Link>
                     </MypageContaer>
-                    <Link to={`/u/${id}/mypage`} style={{ textDecoration: 'none' }}>
-                        <LinkContainer onClick={() => setActiveTab('Account')} isSelected={activeTab === 'Account'}>
-                            내 정보 수정
-                        </LinkContainer>
-                    </Link>
-                    <Link to={`/u/${id}/mypage`} style={{ textDecoration: 'none' }}>
-                        <LinkContainer onClick={() => setActiveTab('Mytext')} isSelected={activeTab === 'Mytext'}>
-                            내 게시글 관리
-                        </LinkContainer>
-                    </Link>
-                    <Link to={`/u/${id}/mypage`} style={{ textDecoration: 'none' }}>
-                        <LinkContainer onClick={() => setActiveTab('Favorite')} isSelected={activeTab === 'Favorite'}>
-                            즐겨찾기한 글
-                        </LinkContainer>
-                    </Link>
-                    <Link to={`/u/${id}/mypage`} style={{ textDecoration: 'none' }}>
-                        <LinkContainer onClick={() => setActiveTab('Schedule')} isSelected={activeTab === 'Schedule'}>
-                            일정관리
-                        </LinkContainer>
-                    </Link>
-                    <Link to={`/u/${id}/mypage`} style={{ textDecoration: 'none' }}>
-                        <LinkContainer onClick={() => setActiveTab('Review')} isSelected={activeTab === 'Review'}>
-                            리뷰 관리
-                        </LinkContainer>
-                    </Link>
-                    <Link to={`/u/${id}/mypage`} style={{ textDecoration: 'none' }}>
-                        <LinkContainer onClick={() => setActiveTab('Inquiry')} isSelected={activeTab === 'Inquiry'}>
-                            내 문의 내역
-                        </LinkContainer>
-                    </Link>
+                    {tabs.map((tab) => (
+                        <Link key={tab.name} to={`/u/${id}/mypage`} style={{ textDecoration: 'none' }} onClick={() => setActiveTab(tab.name)}>
+                            <LinkContainer isSelected={activeTab === tab.name}>{tab.name} </LinkContainer>
+                        </Link>
+                    ))}
                 </ImformationContainer>
             </LeftContainer>
             <RightContainer>
                 <UserContainer>
                     <UserImage />
                     <UserDetails>
-                        <UserNameContainer>{userData.id}</UserNameContainer>
-                        <UserPos>{userData.position}</UserPos>
-                        <UserEmail>{userData.email}</UserEmail>
-                        <OneLineContainer>{userData.detail}</OneLineContainer>
+                        <UserNameContainer>{id}</UserNameContainer>
+                        <UserPos>포지션</UserPos>
+                        <OneLineContainer>자기소개</OneLineContainer>
                     </UserDetails>
                 </UserContainer>
                 <ToolContainer>{renderInformationContainer()}</ToolContainer>
@@ -105,15 +73,60 @@ const Container = styled.div`
     display: flex;
     border-radius: 5px;
     max-width: 100%;
-    padding: 0;
+    padding: 0 10%;
+    height: 82vh;
 `;
 const LeftContainer = styled.div`
-    min-width: 19%;
     box-sizing: border-box;
-    font-size: 2.5vw; /* Adjusted font size */
-    padding-top: 3%;
-    padding-left: 5.5%;
-    border-right: 1px solid black;
+    min-width: 15%;
+    font-size: 30px;
+    padding: 3% 0 0 3%;
+    /* padding-left: 3%; */
+    border-right: 2px solid black;
+    text-align: left;
+    @media (max-width: 1500px) {
+        font-size: 28px;
+        min-width: 17%;
+    }
+    @media (max-width: 1250px) {
+        font-size: 25px;
+        min-width: 17%;
+    }
+    @media (max-width: 1000px) {
+        font-size: 22px;
+        padding-left: 2.5%;
+        min-width: 24%;
+    }
+    @media (max-width: 850px) {
+        font-size: 20px;
+        min-width: 20%;
+    }
+    @media (max-width: 600px) {
+        font-size: 20px;
+        min-width: 29%;
+        padding-left: 2.5%;
+    }
+    @media (max-width: 400px) {
+        font-size: 16px;
+        min-width: 31%;
+    }
+    @media (max-width: 350px) {
+        padding-left: 2%;
+    }
+`;
+//마이페이지 오른쪽 컨테이너
+const RightContainer = styled.div`
+    min-width: 85%;
+    padding: 4% 0 0 3%;
+    box-sizing: border-box;
+    background-color: #ecedef;
+    @media (max-width: 800px) {
+        width: 95%;
+        padding-top: 5%;
+    }
+    @media (max-width: 800px) {
+        min-width: 63%;
+    }
 `;
 
 const MypageContaer = styled.div`
@@ -122,16 +135,28 @@ const MypageContaer = styled.div`
     font-size: 1.5vw; /* Adjusted font size */
 `;
 
+//메뉴바 글자 컨테이너
 const LinkContainer = styled.div`
     display: block;
     text-decoration: none;
-    color: black;
-    font-size: 1.2vw; /* Adjusted font size */
+    font-size: 26px;
     margin-bottom: 15px;
-    color: ${(props) => (props.isSelected ? '#white' : '#808080')};
+    color: ${(props) => (props.isSelected ? 'black' : '#adb5bd')};
     cursor: pointer;
-    &:hover {
-        background-color: #adb5bd;
+    &hover {
+        background-color: #b5b7ba;
+    }
+    @media (max-width: 2560px) {
+        font-size: 24px;
+    }
+    @media (max-width: 1920px) {
+        font-size: 22px;
+    }
+    @media (max-width: 1280px) {
+        font-size: 20px;
+    }
+    @media (max-width: 800px) {
+        font-size: 14px;
     }
 `;
 
@@ -140,12 +165,6 @@ const ImformationContainer = styled.div`
     height: 100%;
     margin-top: 1vh;
     z-index: 3;
-`;
-const RightContainer = styled.div`
-    min-width: 81%;
-    padding : 3% 5% 0 3%;
-    box-sizing: border-box;
-    background-color:#e9ecef;
 `;
 const UserContainer = styled.div`
     display: flex;
