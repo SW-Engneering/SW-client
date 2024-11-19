@@ -23,9 +23,6 @@ export default function Account() {
                 <TextContainer>자기소개</TextContainer>
                 <InputContainer type="text" />
             </LineContainer>
-            <ButtonContainer>
-                <SubmitButton>제출</SubmitButton>
-            </ButtonContainer>
         </Container>
     );
 }
@@ -45,7 +42,7 @@ const LineContainer = styled.div`
 const TextContainer = styled.div`
     width: 30%;
     margin-right: 5px;
-    font-size: 20px;
+    font-size: 16px;
     text-align: right;
 `;
 
@@ -55,6 +52,7 @@ const InputContainer = styled.input`
     border-radius: 5px;
     padding: 5px;
     font-size: 18px;
+    font-size:16px;
 `;
 
 const ButtonContainer = styled.div`

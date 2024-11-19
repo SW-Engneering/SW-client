@@ -6,13 +6,16 @@ import Cookies from 'js-cookie';
 
 export default function Header() {
     const navigate = useNavigate();
-    const location = useLocation();
+    const location = useLocation(); 
     const [id, setId] = useState(null);
 
     useEffect(() => {
-        const cookieId = Cookies.get('userId');
+        let currentPath = window.location.pathname;
+        let parts = currentPath.split('/');
+        let ocidFromUrl = parts[2];
+
         // ocidFromUrl이 undefined일 경우 id를 null로 설정
-        setId(cookieId ? cookieId : null);
+        setId(userData.id ? userData.id : null);
     }, [location]);
 
     const handleLogout = () => {
@@ -24,34 +27,27 @@ export default function Header() {
 
     const guestMenu = [
         { to: '/login', text: '로그인' },
-        { to: '/signup', text: '회원가입' },
+        { to: '/signup', text: '회원가입' }
     ];
     const userMenu = [
-        { to: `/mypage`, text: `안녕하세요 ${id}님` },
-        { to: '/', text: '로그아웃', onClick: handleLogout },
+        { to: `/u/${id}/mypage`, text: `안녕하세요 ${id}님` },
+        { to: '/', text: '로그아웃', onClick: handleLogout } 
     ];
-
+    
     // id가 null이 아닐 때 userMenu를 사용하도록 수정
     const menuItems = id === null ? guestMenu : userMenu;
 
     return (
         <Container>
             {menuItems.map((item) => (
-                <NaviMenu
-                    key={item.to}
-                    to={item.to}
-                    active={location.pathname === item.to}
-                    onClick={
-                        item.onClick
-                            ? (e) => {
-                                  e.preventDefault();
-                                  item.onClick();
-                              }
-                            : undefined
-                    }
-                >
-                    <NaviText>{item.text}</NaviText>
-                </NaviMenu>
+        <NaviMenu 
+            key={item.to} 
+            to={item.to} 
+            active={location.pathname === item.to} 
+            onClick={item.onClick ? (e) => { e.preventDefault(); item.onClick(); } : undefined}
+        >
+            <NaviText>{item.text}</NaviText>
+        </NaviMenu>
             ))}
         </Container>
     );

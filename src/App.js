@@ -10,10 +10,12 @@ import Signup from './component/page/01_Signup';
 import Login from './component/page/01_Login';
 import Footer from './component/layout/Footer';
 import Mypage from './component/page/02_Mypage';
-import Mamber from './component/page/02_Member';
+import Member from './component/page/02_Member';
+import MemberWrite from './component/page/02_Member_Write';
 import Management from './component/page/02_Management';
 import Match from './component/page/02_Match';
 import Team from './component/page/02_Team';
+import TeamWrite from './component/page/02_Team_Write';
 import Vote from './component/page/02_Vote';
 
 function App() {
@@ -25,10 +27,12 @@ function App() {
                 <InsideContainer>
                     <Routes>
                         <Route path="/" element={<Home />} />
-                        <Route path="/u/:id" element={<Home />} />
-                        <Route path="/u/:id/mypage" element={<Mypage />} />
+                        <Route path="/" element={<Home />} />
+                        <Route path="/mypage" element={<Mypage />} />
                         <Route path="/login" element={<Login />} />
-                        <Route path="/member" element={<Mamber />} />
+                        <Route path="/member" element={<Member />} />
+                        <Route path="/memberwrite" element={<MemberWrite />} />
+                        <Route path="/teamwrite" element={<TeamWrite />} />
                         <Route path="/team" element={<Team />} />
                         <Route path="/match" element={<Match />} />
                         <Route path="/management" element={<Management />} />
@@ -45,14 +49,12 @@ function App() {
 const Container = styled.div`
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
+    flex:1;
+    height : auto;
+    min-height: 100%;
 `;
-
 const InsideContainer = styled.div`
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-    height: 100%;
+    height:100%;
 `;
 
 export default App;

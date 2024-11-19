@@ -1,54 +1,54 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import axios from 'axios';
-import userData from '../../UserData';
 import styled from 'styled-components';
+import Cookies from 'js-cookie';
 import Avata from '../images/Generic_avatar.png';
 import Account from './03_Account';
 import Mytext from './03_Mytext';
 import Favorite from './03_Favorites';
 import Schedule from './03_Schedule';
-import Review from './03_Review';
 import Inquiry from './03_Inquiry';
 import DefaultPage from './03_DefaultPage';
 
 export default function MyPage() {
     const location = useLocation();
     const [id, setId] = useState(null);
+    const [menuVisible, setMenuVisible] = useState(false);
+    const [activeTab, setActiveTab] = useState(null);
+
+    const MenuToggle = (e) => {
+        e.stopPropagation();
+        setMenuVisible(!menuVisible);
+    };
+
+    useEffect(() => {
+        const cookieId = Cookies.get('userId');
+        setId(cookieId ? cookieId : null);
+    }, [location]);
+
     const tabs = [
-        { name: '내 정보 수정', component: <Account /> },
         { name: '내 게시글 관리', component: <Mytext /> },
         { name: '즐겨찾기한 글', component: <Favorite /> },
         { name: '내 문의내역', component: <Inquiry /> },
         { name: '일정관리', component: <Schedule /> },
-        { name: '회원탈퇴', component: <Review /> },
     ];
 
     const renderInformationContainer = () => {
         const activeTabComponent = tabs.find((tab) => tab.name === activeTab);
         return activeTabComponent ? activeTabComponent.component : <DefaultPage />;
     };
-    useEffect(() => {
-        let currentPath = window.location.pathname;
-        let parts = currentPath.split('/');
-        let ocidFromUrl = parts[2];
 
-        // ocidFromUrl이 undefined일 경우 id를 null로 설정
-        setId(ocidFromUrl ? ocidFromUrl : null);
-    }, [location]);
-
-    const [activeTab, setActiveTab] = useState(null);
     return (
         <Container>
             <LeftContainer>
                 <ImformationContainer>
                     <MypageContaer>
-                        <Link to={`/u/${id}/mypage`} style={{ textDecoration: 'none', color: 'black' }} onClick={() => setActiveTab(null)}>
+                        <Link to={`/mypage`} style={{ textDecoration: 'none', color: 'black' }} onClick={() => setActiveTab(null)}>
                             마이페이지
                         </Link>
                     </MypageContaer>
                     {tabs.map((tab) => (
-                        <Link key={tab.name} to={`/u/${id}/mypage`} style={{ textDecoration: 'none' }} onClick={() => setActiveTab(tab.name)}>
+                        <Link key={tab.name} to={`/mypage`} style={{ textDecoration: 'none' }} onClick={() => setActiveTab(tab.name)}>
                             <LinkContainer isSelected={activeTab === tab.name}>{tab.name} </LinkContainer>
                         </Link>
                     ))}
@@ -57,53 +57,55 @@ export default function MyPage() {
             <RightContainer>
                 <UserContainer>
                     <UserImage />
-                    <UserDetails>
-                        <UserNameContainer>{id}</UserNameContainer>
-                        <UserPos>포지션</UserPos>
-                        <OneLineContainer>자기소개</OneLineContainer>
-                    </UserDetails>
+                    <InfoContainer>
+                        <UserDetails>
+                            <UserNameContainer>{id}</UserNameContainer>
+                            <UserPos>포지션</UserPos>
+                            <OneLineContainer>자기소개</OneLineContainer>
+                        </UserDetails>
+                        <ButtonContainer>
+                            {menuVisible && <Account />}
+                            <ToggleButton onClick={(e) => MenuToggle(e)}>수정</ToggleButton>
+                        </ButtonContainer>
+                    </InfoContainer>
                 </UserContainer>
                 <ToolContainer>{renderInformationContainer()}</ToolContainer>
             </RightContainer>
         </Container>
     );
 }
-
+//전체 컨테이너
 const Container = styled.div`
     display: flex;
     border-radius: 5px;
     max-width: 100%;
-    padding: 0 10%;
-    height: 82vh;
+    /* padding: 0 10%; */
+    min-height: 75vh;
 `;
+//마이페이지 왼쪽 컨테이너
 const LeftContainer = styled.div`
     box-sizing: border-box;
     min-width: 15%;
     font-size: 30px;
-    padding: 3% 0 0 3%;
-    /* padding-left: 3%; */
+    padding: 3% 1.5% 0 3%;
     border-right: 2px solid black;
-    text-align: left;
+    justify-content:center;
     @media (max-width: 1500px) {
         font-size: 28px;
-        min-width: 17%;
+        min-width:18%;
     }
     @media (max-width: 1250px) {
         font-size: 25px;
-        min-width: 17%;
     }
     @media (max-width: 1000px) {
         font-size: 22px;
         padding-left: 2.5%;
-        min-width: 24%;
     }
     @media (max-width: 850px) {
         font-size: 20px;
-        min-width: 20%;
     }
     @media (max-width: 600px) {
         font-size: 20px;
-        min-width: 29%;
         padding-left: 2.5%;
     }
     @media (max-width: 400px) {
@@ -117,9 +119,10 @@ const LeftContainer = styled.div`
 //마이페이지 오른쪽 컨테이너
 const RightContainer = styled.div`
     min-width: 85%;
-    padding: 4% 0 0 3%;
+    padding: 2% 5% 0 3%;
     box-sizing: border-box;
     background-color: #ecedef;
+    flex:1;
     @media (max-width: 800px) {
         width: 95%;
         padding-top: 5%;
@@ -128,7 +131,7 @@ const RightContainer = styled.div`
         min-width: 63%;
     }
 `;
-
+//마이페이지 글자 컨테이너
 const MypageContaer = styled.div`
     font-weight: bold;
     margin-bottom: 25px;
@@ -159,31 +162,36 @@ const LinkContainer = styled.div`
         font-size: 14px;
     }
 `;
-
+//왼쪽 네비바 전체 컨테이너
 const ImformationContainer = styled.div`
-    flex-grow: 1;
     height: 100%;
     margin-top: 1vh;
     z-index: 3;
+    justify-content:center;
 `;
+//유저 정보 컨테이너
 const UserContainer = styled.div`
     display: flex;
     flex-direction: row;
     border-radius:20px;
     align-items: center;
-    justify-content:left;
-    margin:0 0 5% 3%;
-    background-color:white;
-    padding:3%;
+    margin-bottom: 2.5%;
+    border-radius: 20px;
+    background-color: white;
+    padding: 25px;
+    height: 160px;
 `;
+//유저 상세 정보 컨테이너
 const UserDetails = styled.div`
     display: flex;
     flex-direction: column;
 `;
+//유저 이름 컨테이너
 const UserNameContainer = styled.div`
-    font-size: 3vw; /* Adjusted font size */
+    font-size: 40px; /* Adjusted font size */
     margin-left: 30px;
 `;
+//유저 이미지 컨테이너
 const UserImage = styled.div`
     width: 13vw; 
     height: 13vw;
@@ -195,29 +203,55 @@ const UserImage = styled.div`
     border-radius: 50%;
     margin-right: 6%;
 `;
-
+//유저 포지션 컨테이너
 const UserPos = styled.div`
-    font-size: 1.5vw; /* Adjusted font size */
-    margin-left: 20%;
+    font-size: 25px; /* Adjusted font size */
+    margin-left: 50%;
     width: 100%;
 `;
-
+//유저 이메일 컨테이너
 const UserEmail = styled.div`
     font-size: 1.5vw; /* Adjusted font size */
     margin-left: 20%;
     width: 100%;
 `;
-
+//자기소게 컨테이너
 const OneLineContainer = styled.div`
-    font-size: 1.2vw; /* Adjusted font size */
-    margin-left: 20%;
+    font-size: 25px; /* Adjusted font size */
+    margin-left: 50%;
     width: 100%;
 `;
+//렌더링 컨테이너
 const ToolContainer = styled.div`
     display: flex;
-    flex-direction: row;
-    margin:3% 0 0 3%;
-    padding:3%;
-    background-color:white;
-    border-radius:20px;
+    border-radius: 10px;
+    background-color: white;
+    padding: 20px 25px;
+    overflow-y:scroll;  
+    max-height:50%;        
+    
+`;
+const InfoContainer = styled.div`
+    display: flex;
+    justify-content: space-between; /* 양쪽 끝으로 배치 */
+    align-items: center;
+    width: 100%; /* 전체 너비 사용 */
+`;
+// ToggleButton의 스타일을 조정할 수 있습니다.
+const ToggleButton = styled.div`
+    background-color: black;
+    color: white;
+    border-radius: 20px;
+    font-size:14px;
+    padding: 6px 10px;
+    cursor: pointer;
+    height: 25px; /* 높이를 조정 */
+    text-align: center;
+    align-items: center;
+    display: flex; /* 중앙 정렬을 위한 flex 사용 */
+    justify-content: center; /* 중앙 정렬 */
+`;
+const ButtonContainer = styled.div`
+    display: flex;
+    flex-direction: column;
 `;

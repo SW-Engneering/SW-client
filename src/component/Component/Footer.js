@@ -32,17 +32,16 @@ function Footer() {
 }
 
 const Container = styled.div`
-
     background-color: rgba(33, 34, 39);
     display: flex;
     width: 100%;
-    height: 8vh;
+    height: 10vh;
     position: relative;
     bottom: 0;
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    padding:3px;
+    
 `;
 const Navbar = styled.div`
     margin: 10px;
