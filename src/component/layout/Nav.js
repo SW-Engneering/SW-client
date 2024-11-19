@@ -4,6 +4,7 @@ import { NavLink } from 'react-router-dom';
 import ball from '../images/ball.png';
 import Cookies from 'js-cookie';
 
+
 export default function Nav() {
     return (
         <Container>

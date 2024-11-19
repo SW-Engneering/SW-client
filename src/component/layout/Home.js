@@ -75,7 +75,6 @@ const Container = styled.div`
     padding: 0 300px;
     position: relative;
     max-width: 100%;
-    border-bottom: 0.1px solid grey; /* 하단 회색 줄 */
 `;
 const SliderContainer = styled.div`
     display: flex;
