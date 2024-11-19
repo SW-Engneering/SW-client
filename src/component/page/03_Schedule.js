@@ -1,5 +1,5 @@
 export default function Schedule(){
     return(
-        <div>내 게시글 관리</div>
+        <div>일정이 없습니다.</div>
     )
 }

@@ -29,11 +29,15 @@ export default function Favorite() {
             ) : (
                 posts.map((post) => (
                     <PostContainer key={post.id}>
-                        <ButtonContainer>
-                            <DeleteButton onClick={() => handleDelete(post.id)}/>
-                        </ButtonContainer>
-                        <PostTitle>{post.title}</PostTitle>
-                        <PostContent>{post.content}</PostContent>                        
+                        <FavoriteContainer>
+                            <StarContainer>
+                                <DeleteButton onClick={() => handleDelete(post.id)}/>
+                            </StarContainer>
+                            <PostWrapper>
+                                <PostTitle>{post.title}</PostTitle>
+                                <PostContent>{post.content}</PostContent>         
+                            </PostWrapper>     
+                        </FavoriteContainer>          
                     </PostContainer>
                 ))
             )}
@@ -63,6 +67,16 @@ const PostContainer = styled.div`
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 `;
 
+const FavoriteContainer = styled.div`
+    display:flex;
+    align-items:center;
+`;
+
+const PostWrapper = styled.div`
+    display:flex;
+    flex-direction:column;
+`;
+
 const PostTitle = styled.h3`
     margin: 0;
 `;
@@ -76,11 +90,11 @@ const PostContent = styled.p`
     max-width: 100%; /* 최대 너비 설정 */
 `;
 
-const ButtonContainer = styled.div`
+const StarContainer = styled.div`
     display: flex;
     justify-content: left;
     padding:2px;
-    margin-top: 10px;
+    margin : 0 10px 0 0;
 `;
 
 const EditButton = styled.button`

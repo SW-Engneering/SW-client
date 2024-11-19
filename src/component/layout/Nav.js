@@ -48,6 +48,7 @@ const Container = styled.div`
     width: 100%;
     background-color: white;
     border-bottom: 0.1px solid grey; /* 하단 회색 줄 */
+    box-sizing:border-box;
 `;
 
 const LogoImage = styled.div`

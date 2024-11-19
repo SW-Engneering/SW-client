@@ -14,6 +14,7 @@ export default function MyPage() {
     const location = useLocation();
     const [id, setId] = useState(null);
     const [menuVisible, setMenuVisible] = useState(false);
+    const [isEditing, setIsEditing] = useState(false);
     const [activeTab, setActiveTab] = useState(null);
 
     const MenuToggle = (e) => {
@@ -26,6 +27,14 @@ export default function MyPage() {
         setId(cookieId ? cookieId : null);
     }, [location]);
 
+    const handleToggleClick = (e) => {
+        MenuToggle(e);
+        setIsEditing(!isEditing); // Toggle editing state
+    };
+    const ChangeNab = () => {
+        setMenuVisible(false);
+        setIsEditing(false);
+    }
     const tabs = [
         { name: '내 게시글 관리', component: <Mytext /> },
         { name: '즐겨찾기한 글', component: <Favorite /> },
@@ -49,7 +58,7 @@ export default function MyPage() {
                     </MypageContaer>
                     {tabs.map((tab) => (
                         <Link key={tab.name} to={`/mypage`} style={{ textDecoration: 'none' }} onClick={() => setActiveTab(tab.name)}>
-                            <LinkContainer isSelected={activeTab === tab.name}>{tab.name} </LinkContainer>
+                            <LinkContainer onClick={ChangeNab} isSelected={activeTab === tab.name}>{tab.name} </LinkContainer>
                         </Link>
                     ))}
                 </ImformationContainer>
@@ -64,12 +73,19 @@ export default function MyPage() {
                             <OneLineContainer>자기소개</OneLineContainer>
                         </UserDetails>
                         <ButtonContainer>
-                            {menuVisible && <Account />}
-                            <ToggleButton onClick={(e) => MenuToggle(e)}>수정</ToggleButton>
+                            {activeTab === null && (
+                                <ToggleButton onClick={handleToggleClick}>
+                                {isEditing ? '완료' : '수정'} {/* Change button text based on isEditing state */}
+                            </ToggleButton>
+
+                            )}
                         </ButtonContainer>
                     </InfoContainer>
                 </UserContainer>
-                <ToolContainer>{renderInformationContainer()}</ToolContainer>
+                <ToolContainer>
+                    {menuVisible && <Account />}
+                    {!menuVisible && renderInformationContainer()}
+                </ToolContainer>
             </RightContainer>
         </Container>
     );
@@ -78,9 +94,8 @@ export default function MyPage() {
 const Container = styled.div`
     display: flex;
     border-radius: 5px;
-    max-width: 100%;
-    /* padding: 0 10%; */
     min-height: 75vh;
+    max-width: 100vw;
 `;
 //마이페이지 왼쪽 컨테이너
 const LeftContainer = styled.div`
@@ -123,6 +138,7 @@ const RightContainer = styled.div`
     box-sizing: border-box;
     background-color: #ecedef;
     flex:1;
+    
     @media (max-width: 800px) {
         width: 95%;
         padding-top: 5%;
@@ -179,7 +195,7 @@ const UserContainer = styled.div`
     border-radius: 20px;
     background-color: white;
     padding: 25px;
-    height: 160px;
+    height: 120px;
 `;
 //유저 상세 정보 컨테이너
 const UserDetails = styled.div`
@@ -188,24 +204,24 @@ const UserDetails = styled.div`
 `;
 //유저 이름 컨테이너
 const UserNameContainer = styled.div`
-    font-size: 40px; /* Adjusted font size */
+    font-size: 32px; /* Adjusted font size */
     margin-left: 30px;
 `;
 //유저 이미지 컨테이너
 const UserImage = styled.div`
     width: 13vw; 
     height: 13vw;
-    max-width: 120px;
-    max-height: 120px;
+    max-width: 100px;
+    max-height: 100px;
     background-image: url(${Avata});
     background-size: cover;
-    background-position: center;
+    background-position: center center;
     border-radius: 50%;
-    margin-right: 6%;
+    margin: 0 2%;
 `;
 //유저 포지션 컨테이너
 const UserPos = styled.div`
-    font-size: 25px; /* Adjusted font size */
+    font-size: 20px; /* Adjusted font size */
     margin-left: 50%;
     width: 100%;
 `;
@@ -215,15 +231,16 @@ const UserEmail = styled.div`
     margin-left: 20%;
     width: 100%;
 `;
-//자기소게 컨테이너
+//자기소개 컨테이너
 const OneLineContainer = styled.div`
-    font-size: 25px; /* Adjusted font size */
+    font-size: 20px; /* Adjusted font size */
     margin-left: 50%;
     width: 100%;
 `;
 //렌더링 컨테이너
 const ToolContainer = styled.div`
     display: flex;
+    flex-direction:column;
     border-radius: 10px;
     background-color: white;
     padding: 20px 25px;
