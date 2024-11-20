@@ -49,12 +49,14 @@ function App() {
 const Container = styled.div`
     display: flex;
     flex-direction: column;
-    flex:1;
-    height : auto;
-    min-height: 100%;
+    min-height: 100vh;
 `;
+
 const InsideContainer = styled.div`
-    height:100%;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
 `;
 
 export default App;
