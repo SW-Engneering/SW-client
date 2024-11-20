@@ -1,10 +1,31 @@
 import React from 'react';
 import styled from 'styled-components';
-import { NavLink } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { NavLink, useNavigate } from 'react-router-dom';
 import ball from '../images/ball.png';
 import Cookies from 'js-cookie';
 
+
+
+
 export default function Nav() {
+
+    const navigate = useNavigate();
+    const [id, setId] = useState(null);
+
+    useEffect(() => {
+        const cookieId = Cookies.get('userId');
+        setId(cookieId ? cookieId : null);
+    }, []);
+
+    const handleTeamManagementClick = () => {
+        if (!id) {
+            alert('로그인이 필요합니다.');
+        } else {
+            navigate('/management'); // 팀 관리 페이지로 이동
+        }
+    };
+
     return (
         <Container>
             <a href="/">

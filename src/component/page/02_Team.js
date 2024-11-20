@@ -17,7 +17,7 @@ export default function Team() {
     useEffect(() => {
         const fetchPosts = async () => {
             try {
-                const response = await axios.get("https://api.example.com/team"); // API 호출
+                const response = await axios.get("미구현"); // API 호출
                 setPosts(response.data); // 게시물 데이터 설정
             } catch (error) {
                 setError("게시물 가져오기 실패"); // 에러 메시지 설정
@@ -198,7 +198,8 @@ const PostWriter = styled.p`
 `;
 
 const WriteButton = styled.button`
-    position: absolute;
+    margin-top: 20px;
+    margin-left: 1000px;
     bottom: 20px;
     right: 20px;
     background-color: #4CAF50;

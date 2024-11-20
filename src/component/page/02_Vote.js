@@ -38,7 +38,7 @@ const DetailContainer = styled.div`
     padding : 1% 10%;
     text-align:center;
 `;
-const TextConateinr = styled.div`
+const TextConatainer = styled.div`
     
 `;
 const AddContainerButton = styled.div`

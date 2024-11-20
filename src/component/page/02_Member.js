@@ -15,7 +15,7 @@ export default function Member() {
     useEffect (() => {
         const fetchMemberList = async () => {
             try {
-                const response = await axios.get('api주소');
+                const response = await axios.get('미구현');
                 setMemberList(response.data);
                 console.log(MemberList);
             } catch(error) {
@@ -77,7 +77,7 @@ export default function Member() {
 
 const Container = styled.div`
     justify-content: center;
-    align-item: center;
+    align-items: center;
     padding-left: 200px;
     padding-right: 200px;
 
@@ -107,7 +107,6 @@ const HeaderContainer = styled.div`
 const FirstContainer = styled.div` //글번호
     margin-left:10px;
     margin-right: 20px;
-    background-position: 100% 50%;
 `;
 
 const SecondContainer = styled.div` //제목

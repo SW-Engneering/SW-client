@@ -14,6 +14,7 @@ import Member from './component/page/02_Member';
 import MemberWrite from './component/page/02_Member_Write';
 import Management from './component/page/02_Management';
 import Match from './component/page/02_Match';
+import MatchWrite from './component/page/02_Match_Write';
 import Team from './component/page/02_Team';
 import TeamWrite from './component/page/02_Team_Write';
 import Vote from './component/page/02_Vote';
@@ -35,6 +36,7 @@ function App() {
                         <Route path="/teamwrite" element={<TeamWrite />} />
                         <Route path="/team" element={<Team />} />
                         <Route path="/match" element={<Match />} />
+                        <Route path="matchwrite" element={<MatchWrite />} />
                         <Route path="/management" element={<Management />} />
                         <Route path="/signup" element={<Signup />} />
                         <Route path="/  " element={<Vote />} />

@@ -178,6 +178,7 @@ const PostContent = styled.p`
 `;
 
 const WriteButton = styled.button`
+    margin-left: 1000px;
     margin-top: 20px;
     padding: 10px 20px;
     font-size: 16px;

@@ -10,13 +10,13 @@ import RightArrow from '../images/Right_arrow.png'; // 우측 화살표 이미�
 import Member from '../page/02_Member';
 import Team from '../page/02_Team';
 import Match from '../page/02_Match';
-import 팀원 from '../images/팀원구하기.png';
-import 팀 from '../images/팀구하기.png';
+import 팀원 from '../images/팀원구하기1.png';
+import 팀 from '../images/팀구하기1.png';
 
 export default function Home() {
 
     const settings = {
-        dots: true,
+        dots: false,
         slidesToScroll: 1,
         centerMode: false,
         infinite: true,
@@ -72,17 +72,16 @@ export default function Home() {
 }
 
 const Container = styled.div`
-    padding: 0 300px;
+    padding: 0 200px;
     position: relative;
     max-width: 100%;
-    border-bottom: 0.1px solid grey; /* 하단 회색 줄 */
 `;
 const SliderContainer = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
     width: 100%;
-    max-width: 100%;
+    height: 50%;
     font-size: 24px;
     text-align: center;
     font-family: Ganpan;

@@ -4,7 +4,7 @@ import axios from "axios";
 import 배너 from "../images/배너.png";
 import styled from "styled-components";
 
-export default function MatchWrite() {
+export default function TeamWrite() {
 
     const navigate = useNavigate();
 
@@ -24,10 +24,27 @@ export default function MatchWrite() {
     };
 
     const saveWrite = async () => {
-        await axios('api주소', write).then((res) =>{
+
+        if (!title && !contents) {
+            alert('제목과 내용을 작성해주세요.');
+            return;
+        }
+        if (!title) {
+            alert('제목을 작성해주세요.');
+            return;
+        }
+        if (!contents) {
+            alert('내용을 작성해주세요.');
+            return;
+        }
+        
+        try {
+            await axios.post('api주소', write); // POST 요청으로 수정
             alert('등록되었습니다.');
-            navigate('/team');
-        })
+            navigate('/match');
+        } catch (error) {
+            alert('API 연동이 필요합니다.'); // 에러 발생 시 알림
+        }
     };
     
     const backToList = () => {
