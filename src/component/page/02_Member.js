@@ -77,7 +77,7 @@ export default function Member() {
 
 const Container = styled.div`
     justify-content: center;
-    align-item: center;
+    align-items: center;
     padding-left: 200px;
     padding-right: 200px;
 

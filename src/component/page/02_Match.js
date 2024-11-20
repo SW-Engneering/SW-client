@@ -1,27 +1,26 @@
-import styled from "styled-components";
-import 배너 from "../images/배너.png";
-import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
-import axios from "axios";
+import styled from 'styled-components';
+import 배너 from '../images/배너.png';
+import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 
 export default function Match() {
-
     const navigate = useNavigate();
     const [posts, setPosts] = useState([]); // 게시물 상태 저장
     const [loading, setLoading] = useState(true); // 로딩 상태
     const [error, setError] = useState(null); // 에러 상태
 
     const handleWriteClick = () => {
-        navigate("/matchwrite"); // 글쓰기 페이지로 이동
+        navigate('/matchwrite'); // 글쓰기 페이지로 이동
     };
 
     useEffect(() => {
         const fetchPosts = async () => {
             try {
-                const response = await axios.get("https://api.example.com/posts"); // API 호출
+                const response = await axios.get('https://api.example.com/posts'); // API 호출
                 setPosts(response.data); // 게시물 데이터 설정
             } catch (error) {
-                setError("게시물 가져오기 실패"); // 에러 메시지 설정
+                setError('게시물 가져오기 실패'); // 에러 메시지 설정
             } finally {
                 setLoading(false); // 로딩 완료
             }
@@ -30,15 +29,13 @@ export default function Match() {
         fetchPosts(); // 게시물 가져오기 호출
     }, []);
 
-    return(
+    return (
         <Container>
             <BannerContainer>
                 <Image src={배너} alt="배너" />
             </BannerContainer>
             <TitleContainer>
-                <TeamContainer>
-                    팀 매칭하기
-                </TeamContainer>
+                <TeamContainer>팀 매칭하기</TeamContainer>
                 <SitemapContainer>
                     <a href="/">메인</a>
                     &gt;
@@ -46,11 +43,11 @@ export default function Match() {
                 </SitemapContainer>
             </TitleContainer>
             <HeaderContainer>
-                    <FirstContainer>글 번호</FirstContainer>
-                    <SecondContainer>제목</SecondContainer>
-                    <ThirdContainer>작성자</ThirdContainer>
-                    <FourthContainer>작성일</FourthContainer>
-                    <FifthContainer>조회수</FifthContainer>
+                <FirstContainer>글 번호</FirstContainer>
+                <SecondContainer>제목</SecondContainer>
+                <ThirdContainer>작성자</ThirdContainer>
+                <FourthContainer>작성일</FourthContainer>
+                <FifthContainer>조회수</FifthContainer>
             </HeaderContainer>
             <ContentContainer>
                 {loading ? (
@@ -70,25 +67,22 @@ export default function Match() {
                     </PostsList>
                 )}
             </ContentContainer>
-            <WriteButton onClick={handleWriteClick}>
-                글쓰기
-            </WriteButton>
+            <WriteButton onClick={handleWriteClick}>글쓰기</WriteButton>
         </Container>
     );
 }
 
 const Container = styled.div`
     justify-content: center;
-    align-item: center;
+    align-items: center;
     padding-left: 200px;
     padding-right: 200px;
-
 `;
 
 const BannerContainer = styled.div`
     display: flex;
     justify-content: center;
-    align-item: center;
+    align-items: center;
 `;
 
 const TitleContainer = styled.div`
@@ -104,27 +98,23 @@ const HeaderContainer = styled.div`
     padding: 5px;
 `;
 
-const FirstContainer = styled.div` //글번호
-    margin-left:10px;
+const FirstContainer = styled.div`
+    //글번호
+    margin-left: 10px;
     margin-right: 20px;
 `;
 
-const SecondContainer = styled.div` //제목
+const SecondContainer = styled.div`
+    //제목
     margin-left: 300px;
     margin-right: 300px;
 `;
 
-
 const ThirdContainer = styled.div`
-
     margin-right: 100px;
 `;
 
-
-const FourthContainer = styled.div`
-
-`;
-
+const FourthContainer = styled.div``;
 
 const FifthContainer = styled.div`
     margin-left: 100px;
@@ -193,8 +183,8 @@ const WriteButton = styled.button`
     padding: 10px 20px;
     font-size: 16px;
     cursor: pointer;
-    background-color: #007BFF;
-    color: white; 
+    background-color: #007bff;
+    color: white;
     border: none;
     border-radius: 5px;
     display: flex;

@@ -35,7 +35,7 @@ const Container = styled.div`
     background-color: rgba(33, 34, 39);
     display: flex;
     width: 100%;
-    height: 10vh;
+    height: 8vh;
     position: relative;
     bottom: 0;
     justify-content: center;
