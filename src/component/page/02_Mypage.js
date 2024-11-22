@@ -34,7 +34,7 @@ export default function MyPage() {
     const ChangeNab = () => {
         setMenuVisible(false);
         setIsEditing(false);
-    }
+    };
     const tabs = [
         { name: '내 게시글 관리', component: <Mytext /> },
         { name: '즐겨찾기한 글', component: <Favorite /> },
@@ -58,7 +58,9 @@ export default function MyPage() {
                     </MypageContaer>
                     {tabs.map((tab) => (
                         <Link key={tab.name} to={`/mypage`} style={{ textDecoration: 'none' }} onClick={() => setActiveTab(tab.name)}>
-                            <LinkContainer onClick={ChangeNab} isSelected={activeTab === tab.name}>{tab.name} </LinkContainer>
+                            <LinkContainer onClick={ChangeNab} isSelected={activeTab === tab.name}>
+                                {tab.name}{' '}
+                            </LinkContainer>
                         </Link>
                     ))}
                 </ImformationContainer>
@@ -75,9 +77,8 @@ export default function MyPage() {
                         <ButtonContainer>
                             {activeTab === null && (
                                 <ToggleButton onClick={handleToggleClick}>
-                                {isEditing ? '완료' : '수정'} {/* Change button text based on isEditing state */}
-                            </ToggleButton>
-
+                                    {isEditing ? '완료' : '수정'} {/* Change button text based on isEditing state */}
+                                </ToggleButton>
                             )}
                         </ButtonContainer>
                     </InfoContainer>
@@ -94,7 +95,7 @@ export default function MyPage() {
 const Container = styled.div`
     display: flex;
     border-radius: 5px;
-    min-height: 75vh;
+    min-height: 80vh;
     max-width: 100vw;
 `;
 //마이페이지 왼쪽 컨테이너
@@ -104,10 +105,10 @@ const LeftContainer = styled.div`
     font-size: 30px;
     padding: 3% 1.5% 0 3%;
     border-right: 2px solid black;
-    justify-content:center;
+    justify-content: center;
     @media (max-width: 1500px) {
         font-size: 28px;
-        min-width:18%;
+        min-width: 18%;
     }
     @media (max-width: 1250px) {
         font-size: 25px;
@@ -137,8 +138,8 @@ const RightContainer = styled.div`
     padding: 2% 5% 0 3%;
     box-sizing: border-box;
     background-color: #ecedef;
-    flex:1;
-    
+    flex: 1;
+
     @media (max-width: 800px) {
         width: 95%;
         padding-top: 5%;
@@ -183,13 +184,13 @@ const ImformationContainer = styled.div`
     height: 100%;
     margin-top: 1vh;
     z-index: 3;
-    justify-content:center;
+    justify-content: center;
 `;
 //유저 정보 컨테이너
 const UserContainer = styled.div`
     display: flex;
     flex-direction: row;
-    border-radius:20px;
+    border-radius: 20px;
     align-items: center;
     margin-bottom: 2.5%;
     border-radius: 20px;
@@ -209,7 +210,7 @@ const UserNameContainer = styled.div`
 `;
 //유저 이미지 컨테이너
 const UserImage = styled.div`
-    width: 13vw; 
+    width: 13vw;
     height: 13vw;
     max-width: 100px;
     max-height: 100px;
@@ -240,13 +241,12 @@ const OneLineContainer = styled.div`
 //렌더링 컨테이너
 const ToolContainer = styled.div`
     display: flex;
-    flex-direction:column;
+    flex-direction: column;
     border-radius: 10px;
     background-color: white;
     padding: 20px 25px;
-    overflow-y:scroll;  
-    max-height:50%;        
-    
+    overflow-y: scroll;
+    max-height: 50%;
 `;
 const InfoContainer = styled.div`
     display: flex;
@@ -259,7 +259,7 @@ const ToggleButton = styled.div`
     background-color: black;
     color: white;
     border-radius: 20px;
-    font-size:14px;
+    font-size: 14px;
     padding: 6px 10px;
     cursor: pointer;
     height: 25px; /* 높이를 조정 */
