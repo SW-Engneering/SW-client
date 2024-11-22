@@ -5,8 +5,8 @@ import { NavLink } from 'react-router-dom';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import '../css/Font.css';
-import LeftArrow from '../images/Left_arrow.png'; // 좌측 화살표 이미지 경로
-import RightArrow from '../images/Right_arrow.png'; // 우측 화살표 이미지 경로
+import 왼쪽화살표 from '../images/Left_arrow.png'; // 좌측 화살표 이미지 경로
+import 오른쪽화살표 from '../images/Right_arrow.png'; // 우측 화살표 이미지 경로
 import Member from '../page/02_Member';
 import Team from '../page/02_Team';
 import Match from '../page/02_Match';
@@ -25,8 +25,8 @@ export default function Home() {
         arrows: true,
         autoplay: true,
         autoplaySpeed: 5000,
-        prevArrow: <Arrow src={LeftArrow} alt="Previous" />,
-        nextArrow: <Arrow src={RightArrow} alt="Next" />,
+        prevArrow: <LeftArrow src={왼쪽화살표} alt="Previous" />,
+        nextArrow: <RightArrow src={오른쪽화살표} alt="Next" />,
     };
 
     return (
@@ -72,7 +72,7 @@ export default function Home() {
 }
 
 const Container = styled.div`
-    padding: 0 200px;
+    
     position: relative;
     max-width: 100%;
 `;
@@ -92,7 +92,18 @@ const Arrow = styled.img`
     cursor: pointer;
     z-index: 1;
     position: absolute;
+    background-color: white;
+    border-radius: 30px;
 `;
+
+const LeftArrow = styled(Arrow)`
+    left: 10px; /* 왼쪽 위치 조정 */
+`;
+
+const RightArrow = styled(Arrow)`
+    right: 10px; /* 오른쪽 위치 조정 */
+`;
+
 const RenderContainer = styled.div`
     display: flex;
     width: 100%;
