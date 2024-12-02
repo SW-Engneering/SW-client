@@ -66,9 +66,10 @@ const Container = styled.div`
     display: flex;
     justify-content: left;
     align-items: center;
+    margin-top: 10px;
     width: 100%;
     background-color: white;
-    border-bottom: 0.1px solid grey; /* 하단 회색 줄 */
+    border-bottom: 2px solid #ecedef; /* 하단 회색 줄 */
 `;
 
 const LogoImage = styled.div`
@@ -119,5 +120,6 @@ const Navi = styled(NavLink)`
     font-size: 15px;
     font-weight: bold;
     font-family: ${(props) => props.fontFamily || 'inherit'};
+    margin-bottom:10px;
     text-decoration: none;
 `;

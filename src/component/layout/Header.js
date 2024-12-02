@@ -59,6 +59,7 @@ export default function Header() {
 const Container = styled.div`
     display: flex;
     justify-content: flex-end; /* 오른쪽 끝으로 배치 */
+    border-bottom: 2px solid #ecedef;
     align-items: center;
     color: white;
     background-color: white;

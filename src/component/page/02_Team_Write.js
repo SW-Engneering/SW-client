@@ -39,7 +39,7 @@ export default function TeamWrite() {
         }
         
         try {
-            await axios.post('api주소', write); // POST 요청으로 수정
+            await axios.post('http://3.34.133.247:8080/team?userId=1234', write); // POST 요청으로 수정
             alert('등록되었습니다.');
             navigate('/match');
         } catch (error) {

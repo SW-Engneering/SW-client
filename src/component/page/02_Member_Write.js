@@ -3,55 +3,70 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import 배너 from "../images/배너.png";
 import styled from "styled-components";
+import Cookies from "js-cookie";
 
 export default function MemberWrite() {
+
+    const userId = Cookies.get('userId');
+    console.log(userId, "로딩 완료");
 
     const navigate = useNavigate();
 
     const [write, setWrite] = useState({
-        title: '',
-        contents: '',
+        post_id: 0,
+        user_id: userId, // userId를 포함
+        post_type: "member", // 필요한 경우 적절하게 설정
+        post_writer: "사용자", // 작성자 정보를 userId로 설정
+        post_title: "",
+        post_content: "",
+        post_hits: 0,
+        post_created_time: new Date().toISOString(),
+        post_updated_time: new Date().toISOString(),
+        post_like_count: 0,
+        post_dislike_count: 0,
+        post_report_count: 0,
+        post_comment_count: 0
     });
 
-    const {title, contents} = write;
+    const { post_title, post_content } = write;
 
     const onChange = (e) => {
-        const { value, name } = e.target;
+        const { name, value } = e.target;
         setWrite({
             ...write,
             [name]: value,
         });
     };
 
-    const saveWrite = async () => {
+    
 
-        if (!title && !contents) {
+    const saveWrite = async () => {
+        if (!post_title || !post_content) {
             alert('제목과 내용을 작성해주세요.');
             return;
         }
-        if (!title) {
-            alert('제목을 작성해주세요.');
-            return;
-        }
-        if (!contents) {
-            alert('내용을 작성해주세요.');
-            return;
-        }
-        
+        console.log('등록할 데이터 : ', write)
+
         try {
-            await axios.post('api주소', write); // POST 요청으로 수정
+            await axios.post(`http://3.34.133.247:8080/member?userId=${userId}`, write, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            
             alert('등록되었습니다.');
             navigate('/member');
         } catch (error) {
+            console.error('API 연동 실패:', error); // 에러 로그
             alert('API 연동이 필요합니다.'); // 에러 발생 시 알림
         }
     };
-    
+
     const backToList = () => {
         navigate('/member');
     };
 
-    return(
+    return (
         <Container>
             <BannerContainer>
                 <Image src={배너} alt="배너" />
@@ -68,12 +83,11 @@ export default function MemberWrite() {
                 <Titlespan>
                     제목
                 </Titlespan>
-                <Titleinput type = "text" name = "title" value = {title} onChange = {onChange} placeholder = "제목을 입력하세요." />
+                <Titleinput type="text" name="post_title" value={post_title} onChange={onChange} placeholder="제목을 입력하세요." />
             </Title>
             <br />
             <Contents>
-                <Contentsinput name = "contents"  value = {contents} onChange={onChange} placeholder = "내용을 입력하세요.">
-                </Contentsinput>
+                <Contentsinput type="text" name="post_content" value={post_content} onChange={onChange} placeholder="내용을 입력하세요." />
             </Contents>
             <br />
             <ButtonContainer>
@@ -82,7 +96,6 @@ export default function MemberWrite() {
             </ButtonContainer>
         </Container>
     );
-
 }
 
 

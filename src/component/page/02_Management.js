@@ -27,12 +27,8 @@ export default function Management() {
 
     useEffect(() => {
         const teamInfoLoad = async () => {
-            try {
-                const res = await axios.get('api주소');
+            const res = await axios.get('api주소');
                 setTeamInfo(res.data);
-            } catch (error) {
-                alert('asdf');
-            }
         };
 
         teamInfoLoad();

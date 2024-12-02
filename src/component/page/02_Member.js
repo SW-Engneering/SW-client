@@ -15,16 +15,19 @@ export default function Member() {
     useEffect (() => {
         const fetchMemberList = async () => {
             try {
-                const response = await axios.get('미구현');
+                const response = await axios.get('http://3.34.133.247:8080/member');
                 setMemberList(response.data);
-                console.log(MemberList);
             } catch(error) {
                 setError("게시물 가져오기 실패");
             }
+            finally{
+                console.log("게시물 로딩 완료");
+            }
             
         };
+        
         fetchMemberList();
-    });
+    }, []);
 
     const moveToWrite = () => {
         navigate('/memberwrite')
@@ -61,9 +64,9 @@ export default function Member() {
                 ) : (
                     <PostsList>
                         {MemberList.map((post) => (
-                            <PostItem key={post.id}>
-                                <PostTitle>{post.title}</PostTitle>
-                                <PostContent>{post.content}</PostContent>
+                            <PostItem key={post.post_id}>
+                                <PostTitle>{post.post_title}</PostTitle>
+                                <PostContent>{post.post_content}</PostContent>
                             </PostItem>
                         ))}
                     </PostsList>

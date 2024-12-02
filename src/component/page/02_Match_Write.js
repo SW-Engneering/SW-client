@@ -72,7 +72,7 @@ export default function MatchWrite() {
             </Title>
             <br />
             <Contents>
-                <Contentsinput name = "contents"  value = {contents} onChange={onChange} placeholder = "내용을 입력하세요.">
+                <Contentsinput type = "text" name = "contents"  value = {contents} onChange={onChange} placeholder = "내용을 입력하세요.">
                 </Contentsinput>
             </Contents>
             <br />
