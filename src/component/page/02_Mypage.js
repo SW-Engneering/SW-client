@@ -246,7 +246,7 @@ const ToolContainer = styled.div`
     background-color: white;
     padding: 20px 25px;
     overflow-y: scroll;
-    max-height: 50%;
+    max-height: 65%;
 `;
 const InfoContainer = styled.div`
     display: flex;

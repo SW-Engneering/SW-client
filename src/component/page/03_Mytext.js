@@ -43,6 +43,7 @@ export default function Mytext() {
 const Container = styled.div`
     border-radius: 10px;
     width: 100%;
+    height: 100%;
 `;
 
 const Title = styled.h2`
@@ -59,10 +60,10 @@ const PostContainer = styled.div`
     padding: 15px;
     margin: 10px 0;
     border-radius: 5px;
-    border : solid 0.5px rgba(0, 0, 0, 0.1);
+    border: solid 0.5px rgba(0, 0, 0, 0.1);
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    &:not(last-child){
-        margin-bottom:5px;
+    &:not(last-child) {
+        margin-bottom: 5px;
     }
 `;
 

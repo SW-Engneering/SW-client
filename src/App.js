@@ -58,7 +58,7 @@ const InsideContainer = styled.div`
     flex-grow: 1;
     display: flex;
     flex-direction: column;
-    height: 100%;
+    min-height: 80vh;
 `;
 
 export default App;
