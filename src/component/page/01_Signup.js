@@ -31,6 +31,7 @@ export default function Signup() {
                         sex: sex,
                         age: age,
                         position: position,
+                        ban_yn: false,
                     },
                     {
                         headers: {
@@ -39,20 +40,19 @@ export default function Signup() {
                     }
                 );
 
-                if (response.status === 200) {
+                if (response.status === 201) {
                     console.log('회원가입 성공:', response.data);
-                    navigate('/Home');
+                    alert('회원가입 성공! 로그인 해주세요.')
+                    navigate('/login');
                 } else {
-                    console.log('로그인 실패:', response.data);
-                    alert('로그인 실패: 아이디 또는 비밀번호를 확인하세요.');
+                    console.log('회원가입 실패:', response.data);
+                    alert('회원가입 실패');
                 }
             } catch (error) {
-                console.error('로그인 요청 중 오류 발생:', error);
-                alert('로그인 요청 중 오류가 발생했습니다. 다시 시도해 주세요.');
+                console.error('회원가입 요청 중 오류 발생:', error);
+                alert('회원가입 요청 중 오류가 발생했습니다. 다시 시도해 주세요.');
             }
-        } else {
-            alert('아이디와 비밀번호를 입력해 주세요.');
-        }
+        } 
     };
 
     const isPasswordMatch = password === passwordverify;
@@ -90,6 +90,15 @@ export default function Signup() {
             <VerifyContainer>
                 {password && passwordverify && (isPasswordMatch ? <Message success>비밀번호가 일치합니다.</Message> : <Message error>비밀번호가 일치하지 않습니다.</Message>)}
             </VerifyContainer>
+            <InputContainer>
+                <NickNameInput type="text" value={phoneNumber} placeholder="휴대폰번호" onChange={(e) => setPhoneNumber(e.target.value)} />
+            </InputContainer>
+            <InputContainer>
+                <NickNameInput type="text" value={location} placeholder="지역" onChange={(e) => setLocation(e.target.value)} />
+            </InputContainer>
+            <InputContainer>
+                <NickNameInput type="text" value={age} placeholder="나이" onChange={(e) => setAge(e.target.value)} />
+            </InputContainer>
             <PosSelect value={sex} onChange={(e) => setSex(e.target.value)}>
                 <option value="m">남자</option>
                 <option value="w">여자</option>

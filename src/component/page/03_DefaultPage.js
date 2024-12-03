@@ -1,27 +1,67 @@
 import styled from 'styled-components';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
+import Cookies from 'js-cookie';
 
 export default function DefaultPage() {
     const [nickname, setNickname] = useState('user123');
-    const [email, setEmail] = useState('user@example.com');
+    const [location, setLocation] = useState('user@example.com');
     const [position, setPosition] = useState('골키퍼');
     const [number, setNumber] = useState('010-1234-5678');
     const [detail, setDetail] = useState('안녕하세요. 다막는 골키퍼입니다.');
+    const [id, setId] = useState(null);
+
+    function formatPhoneNumber(phoneNumber){
+        if (phoneNumber.length !== 11) {
+            return '유효하지 않은 전화번호입니다.';
+        }
+        const formattedNumber = `${phoneNumber.slice(0, 3)}-${phoneNumber.slice(3, 7)}-${phoneNumber.slice(7)}`;
+        return formattedNumber;
+    }   
+
+    useEffect(() => {
+        const cookieId = Cookies.get('userId');
+        setId(cookieId ? cookieId : null);
+        if (id) {
+            fetchUserData(id);
+        }
+    }, [id]); 
+
+    const fetchUserData = async (id) => {
+        try {
+            const response = await axios.get(`https://3.34.133.247/user/${id}`, {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            if (response.status === 200) {
+                console.log('유저 상세 정보 불러오기 성공:', response.data);
+                const { nickname, phone_number, position, location } = response.data;
+                setNickname(nickname);
+                setNumber(formatPhoneNumber(phone_number));
+                setPosition(position);
+                setLocation(location)                
+            }
+        } catch (error) {
+            console.log(error.response);
+        }
+    };
 
     return (
         <Container>
             <RowContainer>
                 <ColumnTextContainer>
                     <IdTextContainer>닉네임 :&nbsp;</IdTextContainer>
-                    <EmailTextContainer>이메일 :&nbsp;</EmailTextContainer>
                     <PosTextContainer>포지션 :&nbsp;</PosTextContainer>
+                    <EmailTextContainer>주소 :&nbsp;</EmailTextContainer>
                     <NumTextContainer>휴대폰 번호 :&nbsp;</NumTextContainer>
                     <DetailTextContainer>자기소개 :&nbsp;</DetailTextContainer>
                 </ColumnTextContainer>
                 <ColumnContainer>
                     <IdContainer>{nickname}</IdContainer>
-                    <EmailContainer>{email}</EmailContainer>
                     <PosContainer>{position}</PosContainer>
+                    <EmailContainer>{location}</EmailContainer>
                     <NumContainer>{number}</NumContainer>
                     <DetailContainer>{detail}</DetailContainer>
                 </ColumnContainer>

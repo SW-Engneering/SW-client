@@ -10,7 +10,7 @@ export default function Header() {
     const [id, setId] = useState(null);
 
     useEffect(() => {
-        const cookieId = Cookies.get('userId');
+        const cookieId = Cookies.get('nickname');
         // ocidFromUrl이 undefined일 경우 id를 null로 설정
         setId(cookieId ? cookieId : null);
     }, [location]);

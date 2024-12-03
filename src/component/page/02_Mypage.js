@@ -9,10 +9,14 @@ import Favorite from './03_Favorites';
 import Schedule from './03_Schedule';
 import Inquiry from './03_Inquiry';
 import DefaultPage from './03_DefaultPage';
+import axios from 'axios';
 
 export default function MyPage() {
     const location = useLocation();
     const [id, setId] = useState(null);
+    const [nickname, setNickname] = useState(null);
+    const [position, setPosition] = useState(null);
+    const [number, setNumber] = useState(null);
     const [menuVisible, setMenuVisible] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
     const [activeTab, setActiveTab] = useState(null);
@@ -26,6 +30,32 @@ export default function MyPage() {
         const cookieId = Cookies.get('userId');
         setId(cookieId ? cookieId : null);
     }, [location]);
+
+    useEffect(() => {
+        if (id) {
+            fetchUserData(id);
+        }
+    }, [id]); 
+
+    const fetchUserData = async (id) => {
+        try {
+            const response = await axios.get(`https://3.34.133.247/user/${id}`, {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            if (response.status === 200) {
+                console.log('유저 상세 정보 불러오기 성공:', response.data);
+                const { nickname, phone_number, position } = response.data;
+                setNickname(nickname);
+                setNumber(formatPhoneNumber(phone_number));
+                setPosition(position);                
+            }
+        } catch (error) {
+            console.log(error.response);
+        }
+    };
 
     const handleToggleClick = (e) => {
         MenuToggle(e);
@@ -46,6 +76,14 @@ export default function MyPage() {
         const activeTabComponent = tabs.find((tab) => tab.name === activeTab);
         return activeTabComponent ? activeTabComponent.component : <DefaultPage />;
     };
+
+    function formatPhoneNumber(phoneNumber){
+        if (phoneNumber.length !== 11) {
+            return '유효하지 않은 전화번호입니다.';
+        }
+        const formattedNumber = `${phoneNumber.slice(0, 3)}-${phoneNumber.slice(3, 7)}-${phoneNumber.slice(7)}`;
+        return formattedNumber;
+    }
 
     return (
         <Container>
@@ -70,9 +108,9 @@ export default function MyPage() {
                     <UserImage />
                     <InfoContainer>
                         <UserDetails>
-                            <UserNameContainer>{id}</UserNameContainer>
-                            <UserPos>포지션</UserPos>
-                            <OneLineContainer>자기소개</OneLineContainer>
+                            <UserNameContainer>{nickname}</UserNameContainer>
+                            <UserPos>{position}</UserPos>
+                            <OneLineContainer>{number}</OneLineContainer>
                         </UserDetails>
                         <ButtonContainer>
                             {activeTab === null && (
