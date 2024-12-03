@@ -21,7 +21,7 @@ export default function Signup() {
         if (id && password) {
             try {
                 const response = await axios.post(
-                    'https://3.34.133.247:8080/user/register',
+                    'https://3.34.133.247/user/register',
                     {
                         user_name: username,
                         nickname: id,
