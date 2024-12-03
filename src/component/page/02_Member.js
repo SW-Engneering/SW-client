@@ -11,21 +11,29 @@ export default function Member() {
     const navigate = useNavigate();
     
     
-    useEffect (() => {
+    useEffect(() => {
         const fetchMemberList = async () => {
             try {
-                const response = await axios.get('http://3.34.133.247:8080/member');
+                const response = await axios.get('https://3.34.133.247/member');
                 const sortedMemberList = response.data.sort((a, b) => b.post_id - a.post_id); // 내림차순 정렬
-                setMemberList(sortedMemberList);
-            } catch(error) {
+
+                // 각 게시물에 대해 작성자의 nickname을 가져오는 API를 호출
+                const memberWithNicknames = await Promise.all(sortedMemberList.map(async (post) => {
+                    const userResponse = await axios.get(`https://3.34.133.247/user/${post.user_id}`);
+                    return {
+                        ...post,
+                        nickname: userResponse.data.nickname// nickname 추가
+                    };
+                }));
+                console.log('불러온 목록: ', memberWithNicknames);
+                setMemberList(memberWithNicknames);
+            } catch (error) {
                 setError("게시물 가져오기 실패");
-            }
-            finally{
+            } finally {
                 console.log("게시물 로딩 완료");
             }
-            
         };
-        
+
         fetchMemberList();
     }, []);
 
@@ -33,8 +41,14 @@ export default function Member() {
         navigate('/memberwrite')
     }
 
-    const memberDetail = (post_id) => {
-        navigate(`/member/${post_id}`)
+    const memberDetail = async (post_id) => {
+        try {
+            const response = await axios.get(`https://3.34.133.247/member/${post_id}`);
+            navigate(`/member/${post_id}`, { state: { post: response.data } });
+        } catch (error) {
+            console.error("게시글 조회 실패", error);
+            setError("게시글 조회 실패");
+        }
     }
 
 
@@ -73,8 +87,8 @@ export default function Member() {
                             {MemberList.map((post) => (
                                 <PostItem key={post.post_id}>
                                     <PostId>{post.post_id}</PostId>
-                                    <PostTitle onClick={() => memberDetail(post.post_id)}>{post.post_title}</PostTitle>
-                                    <PostUserId>{post.user_id}</PostUserId>
+                                    <PostTitle onClick={() => memberDetail(post.post_id)}>{post.post_title}{post.post_comment_count > 0 && ` [${post.post_comment_count}]`}</PostTitle>
+                                    <PostUserId>{post.nickname}</PostUserId>
                                     <PostCreateTime>{post.post_created_time.split('T')[0]}</PostCreateTime>
                                     <PostHits>{post.post_hits}</PostHits>
                                 </PostItem>
@@ -119,6 +133,7 @@ const HeaderContainer = styled.div`
     background-color: #edf3e6;
     border-bottom: 2px solid #cecece; /* 하단 회색 줄 */
     padding: 5px;
+    font-weight: bold;
 `;
 
 const FirstContainer = styled.div` //글번호
@@ -188,6 +203,7 @@ const PostsList = styled.div`
     padding: 0;
     border-bottom: 0.1px solid grey; /* 하단 회색 줄 */
     text-align: center;
+    font-size: 15px;
 `;
 
 const PostItem = styled.div`

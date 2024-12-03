@@ -1,74 +1,40 @@
-# Getting Started with Create React App
+# 스포매치
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+스포매치는 근처 지역의 사람들과 함께 팀을 짜고 스포츠를 즐길 수 있게 하는 플랫폼입니다. 사용자는 자신의 위치를 기반으로 다른 사용자와 연결되어 다양한 스포츠 활동에 참여할 수 있습니다.
 
-## Available Scripts
+## 프로젝트 설명
 
-In the project directory, you can run:
+스포매치는 사용자들이 쉽게 팀을 구성하고, 스포츠 활동을 계획하며, 지역 내 다른 사용자와 소통할 수 있는 기능을 제공합니다. 이 플랫폼은 스포츠를 통해 사람들을 연결하고, 건강한 라이프스타일을 촉진하는 것을 목표로 합니다.
 
-### `npm start`
+## 프로그램 설치방법
+1. 저장소를 클론합니다.
+    git clone https://github.com/SW-Engneering/SW-client
+2. 필요한 패키지를 설치합니다.
+    npm install 
+3. 서버를 실행합니다.
+    npm start
+4. 혹은 배포한 주소인
+    https://sportmatch.netlify.app/
+    에 접속하여 프로그램을 사용할 수 있습니다.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## 프로그램 사용방법
+1. 회원가입 후 로그인합니다.
+2. 로그인 후 팀원 구하기, 팀 구하기, 팀 매칭 등 원하는 게시판에 들어가 글을 쓰거나 글을 열람할 수 있습니다.
+3. 만약 내가 팀에 속한 상태이면 팀 관리 페이지를 사용할 수 있습니다.
+4. 팀 관리 페이지에 접속하면 현재 팀원들의 상태와 포지션등을 관리할 수 있습니다.
+5. 만약 본인이 팀장이며 팀 구성이 모두 되어있다면 팀 매칭이 가능합니다.
+6. 팀끼리 매칭이 진행되면 팀 관리페이지에 본인의 팀과 상대팀의 정보를 열람할 수 있습니다.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## 기여방법
+해당 플랫폼에 기여를 원하신다면 다음 단계를 따라주세요:
+1. 저장소를 fork합니다.
+2. 새로운 branch를 생성합니다.
+    git checkout -b feature/YourFeature
+3. 변경사항을 커밋합니다.
+    git commit -m "Add your feature"
+4. 원본 저장소에 풀 리퀘스트를 요청합니다.
 
 # SW_Engineering
 
 소프트웨어 공학
+ 

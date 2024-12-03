@@ -11,6 +11,7 @@ import Footer from './component/layout/Footer';
 import Mypage from './component/page/02_Mypage';
 import Member from './component/page/02_Member';
 import MemberWrite from './component/page/02_Member_Write';
+import MemberDetail from './component/page/02_MemberDetail';
 import Management from './component/page/02_Management';
 import Createteam from './component/page/02_create_team';
 import Match from './component/page/02_Match';
@@ -33,6 +34,7 @@ function App() {
                         <Route path="/login" element={<Login />} />
                         <Route path="/member" element={<Member />} />
                         <Route path="/memberwrite" element={<MemberWrite />} />
+                        <Route path="/member/:post_id" element={<MemberDetail />} />
                         <Route path="/teamwrite" element={<TeamWrite />} />
                         <Route path="/team" element={<Team />} />
                         <Route path="/match" element={<Match />} />

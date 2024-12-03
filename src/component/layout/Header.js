@@ -10,14 +10,15 @@ export default function Header() {
     const [id, setId] = useState(null);
 
     useEffect(() => {
-        const cookieId = Cookies.get('userId');
+        const cookieId = Cookies.get('nickname');
         // ocidFromUrl이 undefined일 경우 id를 null로 설정
         setId(cookieId ? cookieId : null);
     }, [location]);
 
     const handleLogout = () => {
         // 로그아웃 처리
-        Cookies.remove('userId');
+        Cookies.remove('nickname');
+        Cookies.remove('userId')
         setId(null); // id를 null로 설정하여 메뉴 업데이트
         navigate('/');
     };

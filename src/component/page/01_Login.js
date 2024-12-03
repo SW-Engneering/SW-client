@@ -2,39 +2,72 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
+import axios from 'axios';
 
 export default function Login() {
-    const [id, setId] = useState(null);
-    const [password, setPassword] = useState(null);
+    const [id, setId] = useState('');
+    const [password, setPassword] = useState('');
+    const [userId, setUserId] = useState('');
     const [userState, setUserState] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
-        // 컴포넌트가 마운트될 때 쿠키에서 로그인 상태를 확인
-        const cookieId = Cookies.get('userId');
+        // 쿠키에서 로그인 상태 확인
+        const cookieId = Cookies.get('nickname');
         if (cookieId) {
             setUserState(true);
             navigate(`/`);
         }
     }, [navigate]);
 
-    const handleLogin = () => {
-        Cookies.set('userId', id, { expires: 7 }); // 7일 동안 유지
-        setUserState(true);
-        navigate(`/`);
-        console.log('로그인 시도:', { id, password });
+    const handleSubmit = async (e) => {
+        e.preventDefault(); // 기본 form 제출 동작 방지
+        if (id && password) {
+            try {
+                const response = await axios.post(
+                    `https://3.34.133.247/user/login?nickname=${id}&passwd=${password}`, // 실제 API 엔드포인트 추가
+                    {
+                        nickname: id,
+                        passwd: password,
+                        user_id : userId
+                    },
+                    {
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                    }
+                );
+
+                if (response.status === 200) {
+                    console.log('로그인 성공:', response.data);
+                    Cookies.set('nickname', response.data.nickname, { expires: 14 });
+                    Cookies.set('userId', response.data.user_id, { expires : 14 });
+                    navigate('/'); // 로그인 후 이동할 경로
+                } else {
+                    console.log('로그인 실패:', response.data);
+                    alert('로그인 실패: 아이디 또는 비밀번호를 확인하세요.');
+                }
+            } catch (error) {
+                console.error('로그인 요청 중 오류 발생:', error);
+                alert('로그인 요청 중 오류가 발생했습니다. 다시 시도해 주세요.');
+            }
+        } else {
+            alert('아이디와 비밀번호를 입력해 주세요.');
+        }
     };
 
     return (
         <Container>
             <LoginContainer>로그인</LoginContainer>
-            <InputContainer>
-                <IdInput type="text" value={id} placeholder="아이디" onChange={(e) => setId(e.target.value)} />
-            </InputContainer>
-            <InputContainer>
-                <PasswordInput type="password" value={password} placeholder="비밀번호" onChange={(e) => setPassword(e.target.value)} />
-            </InputContainer>
-            <LoginButton onClick={handleLogin}>로그인</LoginButton>
+            <form onSubmit={handleSubmit}>
+                <InputContainer>
+                    <IdInput type="text" value={id} placeholder="아이디" onChange={(e) => setId(e.target.value)} />
+                </InputContainer>
+                <InputContainer>
+                    <PasswordInput type="password" value={password} placeholder="비밀번호" onChange={(e) => setPassword(e.target.value)} />
+                </InputContainer>
+                <LoginButton type="submit">로그인</LoginButton>
+            </form>
             <Signup href="/signup">회원가입</Signup>
         </Container>
     );

@@ -48,7 +48,7 @@ export default function MemberWrite() {
         console.log('등록할 데이터 : ', write)
 
         try {
-            await axios.post(`http://3.34.133.247:8080/member?userId=${userId}`, write, {
+            await axios.post(`https://3.34.133.247/member?userId=${userId}`, write, {
                 headers: {
                     'Content-Type': 'application/json'
                 }

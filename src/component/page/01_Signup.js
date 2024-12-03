@@ -1,40 +1,71 @@
-import React, { useState } from "react";
-import styled from "styled-components";
+import React, { useState } from 'react';
+import styled from 'styled-components';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 export default function Signup() {
-    const [username, setUsername] = useState("");
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [passwordverify, setPasswordverify] = useState("");
+    const [username, setUsername] = useState('');
+    const [id, setID] = useState('');
+    const [password, setPassword] = useState('');
+    const [passwordverify, setPasswordverify] = useState('');
     const [termsAccepted, setTermsAccepted] = useState(false);
-    const [position, setPosition] = useState("");
+    const [sex, setSex] = useState('');
+    const [phoneNumber, setPhoneNumber] = useState('');
+    const [location, setLocation] = useState('');
+    const [age, setAge] = useState('');
+    const [position, setPosition] = useState('');
 
-    const handleSignup = () => {
-        // 회원가입 처리 로직을 여기에 추가
-        console.log("회원가입 시도:", { username, email, password, position });
+    const navigate = useNavigate();
+    const handleSignup = async (e) => {
+        e.preventDefault(); // 기본 form 제출 동작 방지
+        if (id && password) {
+            try {
+                const response = await axios.post(
+                    'https://3.34.133.247/user/register',
+                    {
+                        user_name: username,
+                        nickname: id,
+                        passwd: password,
+                        phone_number: phoneNumber,
+                        location: location,
+                        sex: sex,
+                        age: age,
+                        position: position,
+                        ban_yn: false,
+                    },
+                    {
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                    }
+                );
+
+                if (response.status === 201) {
+                    console.log('회원가입 성공:', response.data);
+                    alert('회원가입 성공! 로그인 해주세요.')
+                    navigate('/login');
+                } else {
+                    console.log('회원가입 실패:', response.data);
+                    alert('회원가입 실패');
+                }
+            } catch (error) {
+                console.error('회원가입 요청 중 오류 발생:', error);
+                alert('회원가입 요청 중 오류가 발생했습니다. 다시 시도해 주세요.');
+            }
+        } 
     };
 
     const isPasswordMatch = password === passwordverify;
-    const isFormValid = username && email && password && passwordverify && termsAccepted && isPasswordMatch && position;
+    const isFormValid = username && id && password && passwordverify && termsAccepted && isPasswordMatch && position;
 
     return (
         <Container>
             <SignupContainer>회원가입</SignupContainer>
             <InputContainer>
-                <UsernameInput
-                    type="text"
-                    value={username}
-                    placeholder="사용자 이름"
-                    onChange={(e) => setUsername(e.target.value)}
-                />
+                <UsernameInput type="text" value={username} placeholder="사용자 이름" onChange={(e) => setUsername(e.target.value)} />
             </InputContainer>
             <InputContainer>
-                <EmailInput
-                    type="email"
-                    value={email}
-                    placeholder="이메일"
-                    onChange={(e) => setEmail(e.target.value)}
-                />
+                <NickNameInput type="text" value={id} placeholder="아이디" onChange={(e) => setID(e.target.value)} />
             </InputContainer>
             <InputContainer>
                 <PasswordInput
@@ -42,8 +73,8 @@ export default function Signup() {
                     value={password}
                     placeholder="비밀번호"
                     onChange={(e) => setPassword(e.target.value)}
-                    onPaste={(e) => e.preventDefault()} 
-                    onCopy={(e) => e.preventDefault()} 
+                    onPaste={(e) => e.preventDefault()}
+                    onCopy={(e) => e.preventDefault()}
                 />
             </InputContainer>
             <VerifyInputContainer>
@@ -52,19 +83,26 @@ export default function Signup() {
                     value={passwordverify}
                     placeholder="비밀번호 확인"
                     onChange={(e) => setPasswordverify(e.target.value)}
-                    onPaste={(e) => e.preventDefault()} 
-                    onCopy={(e) => e.preventDefault()} 
+                    onPaste={(e) => e.preventDefault()}
+                    onCopy={(e) => e.preventDefault()}
                 />
             </VerifyInputContainer>
             <VerifyContainer>
-                {password && passwordverify && (
-                    isPasswordMatch ? (
-                        <Message success>비밀번호가 일치합니다.</Message>
-                    ) : (
-                        <Message error>비밀번호가 일치하지 않습니다.</Message>
-                    )
-                )}
+                {password && passwordverify && (isPasswordMatch ? <Message success>비밀번호가 일치합니다.</Message> : <Message error>비밀번호가 일치하지 않습니다.</Message>)}
             </VerifyContainer>
+            <InputContainer>
+                <NickNameInput type="text" value={phoneNumber} placeholder="휴대폰번호" onChange={(e) => setPhoneNumber(e.target.value)} />
+            </InputContainer>
+            <InputContainer>
+                <NickNameInput type="text" value={location} placeholder="지역" onChange={(e) => setLocation(e.target.value)} />
+            </InputContainer>
+            <InputContainer>
+                <NickNameInput type="text" value={age} placeholder="나이" onChange={(e) => setAge(e.target.value)} />
+            </InputContainer>
+            <PosSelect value={sex} onChange={(e) => setSex(e.target.value)}>
+                <option value="m">남자</option>
+                <option value="w">여자</option>
+            </PosSelect>
             <PosSelect value={position} onChange={(e) => setPosition(e.target.value)}>
                 <option value="">포지션 선택</option>
                 <option value="CF">중앙 공격수(CF)</option>
@@ -84,19 +122,10 @@ export default function Signup() {
                 <option value="GK">골키퍼(GK)</option>
             </PosSelect>
             <TermsContainer>
-                <Checkbox 
-                    type="checkbox" 
-                    checked={termsAccepted} 
-                    onChange={() => setTermsAccepted(!termsAccepted)} 
-                />
-                <TermsLabel>
-                    약관에 동의합니다.
-                </TermsLabel>
+                <Checkbox type="checkbox" checked={termsAccepted} onChange={() => setTermsAccepted(!termsAccepted)} />
+                <TermsLabel>약관에 동의합니다.</TermsLabel>
             </TermsContainer>
-            <SignupButton 
-                onClick={handleSignup} 
-                disabled={!isFormValid}
-            >
+            <SignupButton onClick={handleSignup} disabled={!isFormValid}>
                 회원가입
             </SignupButton>
         </Container>
@@ -126,7 +155,7 @@ const InputContainer = styled.div`
     margin-bottom: 15px;
 `;
 const VerifyInputContainer = styled.div`
-    width:100%;
+    width: 100%;
 `;
 const UsernameInput = styled.input`
     width: calc(100% - 1px);
@@ -136,7 +165,7 @@ const UsernameInput = styled.input`
     box-sizing: border-box;
 `;
 
-const EmailInput = styled.input`
+const NickNameInput = styled.input`
     width: calc(100% - 1px);
     padding: 10px;
     border: 1px solid #ccc;
@@ -154,7 +183,7 @@ const PasswordInput = styled.input`
 
 const VerifyContainer = styled.div`
     width: 100%;
-    margin : 7.5px 0;
+    margin: 7.5px 0;
 `;
 
 const Message = styled.div`
@@ -174,7 +203,7 @@ const PosSelect = styled.select`
     border: 1px solid #ccc;
     border-radius: 5px;
     box-sizing: border-box;
-    margin-bottom:15px;
+    margin-bottom: 15px;
 `;
 
 const Checkbox = styled.input`
@@ -195,9 +224,9 @@ const SignupButton = styled.button`
     cursor: pointer;
     font-size: 16px;
     opacity: ${({ disabled }) => (disabled ? 0.6 : 1)};
-    pointer-events: ${({ disabled }) => (disabled ? "none" : "auto")};
+    pointer-events: ${({ disabled }) => (disabled ? 'none' : 'auto')};
 
     &:hover {
-        background-color: ${({ disabled }) => (disabled ? "#007bff" : "#0056b3")};
+        background-color: ${({ disabled }) => (disabled ? '#007bff' : '#0056b3')};
     }
 `;
