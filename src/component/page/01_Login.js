@@ -25,7 +25,7 @@ export default function Login() {
         if (id && password) {
             try {
                 const response = await axios.post(
-                    `http://3.34.133.247:8080/user/login?nickname=${id}&passwd=${password}`, // 실제 API 엔드포인트 추가
+                    `https://3.34.133.247:8080/user/login?nickname=${id}&passwd=${password}`, // 실제 API 엔드포인트 추가
                     {
                         nickname: id,
                         passwd: password,
