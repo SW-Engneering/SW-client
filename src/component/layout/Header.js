@@ -17,7 +17,8 @@ export default function Header() {
 
     const handleLogout = () => {
         // 로그아웃 처리
-        Cookies.remove('userId');
+        Cookies.remove('nickname');
+        Cookies.remove('userId')
         setId(null); // id를 null로 설정하여 메뉴 업데이트
         navigate('/');
     };

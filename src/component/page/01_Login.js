@@ -7,6 +7,7 @@ import axios from 'axios';
 export default function Login() {
     const [id, setId] = useState('');
     const [password, setPassword] = useState('');
+    const [userId, setUserId] = useState('');
     const [userState, setUserState] = useState(false);
     const navigate = useNavigate();
 
@@ -28,6 +29,7 @@ export default function Login() {
                     {
                         nickname: id,
                         passwd: password,
+                        user_id : userId
                     },
                     {
                         headers: {
@@ -39,7 +41,8 @@ export default function Login() {
                 if (response.status === 200) {
                     console.log('로그인 성공:', response.data);
                     Cookies.set('nickname', response.data.nickname, { expires: 14 });
-                    navigate('/Home'); // 로그인 후 이동할 경로
+                    Cookies.set('userId', response.data.user_id, { expires : 14 });
+                    navigate('/'); // 로그인 후 이동할 경로
                 } else {
                     console.log('로그인 실패:', response.data);
                     alert('로그인 실패: 아이디 또는 비밀번호를 확인하세요.');
