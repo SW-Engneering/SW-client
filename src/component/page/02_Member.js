@@ -3,11 +3,14 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import 팀관리1 from "../images/팀관리1.jpg";
 import axios from "axios";
+import Cookies from "js-cookie";
 
 export default function Member() {
 
     const [MemberList, setMemberList] = useState([]);
     const [error, setError] = useState(null);
+    const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 상태
+    const postsPerPage = 10; // 페이지당 게시글 수
     const navigate = useNavigate();
     
     
@@ -38,19 +41,30 @@ export default function Member() {
     }, []);
 
     const moveToWrite = () => {
-        navigate('/memberwrite')
-    }
-
-    const memberDetail = async (post_id) => {
-        try {
-            const response = await axios.get(`https://3.34.133.247/member/${post_id}`);
-            navigate(`/member/${post_id}`, { state: { post: response.data } });
-        } catch (error) {
-            console.error("게시글 조회 실패", error);
-            setError("게시글 조회 실패");
+        const nickname = Cookies.get('nickname')
+        if(!nickname) {
+            alert('로그인 안하면 글 못씁니다.');
         }
-    }
+        else {
+            navigate('/memberwrite')
+        }
+        
+    };
 
+    // 페이지네이션에 따른 현재 페이지의 게시글 가져오기
+    const indexOfLastPost = currentPage * postsPerPage;
+    const indexOfFirstPost = indexOfLastPost - postsPerPage;
+    const currentPosts = MemberList.slice(indexOfFirstPost, indexOfLastPost);
+
+    const memberDetail = async (post_id, post) => {
+        navigate(`/member/${post_id}`, { state: { post } } );
+    };
+
+    const handlePageChange = (pageNumber) => {
+        setCurrentPage(pageNumber);
+    };
+
+    const totalPages = Math.ceil(MemberList.length / postsPerPage);
 
     return(
         <Container>
@@ -80,14 +94,16 @@ export default function Member() {
                 <div>
                     {error ? (
                         <ul>{error}</ul>
-                    ) : MemberList.length === 0 ? (
+                    ) : currentPosts.length === 0 ? (
                         <ul>등록된 게시물이 없습니다.</ul>
                     ) : (
                         <PostsList>
-                            {MemberList.map((post) => (
+                            {currentPosts.map((post) => (
                                 <PostItem key={post.post_id}>
                                     <PostId>{post.post_id}</PostId>
-                                    <PostTitle onClick={() => memberDetail(post.post_id)}>{post.post_title}{post.post_comment_count > 0 && ` [${post.post_comment_count}]`}</PostTitle>
+                                    <PostTitle onClick={() => memberDetail(post.post_id, post)}>
+                                        {post.post_title}{post.post_comment_count > 0 && ` [${post.post_comment_count}]`}
+                                    </PostTitle>
                                     <PostUserId>{post.nickname}</PostUserId>
                                     <PostCreateTime>{post.post_created_time.split('T')[0]}</PostCreateTime>
                                     <PostHits>{post.post_hits}</PostHits>
@@ -96,6 +112,13 @@ export default function Member() {
                         </PostsList>
                     )}
                 </div>
+                <Pagination>
+                    {Array.from({ length: totalPages }, (_, index) => (
+                        <PageButton key={index + 1} onClick={() => handlePageChange(index + 1)}>
+                            {index + 1}
+                        </PageButton>
+                    ))}
+                </Pagination>
                 <WriteButton onClick={moveToWrite}>글쓰기</WriteButton>
             </Padding200>
         </Container>
@@ -106,7 +129,7 @@ export default function Member() {
 const Container = styled.div`
     justify-content: center;
     align-items: center;
-    font-family: 'Pretendard-Regular';
+    font-family: 'Pretendard-Light';
 
 `;
 
@@ -256,5 +279,24 @@ const WriteButton = styled.button`
 
     &:hover {
         background-color: #45a049; /* 호버 시 색상 변경 */
+    }
+`;
+
+const Pagination = styled.div`
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+`;
+
+const PageButton = styled.button`
+    margin: 0 5px;
+    padding: 10px;
+    cursor: pointer;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+
+    &:hover {
+        background-color: #ddd;
     }
 `;
