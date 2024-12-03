@@ -13,9 +13,9 @@
     npm install 
 3. 서버를 실행합니다.
     npm start
-혹은 배포한 주소인
-https://sportmatch.netlify.app/
-에 접속하여 프로그램을 사용할 수 있다
+4. 혹은 배포한 주소인
+    https://sportmatch.netlify.app/
+    에 접속하여 프로그램을 사용할 수 있습니다.
 
 ## 프로그램 사용방법
 1. 회원가입 후 로그인합니다.
