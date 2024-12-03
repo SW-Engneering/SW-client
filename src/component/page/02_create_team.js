@@ -1,11 +1,8 @@
-import styled from "styled-components";
-import 팀만들기 from "../images/팀관리1.jpg";
-
+import styled from 'styled-components';
+import 팀만들기 from '../images/팀관리1.jpg';
 
 export default function create_team() {
-
-
-    return(
+    return (
         <Container>
             <ImageContainer>
                 <Image src={팀만들기} alt="adsf" />

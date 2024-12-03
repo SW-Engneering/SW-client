@@ -33,8 +33,6 @@ function Footer() {
 
 const Container = styled.div`
     border-top: 2px solid #ecedef;
-    margin-top: 30px;
-    margin-bottom: 50px;
     background-color: white;
     display: flex;
     width: 100%;
@@ -44,7 +42,7 @@ const Container = styled.div`
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    padding:3px;
+    padding: 3px;
 `;
 const Navbar = styled.div`
     margin-top: 30px;

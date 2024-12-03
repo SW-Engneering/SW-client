@@ -1,11 +1,10 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import 배너 from "../images/배너.png";
-import styled from "styled-components";
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import 배너 from '../images/배너.png';
+import styled from 'styled-components';
 
 export default function MatchWrite() {
-
     const navigate = useNavigate();
 
     const [write, setWrite] = useState({
@@ -13,10 +12,10 @@ export default function MatchWrite() {
         contents: '',
     });
 
-    const {title, contents} = write;
+    const { title, contents } = write;
 
     const onChange = (e) => {
-        const { name, value } = e.target;
+        const { value, name } = e.target;
         setWrite({
             ...write,
             [name]: value,
@@ -24,7 +23,6 @@ export default function MatchWrite() {
     };
 
     const saveWrite = async () => {
-
         if (!title && !contents) {
             alert('제목과 내용을 작성해주세요.');
             return;
@@ -37,7 +35,7 @@ export default function MatchWrite() {
             alert('내용을 작성해주세요.');
             return;
         }
-        
+
         try {
             await axios.post('api주소', write); // POST 요청으로 수정
             alert('등록되었습니다.');
@@ -46,34 +44,27 @@ export default function MatchWrite() {
             alert('API 연동이 필요합니다.'); // 에러 발생 시 알림
         }
     };
-    
+
     const backToList = () => {
         navigate('/match');
     };
 
-    return(
+    return (
         <Container>
             <BannerContainer>
                 <Image src={배너} alt="배너" />
             </BannerContainer>
             <TitleContainer>
-                <TeamContainer>
-                    글쓰기
-                </TeamContainer>
-                <SitemapContainer>
-                    매칭 글을 자유롭게 작성해보세요~
-                </SitemapContainer>
+                <TeamContainer>글쓰기</TeamContainer>
+                <SitemapContainer>매칭 글을 자유롭게 작성해보세요~</SitemapContainer>
             </TitleContainer>
             <Title>
-                <Titlespan>
-                    제목
-                </Titlespan>
-                <Titleinput type = "text" name = "title" value = {title} onChange = {onChange} placeholder = "제목을 입력하세요." />
+                <Titlespan>제목</Titlespan>
+                <Titleinput type="text" name="title" value={title} onChange={onChange} placeholder="제목을 입력하세요." />
             </Title>
             <br />
             <Contents>
-                <Contentsinput type = "text" name = "contents"  value = {contents} onChange={onChange} placeholder = "내용을 입력하세요.">
-                </Contentsinput>
+                <Contentsinput name="contents" value={contents} onChange={onChange} placeholder="내용을 입력하세요."></Contentsinput>
             </Contents>
             <br />
             <ButtonContainer>
@@ -82,9 +73,7 @@ export default function MatchWrite() {
             </ButtonContainer>
         </Container>
     );
-
 }
-
 
 const Container = styled.div`
     justify-content: center;
@@ -94,7 +83,6 @@ const Container = styled.div`
     position: relative;
     border-left: 1px solid #cecece;
     border-right: 1px solid #cecece;
-
 `;
 
 const BannerContainer = styled.div`
@@ -134,7 +122,6 @@ const Title = styled.div`
     padding: 20px;
     border-bottom: 1px solid #cecece;
     font-weight: bold;
-
 `;
 
 const Titleinput = styled.input`
@@ -143,9 +130,7 @@ const Titleinput = styled.input`
     font-size: 15px;
 `;
 
-const Contents = styled.div`
-    
-`;
+const Contents = styled.div``;
 
 const Contentsinput = styled.textarea`
     font-size: 15px;

@@ -2,6 +2,8 @@ import './App.css';
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import styled from 'styled-components';
+
+// Import all your components
 import Header from './component/layout/Header';
 import Nav from './component/layout/Nav';
 import Home from './component/layout/Home';
@@ -23,12 +25,11 @@ import Vote from './component/page/02_Vote';
 function App() {
     return (
         <BrowserRouter>
-            <Container>
+            <PageWrapper>
                 <Header />
                 <Nav />
-                <InsideContainer>
+                <ContentWrapper>
                     <Routes>
-                        <Route path="/" element={<Home />} />
                         <Route path="/" element={<Home />} />
                         <Route path="/mypage" element={<Mypage />} />
                         <Route path="/login" element={<Login />} />
@@ -38,30 +39,29 @@ function App() {
                         <Route path="/teamwrite" element={<TeamWrite />} />
                         <Route path="/team" element={<Team />} />
                         <Route path="/match" element={<Match />} />
-                        <Route path="matchwrite" element={<MatchWrite />} />
+                        <Route path="/matchwrite" element={<MatchWrite />} />
                         <Route path="/management" element={<Management />} />
                         <Route path="/create_team" element={<Createteam />} />
                         <Route path="/signup" element={<Signup />} />
-                        <Route path="/  " element={<Vote />} />
+                        <Route path="/vote" element={<Vote />} />
                     </Routes>
-                </InsideContainer>
+                </ContentWrapper>
                 <Footer />
-            </Container>
+            </PageWrapper>
         </BrowserRouter>
     );
 }
 
-const Container = styled.div`
+const PageWrapper = styled.div`
     display: flex;
     flex-direction: column;
-    height: 100%;
+    min-height: 100vh;
 `;
 
-const InsideContainer = styled.div`
-    flex-grow: 1;
+const ContentWrapper = styled.div`
+    /* flex-grow: 1; */
     display: flex;
     flex-direction: column;
-    min-height: 100%;
 `;
 
 export default App;

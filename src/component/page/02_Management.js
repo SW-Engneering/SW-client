@@ -1,39 +1,34 @@
-import styled from "styled-components";
-import 로고 from "../images/로고.jpg";
-import 팀관리1 from "../images/팀관리1.jpg";
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
-
-
+import styled from 'styled-components';
+import 로고 from '../images/로고.jpg';
+import 팀관리1 from '../images/팀관리1.jpg';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 export default function Management() {
-
+    const [teamId, setTeamId] = useState(null);
     const navigate = useNavigate();
 
     const [teamInfo, setTeamInfo] = useState({
-        name : '가입된 팀이 없습니다.',
-        region : '대구',
-        win : 0,
-        draw : 0,
-        lose : 0,
+        name: '가입된 팀이 없습니다.',
+        region: '대구',
+        win: 0,
+        draw: 0,
+        lose: 0,
     });
 
     const handleTeamCreate = () => {
         navigate('/create_team');
     };
 
-    
+    // useEffect(() => {
+    //     const teamInfoLoad = async () => {
+    //         const res = await axios.get('api주소');
+    //         setTeamInfo(res.data);
+    //     };
 
-    useEffect(() => {
-        const teamInfoLoad = async () => {
-            const res = await axios.get('api주소');
-                setTeamInfo(res.data);
-        };
-
-        teamInfoLoad();
-    }, [navigate]);
-
+    //     teamInfoLoad();
+    // }, [navigate]);
 
     return (
         <Container>
@@ -45,18 +40,14 @@ export default function Management() {
             <Team>
                 <LeftTeam>
                     <TeamLogo src={로고} alt="팀 로고" />
-                    <TeamName>
-                        {teamInfo.name}
-                    </TeamName>
+                    <TeamName>{teamInfo.name}</TeamName>
                     <WinLose>
                         {teamInfo.win}승 {teamInfo.draw}무 {teamInfo.lose}패
                     </WinLose>
                     <TeamCreateButton onClick={handleTeamCreate}>팀 만들기</TeamCreateButton>
                 </LeftTeam>
                 <RightTeam>
-                    <Matching>
-                        매칭정보
-                    </Matching>
+                    <Matching>매칭정보</Matching>
                     <TeamList>
                         <MyTeam>
                             <TeamLogo src={로고} alt="팀 로고" />
@@ -73,7 +64,7 @@ export default function Management() {
                 </RightTeam>
             </Team>
         </Container>
-    )
+    );
 }
 
 const Container = styled.div`
@@ -119,7 +110,6 @@ const LeftTeam = styled.div`
     background-color: red;
     width: 30%;
     height: 400px;
-    
 `;
 
 const TeamCreateButton = styled.button`
@@ -138,7 +128,6 @@ const TeamName = styled.div`
     font-weight: bold;
     color: white;
     font-size: 30px;
-    
 `;
 
 const WinLose = styled.div`
@@ -147,9 +136,7 @@ const WinLose = styled.div`
     font-size: 15px;
 `;
 
-const MatchInfo = styled.div`
-
-`;
+const MatchInfo = styled.div``;
 
 const RightTeam = styled.div`
     margin-top: 30px;
@@ -164,11 +151,10 @@ const RightTeam = styled.div`
 
 const Matching = styled.div`
     padding: 10px 0;
-    background-color: #4F599F;
+    background-color: #4f599f;
     color: white;
     font-size: 30px;
     font-weight: bold;
-    
 `;
 
 const TeamList = styled.div`
