@@ -32,8 +32,10 @@ function Footer() {
 }
 
 const Container = styled.div`
-
-    background-color: rgba(33, 34, 39);
+    border-top: 2px solid #ecedef;
+    margin-top: 30px;
+    margin-bottom: 50px;
+    background-color: white;
     display: flex;
     width: 100%;
     height: 8vh;
@@ -45,25 +47,25 @@ const Container = styled.div`
     padding:3px;
 `;
 const Navbar = styled.div`
-    margin: 10px;
+    margin-top: 30px;
 `;
 const NavbarText = styled.div`
     margin-bottom: 10px;
     word-spacing: 3px;
     font-size: 13px;
-    color: white;
-    margin: 10px;
+    color: black;
+    margin-top: 30px;
     text-decoration: none;
 `;
 const Navi = styled(NavLink)`
     word-spacing: 3px;
     font-size: 13px;
-    color: white;
+    color: black;
     margin: 10px;
     text-decoration: none;
 `;
 const Divider = styled.span`
     margin: 0 15px;
-    color: white;
+    color: black;
 `;
 export default Footer;

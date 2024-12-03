@@ -66,10 +66,11 @@ const Container = styled.div`
     display: flex;
     justify-content: left;
     align-items: center;
+    margin-top: 10px;
     width: 100%;
     background-color: white;
-    border-bottom: 0.1px solid grey; /* 하단 회색 줄 */
-    box-sizing:border-box;
+    border-bottom: 2px solid #ecedef; /* 하단 회색 줄 */
+    font-family: 'Pretendard-Regular';
 `;
 
 const LogoImage = styled.div`
@@ -117,8 +118,9 @@ const NaviContainer = styled.div`
 
 const Navi = styled(NavLink)`
     color: #000000;
-    font-size: 15px;
+    font-size: 17px;
     font-weight: bold;
     font-family: ${(props) => props.fontFamily || 'inherit'};
+    margin-bottom:10px;
     text-decoration: none;
 `;

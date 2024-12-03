@@ -1,4 +1,3 @@
-import logo from './logo.svg';
 import './App.css';
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
@@ -12,7 +11,9 @@ import Footer from './component/layout/Footer';
 import Mypage from './component/page/02_Mypage';
 import Member from './component/page/02_Member';
 import MemberWrite from './component/page/02_Member_Write';
+import MemberDetail from './component/page/02_MemberDetail';
 import Management from './component/page/02_Management';
+import Createteam from './component/page/02_create_team';
 import Match from './component/page/02_Match';
 import MatchWrite from './component/page/02_Match_Write';
 import Team from './component/page/02_Team';
@@ -33,11 +34,13 @@ function App() {
                         <Route path="/login" element={<Login />} />
                         <Route path="/member" element={<Member />} />
                         <Route path="/memberwrite" element={<MemberWrite />} />
+                        <Route path="/member/:post_id" element={<MemberDetail />} />
                         <Route path="/teamwrite" element={<TeamWrite />} />
                         <Route path="/team" element={<Team />} />
                         <Route path="/match" element={<Match />} />
                         <Route path="matchwrite" element={<MatchWrite />} />
                         <Route path="/management" element={<Management />} />
+                        <Route path="/create_team" element={<Createteam />} />
                         <Route path="/signup" element={<Signup />} />
                         <Route path="/  " element={<Vote />} />
                     </Routes>

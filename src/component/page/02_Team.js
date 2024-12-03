@@ -17,7 +17,7 @@ export default function Team() {
     useEffect(() => {
         const fetchPosts = async () => {
             try {
-                const response = await axios.get("미구현"); // API 호출
+                const response = await axios.get('http://3.34.133.247:8080/team'); // API 호출
                 setPosts(response.data); // 게시물 데이터 설정
             } catch (error) {
                 setError("게시물 가져오기 실패"); // 에러 메시지 설정
@@ -61,9 +61,9 @@ export default function Team() {
                 ) : (
                     <PostsList>
                         {posts.map((team) => (
-                            <PostItem key={team.num_idx}>
-                                <PostTitle>{team.title}</PostTitle>
-                                <PostWriter>{team.writer}</PostWriter>
+                            <PostItem key={team.post_id}>
+                                <PostTitle>{team.post_title}</PostTitle>
+                                <PostWriter>{team.post_writer}</PostWriter>
                                 <PostViewCnt>{team.view_cnt}</PostViewCnt>
                                 <PostCreateTime>{team.create_time}</PostCreateTime>
                             </PostItem>
