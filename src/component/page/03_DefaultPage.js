@@ -4,9 +4,9 @@ import { useState } from 'react';
 export default function DefaultPage() {
     const [nickname, setNickname] = useState('user123');
     const [email, setEmail] = useState('user@example.com');
-    const [position, setPosition] = useState('개발자');
+    const [position, setPosition] = useState('골키퍼');
     const [number, setNumber] = useState('010-1234-5678');
-    const [detail, setDetail] = useState('안녕하세요, 저는 개발자입니다.');
+    const [detail, setDetail] = useState('안녕하세요. 다막는 골키퍼입니다.');
 
     return (
         <Container>

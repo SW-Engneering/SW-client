@@ -72,7 +72,7 @@ export default function Home() {
 }
 
 const Container = styled.div`
-    
+    font-family: 'Pretendard-Regular';
     position: relative;
     max-width: 100%;
 `;
@@ -151,6 +151,6 @@ const Navi = styled(NavLink)`
 `;
 const Image = styled.img`
     width: 100%;
-    height: ;
+    height:100%;
     object-fit: contain;
 `;

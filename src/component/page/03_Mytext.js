@@ -7,6 +7,7 @@ export default function Mytext() {
         { id: 1, title: '첫 번째 게시글', content: '내용 1' },
         { id: 2, title: '두 번째 게시글', content: '내용 2' },
         { id: 3, title: '세 번째 게시글', content: '내용 3' },
+        { id: 4, title: '네 번째 게시글', content: '내용 4' },
     ]);
 
     const handleDelete = (id) => {
@@ -40,11 +41,9 @@ export default function Mytext() {
 }
 
 const Container = styled.div`
-    padding: 20px;
-    background-color: #f9f9f9;
     border-radius: 10px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     width: 100%;
+    height: 100%;
 `;
 
 const Title = styled.h2`
@@ -61,7 +60,11 @@ const PostContainer = styled.div`
     padding: 15px;
     margin: 10px 0;
     border-radius: 5px;
+    border: solid 0.5px rgba(0, 0, 0, 0.1);
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    &:not(last-child) {
+        margin-bottom: 5px;
+    }
 `;
 
 const PostTitle = styled.h3`

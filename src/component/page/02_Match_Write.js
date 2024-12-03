@@ -16,7 +16,7 @@ export default function MatchWrite() {
     const {title, contents} = write;
 
     const onChange = (e) => {
-        const { value, name } = e.target;
+        const { name, value } = e.target;
         setWrite({
             ...write,
             [name]: value,

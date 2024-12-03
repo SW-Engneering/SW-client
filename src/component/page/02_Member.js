@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import 배너 from "../images/배너.png"
+import 팀관리1 from "../images/팀관리1.jpg";
 import axios from "axios";
 
 export default function Member() {
@@ -9,14 +9,14 @@ export default function Member() {
     const [MemberList, setMemberList] = useState([]);
     const [error, setError] = useState(null);
     const navigate = useNavigate();
-
     
     
     useEffect (() => {
         const fetchMemberList = async () => {
             try {
                 const response = await axios.get('http://3.34.133.247:8080/member');
-                setMemberList(response.data);
+                const sortedMemberList = response.data.sort((a, b) => b.post_id - a.post_id); // 내림차순 정렬
+                setMemberList(sortedMemberList);
             } catch(error) {
                 setError("게시물 가져오기 실패");
             }
@@ -33,46 +33,57 @@ export default function Member() {
         navigate('/memberwrite')
     }
 
+    const memberDetail = (post_id) => {
+        navigate(`/member/${post_id}`)
+    }
+
 
     return(
         <Container>
             <BannerContainer>
-                <Image src={배너} alt="배너" />
+                <Image src={팀관리1} alt="ㅁㄴㅇㄹ" />
+                <OverlayText1>팀원 구하기</OverlayText1>
+                <OverlayText2>같이 축구하실 분~</OverlayText2>
             </BannerContainer>
-            <TitleContainer>
-                <TeamContainer>
-                    팀원 구하기
-                </TeamContainer>
-                <SitemapContainer>
-                    <a href="/">메인</a>
-                    &gt;
-                    <strong>팀원 구하기</strong>
-                </SitemapContainer>
-            </TitleContainer>
-            <HeaderContainer>
+            <Padding200>
+                <TitleContainer>
+                    <TeamContainer>
+                        팀원 구하기
+                    </TeamContainer>
+                    <SitemapContainer>
+                        <a href="/">메인 </a>
+                        &gt;
+                        <strong> 팀원 구하기</strong>
+                    </SitemapContainer>
+                </TitleContainer>
+                <HeaderContainer>
                     <FirstContainer>글 번호</FirstContainer>
                     <SecondContainer>제목</SecondContainer>
                     <ThirdContainer>작성자</ThirdContainer>
                     <FourthContainer>작성일</FourthContainer>
                     <FifthContainer>조회수</FifthContainer>
-            </HeaderContainer>
-            <ul>
-                {error ? (
-                    <ul>{error}</ul>
-                ) : MemberList.length === 0 ? (
-                    <ul>등록된 게시물이 없습니다.</ul>
-                ) : (
-                    <PostsList>
-                        {MemberList.map((post) => (
-                            <PostItem key={post.post_id}>
-                                <PostTitle>{post.post_title}</PostTitle>
-                                <PostContent>{post.post_content}</PostContent>
-                            </PostItem>
-                        ))}
-                    </PostsList>
-                )}
-            </ul>
-            <WriteButton onClick={moveToWrite}>글쓰기</WriteButton>
+                </HeaderContainer>
+                <div>
+                    {error ? (
+                        <ul>{error}</ul>
+                    ) : MemberList.length === 0 ? (
+                        <ul>등록된 게시물이 없습니다.</ul>
+                    ) : (
+                        <PostsList>
+                            {MemberList.map((post) => (
+                                <PostItem key={post.post_id}>
+                                    <PostId>{post.post_id}</PostId>
+                                    <PostTitle onClick={() => memberDetail(post.post_id)}>{post.post_title}</PostTitle>
+                                    <PostUserId>{post.user_id}</PostUserId>
+                                    <PostCreateTime>{post.post_created_time.split('T')[0]}</PostCreateTime>
+                                    <PostHits>{post.post_hits}</PostHits>
+                                </PostItem>
+                            ))}
+                        </PostsList>
+                    )}
+                </div>
+                <WriteButton onClick={moveToWrite}>글쓰기</WriteButton>
+            </Padding200>
         </Container>
         
     );
@@ -81,15 +92,17 @@ export default function Member() {
 const Container = styled.div`
     justify-content: center;
     align-items: center;
-    padding-left: 200px;
-    padding-right: 200px;
+    font-family: 'Pretendard-Regular';
 
 `;
 
 const BannerContainer = styled.div`
-    display: flex;
-    justify-content: center;
-    align-item: center;
+    position: relative;
+`;
+
+const Padding200 = styled.div`
+    padding-left: 200px;
+    padding-right: 200px;
 `;
 
 
@@ -98,6 +111,7 @@ const TitleContainer = styled.div`
     display: flex;
     justify-content: space-between;
     border-bottom: 2px solid #cecece; /* 하단 회색 줄 */
+    margin-top: 30px;
 `;
 
 const HeaderContainer = styled.div`
@@ -119,7 +133,7 @@ const SecondContainer = styled.div` //제목
 
 
 const ThirdContainer = styled.div`
-
+    margin-left: 17px;
     margin-right: 100px;
 `;
 
@@ -130,7 +144,7 @@ const FourthContainer = styled.div`
 
 
 const FifthContainer = styled.div`
-    margin-left: 100px;
+    margin-left: 107px;
 `;
 
 const TeamContainer = styled.div`
@@ -140,9 +154,28 @@ const TeamContainer = styled.div`
 `;
 
 const Image = styled.img`
-    width: 80%;
-    height: auto;
-    object-fit: contain;
+    
+`;
+
+const OverlayText1 = styled.div`
+    position: absolute; /* 절대 위치 지정 */
+    top: 30%; /* 수직 중앙 정렬 */
+    left: 50%; /* 수평 중앙 정렬 */
+    transform: translate(-50%, -50%); /* 중앙으로 이동 */
+    color: white; /* 텍스트 색상 */
+    font-size: 40px; /* 텍스트 크기 */
+    font-weight: bold; /* 텍스트 두께 */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); /* 텍스트 그림자 */
+`;
+
+const OverlayText2 = styled.div`
+    position: absolute; /* 절대 위치 지정 */
+    top: 70%;
+    left: 50%; /* 수평 중앙 정렬 */
+    transform: translate(-50%, -50%); /* 중앙으로 이동 */
+    color: white; /* 텍스트 색상 */
+    font-size: 20px; /* 텍스트 크기 */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); /* 텍스트 그림자 */
 `;
 
 const SitemapContainer = styled.div`
@@ -150,25 +183,48 @@ const SitemapContainer = styled.div`
     padding: 20px 0; /* 위아래 패딩 추가 */
 `;
 
-const PostsList = styled.ul`
+const PostsList = styled.div`
     list-style: none;
     padding: 0;
     border-bottom: 0.1px solid grey; /* 하단 회색 줄 */
+    text-align: center;
 `;
 
-const PostItem = styled.li`
+const PostItem = styled.div`
     border: 1px solid #ddd;
-    border-radius: 5px;
-    margin: 10px 0;
+    border-right: 1px solid white;
+    border-left: 1px solid white;
+    
     padding: 10px;
+    display: flex;
 `;
 
-const PostTitle = styled.h3`
-    margin: 0;
+const PostId = styled.div`
+    width: 50px;
 `;
 
-const PostContent = styled.p`
-    margin: 5px 0 0;
+const PostTitle = styled.div`
+    width: 536px;
+    margin-left: 60px;
+    text-align: left;
+    cursor: pointer;
+`;
+
+const PostUserId = styled.div`
+    
+    width: 100px;
+    margin-left: 38px;
+`;
+
+const PostCreateTime = styled.div`
+    
+    margin-left: 10px;
+    width: 160px;
+`;
+
+const PostHits = styled.div`
+    width: 110px;
+    margin-left: 17px;
 `;
 
 const WriteButton = styled.button`

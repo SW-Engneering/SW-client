@@ -16,7 +16,7 @@ export default function MemberWrite() {
         post_id: 0,
         user_id: userId, // userId를 포함
         post_type: "member", // 필요한 경우 적절하게 설정
-        post_writer: "사용자", // 작성자 정보를 userId로 설정
+        post_writer: "", // 작성자 정보를 userId로 설정
         post_title: "",
         post_content: "",
         post_hits: 0,

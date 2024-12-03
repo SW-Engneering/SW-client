@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
+import userData from '../../UserData';
 import Cookies from 'js-cookie';
 
 export default function Header() {
