@@ -1,23 +1,59 @@
 // MyPosts.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import Cookies from 'js-cookie';
+import axios from 'axios';
 
 export default function Mytext() {
-    const [posts, setPosts] = useState([
-        { id: 1, title: '첫 번째 게시글', content: '내용 1' },
-        { id: 2, title: '두 번째 게시글', content: '내용 2' },
-        { id: 3, title: '세 번째 게시글', content: '내용 3' },
-        { id: 4, title: '네 번째 게시글', content: '내용 4' },
-    ]);
+    const [posts, setPosts] = useState([]);
+    const [id, setId] = useState(null);
+    const cookieId = Cookies.get('userId');
 
-    const handleDelete = (id) => {
-        setPosts(posts.filter((post) => post.id !== id));
-    };
+    useEffect(() => {
+        setId(cookieId);
+    }, [cookieId]);
 
     const handleEdit = (id) => {
         // 수정 로직을 여기에 추가
         alert(`게시글 ${id} 수정하기 기능을 구현하세요.`);
     };
+    
+    const handleDelete = async (postId) => {
+        try {
+            const response = await axios.delete(`https://3.34.133.247/match/${postId}?userId=${id}`, {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            if (response.status === 204) {
+                setPosts(posts.filter((post) => post.post_id !== postId));
+                alert('게시글이 삭제되었습니다.');
+            }
+        } catch (error) {
+            console.error('게시글 삭제 중 오류 발생', error);
+            alert('게시글 삭제에 실패했습니다.');
+        }
+    };
+
+    const fetchUserBulletin = async ()=>{
+        try{
+            const response = await axios.get(`https://3.34.133.247/board/${id}`,{
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+
+            });
+            console.log('내가 쓴 글 불러오기 성공', response.data);
+            setPosts(response.data);
+        }catch(error){
+            console.error('API 요청 에러', error);
+        }
+    }
+    useEffect(()=>{
+        if(cookieId)
+        fetchUserBulletin();
+    },[cookieId])
 
     return (
         <Container>
@@ -26,9 +62,9 @@ export default function Mytext() {
                 <NoPosts>게시글이 없습니다.</NoPosts>
             ) : (
                 posts.map((post) => (
-                    <PostContainer key={post.id}>
-                        <PostTitle>{post.title}</PostTitle>
-                        <PostContent>{post.content}</PostContent>
+                    <PostContainer key={post.post_id}>
+                        <PostTitle>{post.post_title}</PostTitle>
+                        <PostContent>{post.post_content}</PostContent>
                         <ButtonContainer>
                             <EditButton onClick={() => handleEdit(post.id)}>수정</EditButton>
                             <DeleteButton onClick={() => handleDelete(post.id)}>삭제</DeleteButton>
