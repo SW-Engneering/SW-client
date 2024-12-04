@@ -6,13 +6,11 @@ import axios from "axios";
 import Cookies from "js-cookie";
 
 export default function Member() {
-
     const [MemberList, setMemberList] = useState([]);
     const [error, setError] = useState(null);
     const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 상태
     const postsPerPage = 10; // 페이지당 게시글 수
     const navigate = useNavigate();
-    
     
     useEffect(() => {
         const fetchMemberList = async () => {
@@ -25,7 +23,7 @@ export default function Member() {
                     const userResponse = await axios.get(`https://3.34.133.247/user/${post.user_id}`);
                     return {
                         ...post,
-                        nickname: userResponse.data.nickname// nickname 추가
+                        nickname: userResponse.data.nickname // nickname 추가
                     };
                 }));
                 console.log('불러온 목록: ', memberWithNicknames);
@@ -41,14 +39,12 @@ export default function Member() {
     }, []);
 
     const moveToWrite = () => {
-        const nickname = Cookies.get('nickname')
-        if(!nickname) {
+        const nickname = Cookies.get('nickname');
+        if (!nickname) {
             alert('로그인 안하면 글 못씁니다.');
+        } else {
+            navigate('/memberwrite');
         }
-        else {
-            navigate('/memberwrite')
-        }
-        
     };
 
     // 페이지네이션에 따른 현재 페이지의 게시글 가져오기
@@ -57,7 +53,8 @@ export default function Member() {
     const currentPosts = MemberList.slice(indexOfFirstPost, indexOfLastPost);
 
     const memberDetail = async (post_id, post) => {
-        navigate(`/member/${post_id}`, { state: { post } } );
+        navigate(`/member/${post_id}`, { state: { post } });
+        console.log(post);
     };
 
     const handlePageChange = (pageNumber) => {
@@ -66,10 +63,15 @@ export default function Member() {
 
     const totalPages = Math.ceil(MemberList.length / postsPerPage);
 
-    return(
+    // 두 자리 숫자로 포맷팅하는 함수
+    const formatTime = (number) => {
+        return number.toString().padStart(2, '0'); // 2자리로 포맷팅
+    };
+
+    return (
         <Container>
             <BannerContainer>
-                <Image src={팀관리1} alt="ㅁㄴㅇㄹ" />
+                <Image src={팀관리1} alt="팀관리" />
                 <OverlayText1>팀원 구하기</OverlayText1>
                 <OverlayText2>같이 축구하실 분~</OverlayText2>
             </BannerContainer>
@@ -98,17 +100,28 @@ export default function Member() {
                         <ul>등록된 게시물이 없습니다.</ul>
                     ) : (
                         <PostsList>
-                            {currentPosts.map((post) => (
-                                <PostItem key={post.post_id}>
-                                    <PostId>{post.post_id}</PostId>
-                                    <PostTitle onClick={() => memberDetail(post.post_id, post)}>
-                                        {post.post_title}{post.post_comment_count > 0 && ` [${post.post_comment_count}]`}
-                                    </PostTitle>
-                                    <PostUserId>{post.nickname}</PostUserId>
-                                    <PostCreateTime>{post.post_created_time.split('T')[0]}</PostCreateTime>
-                                    <PostHits>{post.post_hits}</PostHits>
-                                </PostItem>
-                            ))}
+                            {currentPosts.map((post) => {
+                                const createdTime = new Date(post.post_created_time); // 날짜 객체로 변환
+                                const currentDate = new Date(); // 현재 날짜 객체
+                                const isToday = createdTime.toDateString() === currentDate.toDateString(); // 오늘인지 확인
+
+                                return (
+                                    <PostItem key={post.post_id}>
+                                        <PostId>{post.post_id}</PostId>
+                                        <PostTitle onClick={() => memberDetail(post.post_id, post)}>
+                                            {post.post_title}{post.post_comment_count > 0 && ` [${post.post_comment_count}]`}
+                                        </PostTitle>
+                                        <PostUserId>{post.nickname}</PostUserId>
+                                        <PostCreateTime>
+                                            {isToday 
+                                                ? `${formatTime(createdTime.getHours())}:${formatTime(createdTime.getMinutes())}` // 오늘이면 시간 표시
+                                                : createdTime.toISOString().split('T')[0] // 오늘이 아니면 날짜만 표시
+                                            }
+                                        </PostCreateTime>
+                                        <PostHits>{post.post_hits}</PostHits>
+                                    </PostItem>
+                                );
+                            })}
                         </PostsList>
                     )}
                 </div>
@@ -122,9 +135,9 @@ export default function Member() {
                 <WriteButton onClick={moveToWrite}>글쓰기</WriteButton>
             </Padding200>
         </Container>
-        
     );
 }
+
 
 const Container = styled.div`
     justify-content: center;
@@ -192,7 +205,7 @@ const TeamContainer = styled.div`
 `;
 
 const Image = styled.img`
-    
+    width: 100%;
 `;
 
 const OverlayText1 = styled.div`

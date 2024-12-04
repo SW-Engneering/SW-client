@@ -1,31 +1,43 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { useState, useEffect } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import ball from '../images/ball.png';
 import Cookies from 'js-cookie';
-
+import axios from 'axios';
 
 
 
 export default function Nav() {
 
     const navigate = useNavigate();
-    const [id, setId] = useState(null);
+    const userId = Cookies.get('userId');
+    
+    
 
-    useEffect(() => {
-        const cookieId = Cookies.get('userId');
-        setId(cookieId ? cookieId : null);
-    }, []);
+    const teamGwanLiMotDeGa = async (asdf) => {
+        try {
+            const userResponse = await axios.get(`https://3.34.133.247/user/${userId}`);
+            const { team_id } = userResponse.data; // team_id 추출
+            console.log(team_id);
 
-    const handleTeamManagementClick = () => {
-        if (!id) {
-            alert('로그인이 필요합니다.');
-        } else {
-            navigate('/management'); // 팀 관리 페이지로 이동
+            if(userId) {
+                if(team_id) {
+                    navigate('/management');
+                }
+                else {
+                    const confirm = window.confirm('asdf?');
+                    if(confirm) {
+                        navigate('/create_team');
+                    }
+                }
+            }
+        } catch(error) {
+            alert('로그인이 필요한 기능입니다.');
+            navigate('/login');
         }
-    };
 
+        
+    }
     return (
         <Container>
             <a href="/">
@@ -53,9 +65,9 @@ export default function Nav() {
                     </Navi>
                 </NaviContainer>
                 <NaviContainer>
-                    <Navi activeClassName="active" to="/management">
+                    <Shit onClick={teamGwanLiMotDeGa}>
                         팀 관리
-                    </Navi>
+                    </Shit>
                 </NaviContainer>
             </Navbar>
         </Container>
@@ -123,4 +135,14 @@ const Navi = styled(NavLink)`
     font-family: ${(props) => props.fontFamily || 'inherit'};
     margin-bottom:10px;
     text-decoration: none;
+`;
+
+const Shit = styled.div`
+    color: #000000;
+    font-size: 17px;
+    font-weight: bold;
+    font-family: ${(props) => props.fontFamily || 'inherit'};
+    margin-bottom:10px;
+    text-decoration: none;
+    cursor: pointer;
 `;

@@ -6,7 +6,7 @@ import 팀관리1 from "../images/팀관리1.jpg";
 import styled from 'styled-components';
 import Cookies from 'js-cookie';
 
-export default function MemberDetail() {
+export default function MatchDetail() {
     
     const navigate = useNavigate();
     const location = useLocation();
@@ -89,6 +89,7 @@ export default function MemberDetail() {
                 comment_content: writeComment,
                 nickname: nickname,
             });
+            alert("댓글이 작성되었습니다.");
             setWriteComment(''); // 댓글 입력란 초기화
             // 댓글 다시 가져오기
             const response = await axios.get(`https://3.34.133.247/comments?postId=${post.post_id}`);
@@ -109,16 +110,17 @@ export default function MemberDetail() {
         }
     };
 
-    const CommentDeleteGoGo = async(comment_id) => {
+    const CommentDeleteGoGo = async() => {
         const confirmDelete = window.confirm("정말로 삭제하시겠습니까?");
         if(confirmDelete) {
             try {
-                await axios.delete(`https://3.34.133.247/comments/${comment_id}?userId=${userId}`);
+                await axios.delete(`https://3.34.133.247/comments/${comments.comment_id}?userId=${userId}`);
                 alert("삭제되었습니다.");
-                window.location.reload();
+                navigate('/member');
             } catch(error) {
-                console.log(comment_id, '가 표시가 안되나?');
+                console.log(comments.comment_id, '가 표시가 안되나?');
                 console.log('아니면', userId, '가 표시가 안되나?');
+                console.log(comments)
             }
         }
         else {
@@ -169,7 +171,7 @@ export default function MemberDetail() {
                             <CommentinsertTime>{comment.comment_insert_time.split('T')[0]} {comment.comment_insert_time.split('T')[1].split('.')[0]}</CommentinsertTime>
                             {nickname === comment.nickname && ( // 작성자 본인일 때만 버튼 표시
                                 <>
-                                    <CommentDelete onClick={() => CommentDeleteGoGo(comment.comment_id)}>삭제</CommentDelete>
+                                    <CommentDelete onClick={CommentDeleteGoGo}>삭제</CommentDelete>
                                 </>
                             )}
                             

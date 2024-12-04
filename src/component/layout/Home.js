@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Slider from 'react-slick';
 import styled from 'styled-components';
-import { NavLink } from 'react-router-dom';
+import { NavLink ,useNavigate } from 'react-router-dom';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import '../css/Font.css';
@@ -12,8 +12,16 @@ import Team from '../page/02_Team';
 import Match from '../page/02_Match';
 import 팀원 from '../images/팀원구하기1.png';
 import 팀 from '../images/팀구하기1.png';
+import axios from 'axios';
+
 
 export default function Home() {
+
+    const [memberList, setMemberList] = useState([]);
+    const [teamList, setTeamList] = useState([]);
+    const [matchList, setMatchList] = useState([]);
+    const navigate = useNavigate();
+    
 
     const settings = {
         dots: false,
@@ -27,6 +35,58 @@ export default function Home() {
         autoplaySpeed: 5000,
         prevArrow: <LeftArrow src={왼쪽화살표} alt="Previous" />,
         nextArrow: <RightArrow src={오른쪽화살표} alt="Next" />,
+    };
+
+    useEffect(() => {
+        const getFiveMemberList = async () => {
+            try {
+                const response = await axios.get(`https://3.34.133.247/member`);
+                const goodData = response.data.sort((a, b) => b.post_id - a.post_id);
+                const recentPosts = goodData.slice(0, 5);
+                setMemberList(recentPosts);
+            } catch(error) {
+                console.log('에러')
+            }
+        }
+        getFiveMemberList();
+
+        const getFiveTeamList = async () => {
+            try {
+                const response = await axios.get(`https://3.34.133.247/team`);
+                const goodData = response.data.sort((a, b) => b.post_id - a.post_id);
+                const recentPosts = goodData.slice(0, 5);
+                setTeamList(recentPosts);
+            } catch(error) {
+                console.log('에러')
+            }
+        }
+
+        const getMatchList = async () => {
+            try {
+                const response = await axios.get(`https://3.34.133.247/match`);
+                const goodData = response.data.sort((a, b) => b.post_id - a.post_id);
+                const recentPosts = goodData.slice(0, 5);
+                setMatchList(recentPosts);
+            } catch(error) {
+                console.log('에러')
+            }
+        }
+
+        getFiveMemberList();
+        getFiveTeamList();
+        getMatchList();
+    }, []);
+
+    const memberDetail = async (post_id, post) => {
+        navigate(`/member/${post_id}`, { state: { post } } );
+    };
+
+    const teamDetail = async (post_id, post) => {
+        navigate(`/team/${post_id}`, { state: { post } } );
+    };
+
+    const matchDetail = async (post_id, post) => {
+        navigate(`/team/${post_id}`, { state: { post } } );
     };
 
     return (
@@ -47,32 +107,55 @@ export default function Home() {
                 <SliderContainer>다섯번째 화면</SliderContainer>
                 <SliderContainer>여섯번째 화면</SliderContainer>
             </Slider>
-            <RecentContainer>최근 올라온 글</RecentContainer>
-            <RenderContainer>
+            <Gray>
+                <RecentContainer>최근 올라온 글</RecentContainer>
                 <TeamContainer>
                     <BulletinContainer>
                         <BulletinNameContainer>팀원 구하기</BulletinNameContainer>
-                        <BulletinTitleContainer>경산 팀구합니다</BulletinTitleContainer>
-                        <BulletinTitleContainer>경산 팀구합니다</BulletinTitleContainer>
+                        <PostsList>
+                            {memberList.map((post) => (
+                                <PostItem key={post.post_id}>
+                                    <PostTitle onClick={() => memberDetail(post.post_id, post)}>
+                                        {post.post_title}{post.post_comment_count > 0 && ` [${post.post_comment_count}]`}
+                                    </PostTitle>
+                                </PostItem>
+                            ))}
+                        </PostsList>
                     </BulletinContainer>
                     <BulletinContainer>
                         <BulletinNameContainer>팀 구하기</BulletinNameContainer>
-                        <BulletinTitleContainer>SC팀 골키퍼 구해요</BulletinTitleContainer>
-                        <BulletinTitleContainer>SC팀 골키퍼 구해요</BulletinTitleContainer>
+                        <PostsList>
+                            {teamList.map((post) => (
+                                <PostItem key={post.post_id}>
+                                    <PostTitle onClick={() => teamDetail(post.post_id, post)}>
+                                        {post.post_title}{post.post_comment_count > 0 && ` [${post.post_comment_count}]`}
+                                    </PostTitle>
+                                </PostItem>
+                            ))}
+                        </PostsList>
                     </BulletinContainer>
                     <BulletinContainer>
                         <BulletinNameContainer>팀 매칭하기</BulletinNameContainer>
-                        <BulletinTitleContainer>사동 풋살장에서 16시에 풋살할 팀 모집</BulletinTitleContainer>
-                        <BulletinTitleContainer>사동 풋살장에서 16시에 풋살할 팀 모집</BulletinTitleContainer>
+                        <PostsList>
+                            {matchList.map((post) => (
+                                <PostItem key={post.post_id}>
+                                    <PostTitle onClick={() => matchDetail(post.post_id, post)}>
+                                        {post.post_title}{post.post_comment_count > 0 && ` [${post.post_comment_count}]`}
+                                    </PostTitle>
+                                </PostItem>
+                            ))}
+                        </PostsList>
                     </BulletinContainer>
                 </TeamContainer>
-            </RenderContainer>
+                <ToBeContinued>to be continued...</ToBeContinued>
+            </Gray>
+            
         </Container>
     );
 }
 
 const Container = styled.div`
-    font-family: 'Pretendard-Regular';
+    font-family: 'Pretendard-Light';
     position: relative;
     max-width: 100%;
 `;
@@ -104,45 +187,43 @@ const RightArrow = styled(Arrow)`
     right: 10px; /* 오른쪽 위치 조정 */
 `;
 
-const RenderContainer = styled.div`
-    display: flex;
-    width: 100%;
+const Gray = styled.div`
+    background-color: #ecedef;
+`;
+
+const RecentContainer = styled.div`
+    padding: 30px 0;
+    text-align: center;
+    font-weight: bold;
+    font-size: 30px;
 `;
 
 const TeamContainer = styled.div`
     display: flex;
-    width: 100%;
+    width: 60%;
+    align-items: center;
+    background-color: white;
+    margin: 0 auto;
 `;
-const RecentContainer = styled.div`
-    margin: 6% 0 1% 0;
-`;
+
 const BulletinContainer = styled.div`
     display: flex;
     flex-direction: column;
     flex: 1;
-    width: 30%;
-    aspect-ratio: 1;
+    width: 25%;
+    
     text-align: center;
-    &:not(:last-child) {
-        margin-right: 2%;
-    }
+    border: 0.5px solid #ecedef;
 `;
 //최신글 게시판 종류
 const BulletinNameContainer = styled.div`
     font-weight: bold;
     padding: 4%;
     border-top: 2px solid black;
-    border-top-left-radius: 10px;
-    border-left: 0;
-    border-right: 0;
+    
 `;
-//최신글 제목
-const BulletinTitleContainer = styled.div`
-    padding: 1% 0;
-    &:not(:last-child) {
-        border-bottom: dotted 1px black;
-    }
-`;
+
+
 
 const Navi = styled(NavLink)`
     display: flex;
@@ -153,4 +234,35 @@ const Image = styled.img`
     width: 100%;
     height:100%;
     object-fit: contain;
+`;
+
+const PostsList = styled.div`
+    list-style: none;
+    padding: 0;
+    border-bottom: 0.1px solid grey; /* 하단 회색 줄 */
+    text-align: center;
+    font-size: 15px;
+`;
+
+const PostItem = styled.div`
+    border: 1px solid #ddd;
+    padding: 10px;
+    display: flex;
+`;
+
+
+const PostTitle = styled.div`
+    width: 536px;
+    margin-left: 20px;
+    text-align: left;
+    cursor: pointer;
+
+    &:hover {
+        color: green;
+        }
+`;
+
+const ToBeContinued = styled.div`
+    padding: 20px 0;
+    text-align: center;
 `;

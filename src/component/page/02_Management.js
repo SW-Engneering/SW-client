@@ -4,35 +4,49 @@ import 팀관리1 from "../images/팀관리1.jpg";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import Cookies from "js-cookie";
 
 
 
 export default function Management() {
-
-    const navigate = useNavigate();
-
-    const [teamInfo, setTeamInfo] = useState({
-        name : '가입된 팀이 없습니다.',
-        region : '대구',
-        win : 0,
-        draw : 0,
-        lose : 0,
-    });
-
-    const handleTeamCreate = () => {
-        navigate('/create_team');
-    };
-
     
 
+    const userId = Cookies.get('userId');
+    const [teamData, setTeamData] = useState([]);
+    const [matchData, setMatchData] = useState([]);
+    const [oppositionTeamData, setOppositionTeamData] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
     useEffect(() => {
-        const teamInfoLoad = async () => {
-            const res = await axios.get('api주소');
-                setTeamInfo(res.data);
+        const fetchTeamData = async () => {
+            try {
+                // 1번 API 주소에서 사용자 정보 가져오기
+                const userResponse = await axios.get(`https://3.34.133.247/user/${userId}`);
+                const { team_id } = userResponse.data; // team_id 추출
+
+                // 2번 API 주소에 team_id를 사용하여 팀 정보 가져오기
+                const teamResponse = await axios.get(`https://3.34.133.247/teams/${team_id}`);
+                setTeamData(teamResponse.data); // 팀 데이터 저장
+
+                // 3번 team_id를 이용해 상대팀 아이디 가져오기
+                const matchResponse = await axios.get(`https://3.34.133.247/teams/${team_id}/matches`)
+                setMatchData(matchResponse.data);
+
+                // 4번 그걸로 상대팀 이름 갖고오기
+                const oppositionTeamResponse = await axios.get(`https://3.34.133.247/teams/${matchData.team_id}`);
+                setOppositionTeamData(oppositionTeamResponse.data);
+
+            } catch (err) {
+                setError('팀 정보를 가져오는 데 실패했습니다.');
+                console.error(err);
+            } finally {
+                setLoading(false); // 로딩 상태 종료
+            }
         };
 
-        teamInfoLoad();
-    }, [navigate]);
+        fetchTeamData();
+    }, [matchData.team_id, userId]);
 
 
     return (
@@ -44,31 +58,33 @@ export default function Management() {
             </ImageContainer>
             <Team>
                 <LeftTeam>
-                    <TeamLogo src={로고} alt="팀 로고" />
-                    <TeamName>
-                        {teamInfo.name}
-                    </TeamName>
-                    <WinLose>
-                        {teamInfo.win}승 {teamInfo.draw}무 {teamInfo.lose}패
-                    </WinLose>
-                    <TeamCreateButton onClick={handleTeamCreate}>팀 만들기</TeamCreateButton>
+                    <Justbox>
+                        <TeamName>
+                            {teamData.teamName}
+                        </TeamName>
+                        <TeamRegion>{teamData.teamRegion}</TeamRegion>
+                    </Justbox>
                 </LeftTeam>
                 <RightTeam>
                     <Matching>
-                        매칭정보
+                        매치 정보
                     </Matching>
                     <TeamList>
-                        <MyTeam>
-                            <TeamLogo src={로고} alt="팀 로고" />
-                            <MyTeamName>{teamInfo.name}</MyTeamName>
-                            <TeamRegion>{teamInfo.region}</TeamRegion>
-                        </MyTeam>
-                        <VS>VS</VS>
-                        <OppositionTeam>
-                            <TeamLogo src={로고} alt="팀 로고" />
-                            <MyTeamName>{teamInfo.name}</MyTeamName>
-                            <TeamRegion>{teamInfo.region}</TeamRegion>
-                        </OppositionTeam>
+                        {oppositionTeamData && oppositionTeamData.teamName ? (
+                            <>
+                                <MyTeam>
+                                    <MyTeamName>{teamData.teamName}</MyTeamName>
+                                    <MyTeamRegion>{teamData.teamRegion}</MyTeamRegion>
+                                </MyTeam>
+                                <VS>VS</VS>
+                                <OppositionTeam>
+                                    <MyTeamName>{oppositionTeamData.teamName}</MyTeamName>
+                                    <TeamRegion>{oppositionTeamData.teamRegion}</TeamRegion>
+                                </OppositionTeam>
+                            </>
+                        ) : (
+                            <NoMatch>매치 정보가 없습니다.</NoMatch> // 매칭 정보가 없을 때 메시지 표시
+                        )}
                     </TeamList>
                 </RightTeam>
             </Team>
@@ -112,39 +128,26 @@ const OverlayText2 = styled.div`
 const Team = styled.div`
     display: flex;
     padding: 0 200px;
+    height: 200px;
 `;
 
 const LeftTeam = styled.div`
     margin-top: 30px;
+
     background-color: red;
     width: 30%;
-    height: 400px;
     
 `;
 
-const TeamCreateButton = styled.button`
-    margin-top: 30px;
-`;
-
-const TeamLogo = styled.img`
-    width: 50%;
-    height: 150px;
-    border-radius: 30px;
-    margin-top: 30px;
+const Justbox = styled.div`
+    padding: 40px 0;
 `;
 
 const TeamName = styled.div`
-    margin-top: 30px;
     font-weight: bold;
     color: white;
     font-size: 30px;
     
-`;
-
-const WinLose = styled.div`
-    margin-top: 30px;
-    color: white;
-    font-size: 15px;
 `;
 
 const MatchInfo = styled.div`
@@ -153,26 +156,22 @@ const MatchInfo = styled.div`
 
 const RightTeam = styled.div`
     margin-top: 30px;
-    border-right: 3px solid #ecedef;
-    border-left: 3px solid #ecedef;
-    border-bottom: 3px solid #ecedef;
-    border-top: 3px solid #ecedef;
+    border: 3px solid #ecedef;
     width: 70%;
     margin-left: 30px;
-    height: 400px;
 `;
 
 const Matching = styled.div`
     padding: 10px 0;
     background-color: #4F599F;
     color: white;
-    font-size: 30px;
+    font-size: 20px;
     font-weight: bold;
     
 `;
 
 const TeamList = styled.div`
-    display: flex;
+    
     align-items: center;
 `;
 
@@ -181,20 +180,32 @@ const MyTeam = styled.div`
 `;
 
 const MyTeamName = styled.div`
-    margin-top: 30px;
     font-size: 20px;
     font-weight: bold;
 `;
 
+const MyTeamRegion = styled.div`
+    margin-top: 10px;
+`;
+
 const TeamRegion = styled.div`
     margin-top: 30px;
+    color: white;
 `;
 
 const VS = styled.div`
     text-align: center;
     font-size: 50px;
+    padding: 20px 0;
 `;
 
 const OppositionTeam = styled.div`
     width: 350px;
+`;
+
+const NoMatch = styled.div`
+    padding: 32px 0;
+    text-align: center;
+    font-size: 30px;
+    font-weight: bold;
 `;

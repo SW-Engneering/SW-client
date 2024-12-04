@@ -16,35 +16,38 @@ import Management from './component/page/02_Management';
 import Createteam from './component/page/02_create_team';
 import Match from './component/page/02_Match';
 import MatchWrite from './component/page/02_Match_Write';
+import MatchDetail from './component/page/02_MatchDetail';
 import Team from './component/page/02_Team';
 import TeamWrite from './component/page/02_Team_Write';
+import TeamDetail from './component/page/02_TeamDetail';
 import Vote from './component/page/02_Vote';
 
 function App() {
     return (
         <BrowserRouter>
             <Container>
-                <Header />
-                <Nav />
-                <InsideContainer>
-                    <Routes>
-                        <Route path="/" element={<Home />} />
-                        <Route path="/" element={<Home />} />
-                        <Route path="/mypage" element={<Mypage />} />
-                        <Route path="/login" element={<Login />} />
-                        <Route path="/member" element={<Member />} />
-                        <Route path="/memberwrite" element={<MemberWrite />} />
-                        <Route path="/member/:post_id" element={<MemberDetail />} />
-                        <Route path="/teamwrite" element={<TeamWrite />} />
-                        <Route path="/team" element={<Team />} />
-                        <Route path="/match" element={<Match />} />
-                        <Route path="matchwrite" element={<MatchWrite />} />
-                        <Route path="/management" element={<Management />} />
-                        <Route path="/create_team" element={<Createteam />} />
-                        <Route path="/signup" element={<Signup />} />
-                        <Route path="/  " element={<Vote />} />
-                    </Routes>
-                </InsideContainer>
+                    <Header />
+                    <Nav />
+                    <InsideContainer>
+                        <Routes>
+                            <Route path="/" element={<Home />} />
+                            <Route path="/mypage" element={<Mypage />} />
+                            <Route path="/login" element={<Login />} />
+                            <Route path="/member" element={<Member />} />
+                            <Route path="/memberwrite" element={<MemberWrite />} />
+                            <Route path="/member/:post_id" element={<MemberDetail />} />
+                            <Route path="/team" element={<Team />} />
+                            <Route path="/teamwrite" element={<TeamWrite />} />
+                            <Route path="/team/:post_id" element={<TeamDetail />} />
+                            <Route path="/match" element={<Match />} />
+                            <Route path="matchwrite" element={<MatchWrite />} />
+                            <Route path="match/:post_id" element={<MatchDetail />} />
+                            <Route path="/management" element={<Management />} />
+                            <Route path="/create_team" element={<Createteam />} />
+                            <Route path="/signup" element={<Signup />} />
+                            <Route path="/  " element={<Vote />} />
+                        </Routes>
+                    </InsideContainer>
                 <Footer />
             </Container>
         </BrowserRouter>

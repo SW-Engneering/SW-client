@@ -48,7 +48,7 @@ export default function MemberWrite() {
         try {
             // 수정할 경우 PUT 요청, 새로 작성할 경우 POST 요청
             if (post) {
-                await axios.put(`https://3.34.133.247/member/${post.post_id}?userId=${userId}`, write, {
+                await axios.put(`https://3.34.133.247/post/${post.post_id}?userId=${userId}`, write, {
                     headers: {
                         'Content-Type': 'application/json'
                     }

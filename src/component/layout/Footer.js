@@ -37,7 +37,7 @@ const Container = styled.div`
     margin-bottom: 50px;
     background-color: white;
     display: flex;
-    width: 100%;
+    width: 99%;
     height: 8vh;
     position: relative;
     bottom: 0;
