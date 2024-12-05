@@ -1,18 +1,33 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import 배너 from '../images/배너.png';
-import styled from 'styled-components';
+import { useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import axios from "axios";
+import 배너 from "../images/배너.png";
+import styled from "styled-components";
+import Cookies from "js-cookie";
 
-export default function MatchWrite() {
+export default function MemberWrite() {
+    const userId = Cookies.get('userId');
     const navigate = useNavigate();
+    const location = useLocation();
+    const { post } = location.state || {}; // 수정할 포스트 정보
 
     const [write, setWrite] = useState({
-        title: '',
-        contents: '',
+        post_id: post ? post.post_id : 0,
+        user_id: userId,
+        post_type: "member",
+        post_writer: userId,
+        post_title: post ? post.post_title : "",
+        post_content: post ? post.post_content : "",
+        post_hits: post ? post.post_hits: 0,
+        post_created_time: post ? post.post_created_time : new Date().toISOString(),
+        post_updated_time: new Date().toISOString(),
+        post_like_count: post ? post.post_like_count: 0,
+        post_dislike_count: post ? post.post_dislike_count: 0,
+        post_report_count: post ? post.post_report_count: 0,
+        post_comment_count: post ? post.post_comment_count: 0
     });
 
-    const { title, contents } = write;
+    const { post_title, post_content } = write;
 
     const onChange = (e) => {
         const { value, name } = e.target;
@@ -23,27 +38,37 @@ export default function MatchWrite() {
     };
 
     const saveWrite = async () => {
-        if (!title && !contents) {
+        if (!post_title || !post_content) {
             alert('제목과 내용을 작성해주세요.');
             return;
         }
-        if (!title) {
-            alert('제목을 작성해주세요.');
-            return;
-        }
-        if (!contents) {
-            alert('내용을 작성해주세요.');
-            return;
-        }
+
+        console.log('저장할 데이터 : ', write);
 
         try {
-            await axios.post('api주소', write); // POST 요청으로 수정
-            alert('등록되었습니다.');
+            // 수정할 경우 PUT 요청, 새로 작성할 경우 POST 요청
+            if (post) {
+                await axios.put(`https://3.34.133.247/post/${post.post_id}?userId=${userId}`, write, {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                alert('수정되었습니다.');
+            } else {
+                await axios.post(`https://3.34.133.247/match?userId=${userId}`, write, {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                alert('등록되었습니다.');
+            }
             navigate('/match');
         } catch (error) {
-            alert('API 연동이 필요합니다.'); // 에러 발생 시 알림
+            console.error('API 연동 실패:', error);
+            alert('API 연동에 실패했습니다.');
         }
     };
+
 
     const backToList = () => {
         navigate('/match');
@@ -55,24 +80,30 @@ export default function MatchWrite() {
                 <Image src={배너} alt="배너" />
             </BannerContainer>
             <TitleContainer>
-                <TeamContainer>글쓰기</TeamContainer>
-                <SitemapContainer>매칭 글을 자유롭게 작성해보세요~</SitemapContainer>
+                <TeamContainer>
+                    {post ? "수정하기" : "글쓰기"}
+                </TeamContainer>
+                <SitemapContainer>
+                    {post ? "글을 잘못 쓰셔도 얼마든지 수정 가능합니다~" : "팀원을 구하는 글을 자유롭게 작성해보세요~"}
+                </SitemapContainer>
             </TitleContainer>
             <Title>
-                <Titlespan>제목</Titlespan>
-                <Titleinput type="text" name="title" value={title} onChange={onChange} placeholder="제목을 입력하세요." />
+                <Titlespan>
+                    제목
+                </Titlespan>
+                <Titleinput type="text" name="post_title" value={post_title} onChange={onChange} placeholder="제목을 입력하세요." />
             </Title>
             <br />
             <Contents>
-                <Contentsinput name="contents" value={contents} onChange={onChange} placeholder="내용을 입력하세요."></Contentsinput>
+                <Contentsinput type="text" name="post_content" value={post_content} onChange={onChange} placeholder="내용을 입력하세요." />
             </Contents>
             <br />
             <ButtonContainer>
                 <Cancelbutton onClick={backToList}>취소</Cancelbutton>
-                <Submitbutton onClick={saveWrite}>등록</Submitbutton>
+                <Submitbutton onClick={saveWrite}>{post ? "수정" : "등록"}</Submitbutton>
             </ButtonContainer>
         </Container>
-    );
+    ); 
 }
 
 const Container = styled.div`
