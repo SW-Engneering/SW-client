@@ -12,6 +12,7 @@ export default function Mytext() {
 
     useEffect(() => {
         setId(cookieId);
+        console.log(cookieId);
     }, [cookieId]);
 
     const handleEdit = (id) => {
@@ -21,7 +22,7 @@ export default function Mytext() {
     
     const handleDelete = async (postId) => {
         try {
-            const response = await axios.delete(`https://3.34.133.247/match/${postId}?userId=${id}`, {
+            const response = await axios.delete(`https://3.34.133.247/post/${postId}?userId=${cookieId}`, {
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -30,6 +31,7 @@ export default function Mytext() {
             if (response.status === 204) {
                 setPosts(posts.filter((post) => post.post_id !== postId));
                 alert('게시글이 삭제되었습니다.');
+                console.log("삭제성공");
             }
         } catch (error) {
             console.error('게시글 삭제 중 오류 발생', error);
@@ -39,7 +41,7 @@ export default function Mytext() {
 
     const fetchUserBulletin = async ()=>{
         try{
-            const response = await axios.get(`https://3.34.133.247/board/${id}`,{
+            const response = await axios.get(`https://3.34.133.247/board/${cookieId}`,{
                 headers: {
                     'Content-Type': 'application/json',
                 }
@@ -67,8 +69,8 @@ export default function Mytext() {
                         <PostTitle>{post.post_title}</PostTitle>
                         <PostContent>{post.post_content}</PostContent>
                         <ButtonContainer>
-                            <EditButton onClick={() => handleEdit(post.id)}>수정</EditButton>
-                            <DeleteButton onClick={() => handleDelete(post.id)}>삭제</DeleteButton>
+                            <EditButton onClick={() => handleEdit(post.post_id)}>수정</EditButton>
+                            <DeleteButton onClick={() => handleDelete(post.post_id)}>삭제</DeleteButton>
                         </ButtonContainer>
                     </PostContainer>
                 ))
