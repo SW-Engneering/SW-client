@@ -42,7 +42,7 @@ export default function Signup() {
 
                 if (response.status === 201) {
                     console.log('회원가입 성공:', response.data);
-                    alert('회원가입 성공! 로그인 해주세요.')
+                    alert('회원가입 성공! 로그인 해주세요.');
                     navigate('/login');
                 } else {
                     console.log('회원가입 실패:', response.data);
@@ -52,7 +52,7 @@ export default function Signup() {
                 console.error('회원가입 요청 중 오류 발생:', error);
                 alert('회원가입 요청 중 오류가 발생했습니다. 다시 시도해 주세요.');
             }
-        } 
+        }
     };
 
     const isPasswordMatch = password === passwordverify;

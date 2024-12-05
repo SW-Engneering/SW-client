@@ -91,7 +91,7 @@ export default function Management() {
                 </RightTeam>
             </Team>
         </Container>
-    )
+    );
 }
 
 const Container = styled.div`
@@ -150,7 +150,6 @@ const TeamName = styled.div`
     font-weight: bold;
     color: white;
     font-size: 30px;
-    
 `;
 
 
@@ -164,11 +163,10 @@ const RightTeam = styled.div`
 
 const Matching = styled.div`
     padding: 10px 0;
-    background-color: #4F599F;
+    background-color: #4f599f;
     color: white;
     font-size: 20px;
     font-weight: bold;
-    
 `;
 
 const TeamList = styled.div`

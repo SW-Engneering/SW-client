@@ -29,7 +29,7 @@ export default function Login() {
                     {
                         nickname: id,
                         passwd: password,
-                        user_id : userId
+                        user_id: userId,
                     },
                     {
                         headers: {
@@ -41,7 +41,7 @@ export default function Login() {
                 if (response.status === 200) {
                     console.log('로그인 성공:', response.data);
                     Cookies.set('nickname', response.data.nickname, { expires: 14 });
-                    Cookies.set('userId', response.data.user_id, { expires : 14 });
+                    Cookies.set('userId', response.data.user_id, { expires: 14 });
                     navigate('/'); // 로그인 후 이동할 경로
                 } else {
                     console.log('로그인 실패:', response.data);
@@ -57,19 +57,21 @@ export default function Login() {
     };
 
     return (
-        <Container>
-            <LoginContainer>로그인</LoginContainer>
-            <form onSubmit={handleSubmit}>
-                <InputContainer>
-                    <IdInput type="text" value={id} placeholder="아이디" onChange={(e) => setId(e.target.value)} />
-                </InputContainer>
-                <InputContainer>
-                    <PasswordInput type="password" value={password} placeholder="비밀번호" onChange={(e) => setPassword(e.target.value)} />
-                </InputContainer>
-                <LoginButton type="submit">로그인</LoginButton>
-            </form>
-            <Signup href="/signup">회원가입</Signup>
-        </Container>
+        <div style={{ height: '100%' }}>
+            <Container>
+                <LoginContainer>로그인</LoginContainer>
+                <form onSubmit={handleSubmit}>
+                    <InputContainer>
+                        <IdInput type="text" value={id} placeholder="아이디" onChange={(e) => setId(e.target.value)} />
+                    </InputContainer>
+                    <InputContainer>
+                        <PasswordInput type="password" value={password} placeholder="비밀번호" onChange={(e) => setPassword(e.target.value)} />
+                    </InputContainer>
+                    <LoginButton type="submit">로그인</LoginButton>
+                </form>
+                <Signup href="/signup">회원가입</Signup>
+            </Container>
+        </div>
     );
 }
 
@@ -78,7 +80,7 @@ const Container = styled.div`
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    margin: auto;
+    margin: 10% auto;
     padding: 20px;
     width: 300px;
     border: 1px solid #ccc;

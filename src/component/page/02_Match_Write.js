@@ -30,7 +30,7 @@ export default function MemberWrite() {
     const { post_title, post_content } = write;
 
     const onChange = (e) => {
-        const { name, value } = e.target;
+        const { value, name } = e.target;
         setWrite({
             ...write,
             [name]: value,
@@ -69,6 +69,7 @@ export default function MemberWrite() {
         }
     };
 
+
     const backToList = () => {
         navigate('/match');
     };
@@ -105,7 +106,6 @@ export default function MemberWrite() {
     ); 
 }
 
-
 const Container = styled.div`
     justify-content: center;
     align-items: center;
@@ -114,7 +114,6 @@ const Container = styled.div`
     position: relative;
     border-left: 1px solid #cecece;
     border-right: 1px solid #cecece;
-
 `;
 
 const BannerContainer = styled.div`
@@ -154,7 +153,6 @@ const Title = styled.div`
     padding: 20px;
     border-bottom: 1px solid #cecece;
     font-weight: bold;
-
 `;
 
 const Titleinput = styled.input`
@@ -163,9 +161,7 @@ const Titleinput = styled.input`
     font-size: 15px;
 `;
 
-const Contents = styled.div`
-    
-`;
+const Contents = styled.div``;
 
 const Contentsinput = styled.textarea`
     font-size: 15px;
