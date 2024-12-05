@@ -24,7 +24,7 @@ export default function Nav() {
                     navigate('/management');
                 }
                 else {
-                    const confirm = window.confirm('asdf?');
+                    const confirm = window.confirm('팀이 없습니다. 팀을 생성하시겠습니까?');
                     if(confirm) {
                         navigate('./join_or_create');
                     }

@@ -1,9 +1,46 @@
 import styled from "styled-components";
 import 팀만들기 from "../images/팀관리1.jpg";
+import Cookies from "js-cookie";
+import axios from "axios";
+import { Navigate, useNavigate } from "react-router-dom";
+import { useState } from "react";
+
+export default function Create_team() {
+
+    const userId = Cookies.get('userId');
+    const [teamInfo, setTeamInfo] = useState({
+        teamName : "",
+        leaderId : userId,
+        teamRegion : ""
+    });
+    const navigate = useNavigate();
 
 
-export default function create_team() {
+    const { teamName, teamRegion } = teamInfo;
 
+    const onChange = (e) => {
+        const { name, value } = e.target;
+        setTeamInfo({
+            ...teamInfo,
+            [name]: value,
+        });
+    };
+
+    const createTeam = async () => {
+        if (!teamName || !teamRegion) {
+            alert('작성 안하신 부분이 있습니다.');
+            return;
+        }
+
+        try {
+            await axios.post(`https://3.34.133.247/teams?leaderId=${userId}`, teamInfo);
+            alert('팀 생성이 완료되었습니다!');
+            navigate('/management');
+        } catch(error) {
+            console.log(teamInfo);
+            console.log(userId);
+        }
+    }
 
     return(
         <Container>
@@ -12,6 +49,13 @@ export default function create_team() {
                 <OverlayText1>팀 생성</OverlayText1>
                 <OverlayText2>팀을 만들어보세요.</OverlayText2>
             </ImageContainer>
+            <Flexbox>
+                <CreateBox>
+                    <TeamNameInput type="text" name="teamName" value={teamName} onChange={onChange} placeholder="팀 이름"></TeamNameInput>
+                    <TeamRegionInput type="text" name="teamRegion" value={teamRegion} onChange={onChange} placeholder="지역"></TeamRegionInput>
+                    <CreateButton onClick={createTeam}>팀 생성</CreateButton>
+                </CreateBox>
+            </Flexbox>
         </Container>
     );
 }
@@ -26,6 +70,7 @@ const ImageContainer = styled.div`
 
 const Image = styled.img`
     align-items: center;
+    width: 100%;
 `;
 
 const OverlayText1 = styled.div`
@@ -47,4 +92,34 @@ const OverlayText2 = styled.div`
     color: white; /* 텍스트 색상 */
     font-size: 20px; /* 텍스트 크기 */
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); /* 텍스트 그림자 */
+`;
+
+const Flexbox = styled.div`
+    display: flex;
+    justify-content: center;
+    padding-top: 30px;
+`;
+
+const CreateBox = styled.div`
+    width: 500px;
+    height: 100px;
+    display: relative;
+    border-radius: 30px;
+    box-shadow: 10px 3px 40px rgba(0, 0, 0, 0.1);
+`;
+
+const TeamNameInput = styled.input`
+
+`;
+
+const TeamRegionInput = styled.input`
+
+`;
+
+const CreateButton = styled.div`
+    cursor: pointer;
+    color: white;
+    background-color: red;
+    width: 100px;
+    height: 50px;
 `;

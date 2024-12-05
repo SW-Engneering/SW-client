@@ -169,7 +169,7 @@ export default function Home() {
 
 const Container = styled.div`
     font-family: 'Pretendard-Light';
-    position: relative;
+    
     max-width: 100%;
 `;
 const SliderContainer = styled.div`

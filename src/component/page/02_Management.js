@@ -37,17 +37,19 @@ export default function Management() {
                 const oppositionTeamResponse = await axios.get(`https://3.34.133.247/teams/${matchData.team_id}`);
                 setOppositionTeamData(oppositionTeamResponse.data);
 
-            } catch (err) {
-                setError('팀 정보를 가져오는 데 실패했습니다.');
-                console.error(err);
+            } catch (error) {
+                console.log(teamData);
+                console.log(matchData);
+                console.log(oppositionTeamData);
             } finally {
                 setLoading(false); // 로딩 상태 종료
             }
         };
 
         fetchTeamData();
-    }, [matchData.team_id, userId]);
+    }, []);
 
+    
 
     return (
         <Container>
@@ -141,6 +143,7 @@ const LeftTeam = styled.div`
 
 const Justbox = styled.div`
     padding: 40px 0;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); /* 그림자 추가 */
 `;
 
 const TeamName = styled.div`
@@ -150,15 +153,13 @@ const TeamName = styled.div`
     
 `;
 
-const MatchInfo = styled.div`
-
-`;
 
 const RightTeam = styled.div`
     margin-top: 30px;
     border: 3px solid #ecedef;
     width: 70%;
     margin-left: 30px;
+    
 `;
 
 const Matching = styled.div`

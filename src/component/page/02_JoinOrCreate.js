@@ -41,9 +41,9 @@ export default function JoinOrCreate() {
                     <EmptyBox>
                         <Manager src={감독} alt="감독" />
                     </EmptyBox>
-                    <JoinInstruction>
+                    <CreateInstruction>
                         나만의 팀을 만들어보세요!
-                    </JoinInstruction>
+                    </CreateInstruction>
                 </JoinCreateBox>
             </JoinCreate>
         </Container>
@@ -53,6 +53,7 @@ export default function JoinOrCreate() {
 const Container = styled.div`
     text-align: center;
     position: relative;
+    font-family: '지마켓';
 `;
 
 const TitleContainer = styled.div`
@@ -119,4 +120,9 @@ const Manager = styled.img`
     width: 145px;
     height: 145px;
     padding-top: 5px;
+`;
+
+const CreateInstruction = styled.div`
+    font-size: 15px;
+    padding-top: 40px;
 `;
