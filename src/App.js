@@ -2,8 +2,6 @@ import './App.css';
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import styled from 'styled-components';
-
-// Import all your components
 import Header from './component/layout/Header';
 import Nav from './component/layout/Nav';
 import Home from './component/layout/Home';
@@ -53,21 +51,22 @@ function App() {
                         </Routes>
                     </InsideContainer>
                 <Footer />
-            </PageWrapper>
+            </Container>
         </BrowserRouter>
     );
 }
 
-const PageWrapper = styled.div`
+const Container = styled.div`
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
+    height: 100%;
 `;
 
-const ContentWrapper = styled.div`
-    /* flex-grow: 1; */
+const InsideContainer = styled.div`
+    flex-grow: 1;
     display: flex;
     flex-direction: column;
+    min-height: 80vh;
 `;
 
 export default App;
