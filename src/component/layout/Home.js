@@ -107,48 +107,61 @@ export default function Home() {
                 <SliderContainer>다섯번째 화면</SliderContainer>
                 <SliderContainer>여섯번째 화면</SliderContainer>
             </Slider>
-            <Gray>
-                <RecentContainer>최근 올라온 글</RecentContainer>
-                <TeamContainer>
-                    <BulletinContainer>
-                        <BulletinNameContainer>팀원 구하기</BulletinNameContainer>
-                        <PostsList>
-                            {memberList.map((post) => (
+        <Gray>
+            <RecentContainer>최근 올라온 글</RecentContainer>
+            <TeamContainer>
+                <BulletinContainer>
+                    <BulletinNameContainer>팀원 구하기</BulletinNameContainer>
+                    <PostsList>
+                        {memberList.length > 0 ? (
+                            memberList.map((post) => (
                                 <PostItem key={post.post_id}>
                                     <PostTitle onClick={() => memberDetail(post.post_id, post)}>
                                         {post.post_title}{post.post_comment_count > 0 && ` [${post.post_comment_count}]`}
                                     </PostTitle>
                                 </PostItem>
-                            ))}
-                        </PostsList>
-                    </BulletinContainer>
-                    <BulletinContainer>
-                        <BulletinNameContainer>팀 구하기</BulletinNameContainer>
-                        <PostsList>
-                            {teamList.map((post) => (
+                            ))
+                        ) : (
+                            <NoPost>등록된 게시물이 없습니다.</NoPost>
+                        )}
+                    </PostsList>
+                </BulletinContainer>
+                <BulletinContainer>
+                    <BulletinNameContainer>팀 구하기</BulletinNameContainer>
+                    <PostsList>
+                        {teamList.length > 0 ? (
+                            teamList.map((post) => (
                                 <PostItem key={post.post_id}>
                                     <PostTitle onClick={() => teamDetail(post.post_id, post)}>
                                         {post.post_title}{post.post_comment_count > 0 && ` [${post.post_comment_count}]`}
                                     </PostTitle>
                                 </PostItem>
-                            ))}
-                        </PostsList>
-                    </BulletinContainer>
-                    <BulletinContainer>
-                        <BulletinNameContainer>팀 매칭하기</BulletinNameContainer>
-                        <PostsList>
-                            {matchList.map((post) => (
+                            ))
+                        ) : (
+                            <NoPost>등록된 게시물이 없습니다.</NoPost>
+                        )}
+                    </PostsList>
+                </BulletinContainer>
+                <BulletinContainer>
+                    <BulletinNameContainer>팀 매칭하기</BulletinNameContainer>
+                    <PostsList>
+                        {matchList.length > 0 ? (
+                            matchList.map((post) => (
                                 <PostItem key={post.post_id}>
                                     <PostTitle onClick={() => matchDetail(post.post_id, post)}>
                                         {post.post_title}{post.post_comment_count > 0 && ` [${post.post_comment_count}]`}
                                     </PostTitle>
                                 </PostItem>
-                            ))}
-                        </PostsList>
-                    </BulletinContainer>
-                </TeamContainer>
-                <ToBeContinued>to be continued...</ToBeContinued>
-            </Gray>
+                            ))
+                        ) : (
+                            <NoPost>등록된 게시물이 없습니다.</NoPost>
+                        )}
+                    </PostsList>
+                </BulletinContainer>
+            </TeamContainer>
+            <ToBeContinued>to be continued...</ToBeContinued>
+        </Gray>
+
             
         </Container>
     );
@@ -211,6 +224,7 @@ const BulletinContainer = styled.div`
     flex-direction: column;
     flex: 1;
     width: 25%;
+    height: 240px;
     
     text-align: center;
     border: 0.5px solid #ecedef;
@@ -220,6 +234,7 @@ const BulletinNameContainer = styled.div`
     font-weight: bold;
     padding: 4%;
     border-top: 2px solid black;
+    border-bottom: 0.25px solid #ecedef;
     
 `;
 
@@ -239,7 +254,7 @@ const Image = styled.img`
 const PostsList = styled.div`
     list-style: none;
     padding: 0;
-    border-bottom: 0.1px solid grey; /* 하단 회색 줄 */
+    //border-bottom: 0.1px solid grey; /* 하단 회색 줄 */
     text-align: center;
     font-size: 15px;
 `;
@@ -265,4 +280,8 @@ const PostTitle = styled.div`
 const ToBeContinued = styled.div`
     padding: 20px 0;
     text-align: center;
+`;
+
+const NoPost = styled.div`
+    padding: 80px 0;
 `;

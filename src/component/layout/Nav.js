@@ -1,4 +1,3 @@
-import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { NavLink, useNavigate } from 'react-router-dom';
 import ball from '../images/ball.png';
@@ -27,7 +26,7 @@ export default function Nav() {
                 else {
                     const confirm = window.confirm('asdf?');
                     if(confirm) {
-                        navigate('/create_team');
+                        navigate('./join_or_create');
                     }
                 }
             }

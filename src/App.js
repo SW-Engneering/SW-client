@@ -13,6 +13,7 @@ import Member from './component/page/02_Member';
 import MemberWrite from './component/page/02_Member_Write';
 import MemberDetail from './component/page/02_MemberDetail';
 import Management from './component/page/02_Management';
+import JoinOrCreate from './component/page/02_JoinOrCreate';
 import Createteam from './component/page/02_create_team';
 import Match from './component/page/02_Match';
 import MatchWrite from './component/page/02_Match_Write';
@@ -43,6 +44,7 @@ function App() {
                             <Route path="matchwrite" element={<MatchWrite />} />
                             <Route path="match/:post_id" element={<MatchDetail />} />
                             <Route path="/management" element={<Management />} />
+                            <Route path="/join_or_create" element={<JoinOrCreate />} />
                             <Route path="/create_team" element={<Createteam />} />
                             <Route path="/signup" element={<Signup />} />
                             <Route path="/  " element={<Vote />} />
