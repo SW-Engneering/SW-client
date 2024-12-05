@@ -6,21 +6,32 @@ import axios from 'axios';
 
 export default function Mytext() {
     const [posts, setPosts] = useState([]);
-    const [id, setId] = useState(null);
+    const [postId, setPostId] = useState([]);
     const cookieId = Cookies.get('userId');
+    
 
     useEffect(() => {
-        setId(cookieId);
-    }, [cookieId]);
+        const getPostId = async () => {
+            try {
+                const response = await axios.get(`https://3.34.133.247/board/${cookieId}`);
+                setPosts(response.data);
+                console.log(posts);
+                console.log(cookieId);
+            } catch(error) {
+                console.log('에러');
+            }
+        }
+        getPostId();
+    }, []);    
 
     const handleEdit = (id) => {
         // 수정 로직을 여기에 추가
         alert(`게시글 ${id} 수정하기 기능을 구현하세요.`);
     };
     
-    const handleDelete = async (postId) => {
+    const handleDelete = async () => {
         try {
-            const response = await axios.delete(`https://3.34.133.247/match/${postId}?userId=${id}`, {
+            const response = await axios.delete(`https://3.34.133.247/post/${postId}?userId=${cookieId}`, {
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -36,24 +47,25 @@ export default function Mytext() {
         }
     };
 
-    const fetchUserBulletin = async ()=>{
-        try{
-            const response = await axios.get(`https://3.34.133.247/board/${id}`,{
-                headers: {
-                    'Content-Type': 'application/json',
-                }
+    // const fetchUserBulletin = async ()=>{
+    //     try{
+    //         const response = await axios.get(`https://3.34.133.247/board/${cookieId}`,{
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //             }
 
-            });
-            console.log('내가 쓴 글 불러오기 성공', response.data);
-            setPosts(response.data);
-        }catch(error){
-            console.error('API 요청 에러', error);
-        }
-    }
-    useEffect(()=>{
-        if(cookieId)
-        fetchUserBulletin();
-    },[cookieId])
+    //         });
+    //         console.log('내가 쓴 글 불러오기 성공', response.data);
+    //         setPosts(response.data);
+    //         const { post_id } = response.data;
+    //     }catch(error){
+    //         console.error('API 요청 에러', error);
+    //     }
+    // }
+    
+    // useEffect(()=>{
+        
+    // },[cookieId])
 
     return (
         <Container>
