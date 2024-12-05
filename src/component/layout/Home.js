@@ -103,9 +103,7 @@ export default function Home() {
                     </Navi>
                 </SliderContainer>
                 <SliderContainer>ㅁㅇㄹㄴㅇ</SliderContainer>
-                <SliderContainer>네번째 화면</SliderContainer>
-                <SliderContainer>다섯번째 화면</SliderContainer>
-                <SliderContainer>여섯번째 화면</SliderContainer>
+                
             </Slider>
         <Gray>
             <RecentContainer>최근 올라온 글</RecentContainer>
@@ -257,6 +255,7 @@ const PostsList = styled.div`
     //border-bottom: 0.1px solid grey; /* 하단 회색 줄 */
     text-align: center;
     font-size: 15px;
+    overflow-x : hidden;
 `;
 
 const PostItem = styled.div`

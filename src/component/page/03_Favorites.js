@@ -97,20 +97,6 @@ const StarContainer = styled.div`
     margin : 0 10px 0 0;
 `;
 
-const EditButton = styled.button`
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 5px 10px;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-right: 10px;
-
-    &:hover {
-        background-color: #0056b3;
-    }
-`;
-
 const DeleteButton = styled.button`
     width:20px;
     height:20px;
