@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import Cookies from 'js-cookie';
 import Avata from '../images/Generic_avatar.png';
@@ -13,13 +13,19 @@ import axios from 'axios';
 
 export default function MyPage() {
     const location = useLocation();
+    const navigate = useNavigate();
     const [id, setId] = useState(null);
+    const [password, setPassword] = useState(null);
     const [nickname, setNickname] = useState(null);
     const [position, setPosition] = useState(null);
     const [number, setNumber] = useState(null);
     const [menuVisible, setMenuVisible] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
     const [activeTab, setActiveTab] = useState(null);
+    const [showWithdrawConfirmation, setShowWithdrawConfirmation] = useState(false);
+
+    const [withdrawalPassword, setWithdrawalPassword] = useState('');
+    const [passwordError, setPasswordError] = useState('');
 
     const MenuToggle = (e) => {
         e.stopPropagation();
@@ -35,7 +41,7 @@ export default function MyPage() {
         if (id) {
             fetchUserData(id);
         }
-    }, [id]); 
+    }, [id]);
 
     const fetchUserData = async (id) => {
         try {
@@ -47,13 +53,52 @@ export default function MyPage() {
 
             if (response.status === 200) {
                 console.log('유저 상세 정보 불러오기 성공:', response.data);
-                const { nickname, phone_number, position } = response.data;
+                const { nickname, phone_number, position, passwd } = response.data;
                 setNickname(nickname);
+                setPassword(passwd);
                 setNumber(formatPhoneNumber(phone_number));
-                setPosition(position);                
+                setPosition(position);
+                console.log(password);                
             }
         } catch (error) {
             console.log(error.response);
+        }
+    };
+
+    const handleWithdraw = async () => {
+        // Reset previous password error
+        setPasswordError('');
+
+        // Check if entered password matches stored password
+        if (withdrawalPassword !== password) {
+            setPasswordError('비밀번호가 일치하지 않습니다.');
+            return;
+        }
+
+        try {
+            const response = await axios.delete(`https://3.34.133.247/user/${id}`, {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                data: {
+                    password: withdrawalPassword
+                }
+            });
+
+            if (response.status === 204) {
+                // Clear cookies and redirect to login page
+                Cookies.remove('userId'); 
+                Cookies.remove('nickname');                
+                
+                // Show withdrawal success message
+                alert('회원탈퇴가 완료되었습니다.');
+                
+                // Redirect to login page
+                navigate('/');
+            }
+        } catch (error) {
+            console.error('회원탈퇴 중 오류 발생:', error);
+            alert('회원탈퇴 중 문제가 발생했습니다. 다시 시도해 주세요.');
         }
     };
 
@@ -61,15 +106,17 @@ export default function MyPage() {
         MenuToggle(e);
         setIsEditing(!isEditing); // Toggle editing state
     };
+
     const ChangeNab = () => {
         setMenuVisible(false);
         setIsEditing(false);
     };
+
     const tabs = [
         { name: '내 게시글 관리', component: <Mytext /> },
         { name: '즐겨찾기한 글', component: <Favorite /> },
-        { name: '내 문의내역', component: <Inquiry /> },
         { name: '일정관리', component: <Schedule /> },
+        { name: '문의내역', component: <Inquiry /> },
     ];
 
     const renderInformationContainer = () => {
@@ -114,13 +161,50 @@ export default function MyPage() {
                         </UserDetails>
                         <ButtonContainer>
                             {activeTab === null && (
-                                <ToggleButton onClick={handleToggleClick}>
-                                    {isEditing ? '완료' : '수정'} {/* Change button text based on isEditing state */}
-                                </ToggleButton>
+                                <>
+                                    <ToggleButton onClick={handleToggleClick}>
+                                        {isEditing ? '완료' : '수정'} 
+                                    </ToggleButton>
+                                    <WithdrawButton onClick={() => setShowWithdrawConfirmation(true)}>
+                                        회원탈퇴
+                                    </WithdrawButton>
+                                </>
                             )}
                         </ButtonContainer>
                     </InfoContainer>
                 </UserContainer>
+
+                {/* Withdrawal Confirmation Modal */}
+                {showWithdrawConfirmation && (
+                <ConfirmationModal>
+                    <ModalContent>
+                        <p>정말로 회원탈퇴를 하시겠습니까?</p>
+                        <p>탈퇴 시 모든 데이터는 삭제되며 복구할 수 없습니다.</p>
+                        
+                        <PasswordInputContainer>
+                            <label htmlFor="withdrawal-password">비밀번호 확인:</label>
+                            <PasswordInput 
+                                type="password" 
+                                id="withdrawal-password"
+                                value={withdrawalPassword}
+                                onChange={(e) => setWithdrawalPassword(e.target.value)}
+                                placeholder="비밀번호를 입력해주세요"
+                            />
+                            {passwordError && <ErrorMessage>{passwordError}</ErrorMessage>}
+                        </PasswordInputContainer>
+
+                        <ModalButtonContainer>
+                            <ConfirmButton onClick={handleWithdraw}>확인</ConfirmButton>
+                            <CancelButton onClick={() => {
+                                setShowWithdrawConfirmation(false);
+                                setPasswordError('');
+                                setWithdrawalPassword('');
+                            }}>취소</CancelButton>
+                        </ModalButtonContainer>
+                    </ModalContent>
+                </ConfirmationModal>
+            )}
+
                 <ToolContainer>
                     {menuVisible && <Account />}
                     {!menuVisible && renderInformationContainer()}
@@ -129,14 +213,15 @@ export default function MyPage() {
         </Container>
     );
 }
-//전체 컨테이너
+
+// 기존 스타일드 컴포넌트들 (그대로 유지)
 const Container = styled.div`
     display: flex;
     border-radius: 5px;
     min-height: 80vh;
     max-width: 100vw;
 `;
-//마이페이지 왼쪽 컨테이너
+
 const LeftContainer = styled.div`
     box-sizing: border-box;
     min-width: 15%;
@@ -170,7 +255,7 @@ const LeftContainer = styled.div`
         padding-left: 2%;
     }
 `;
-//마이페이지 오른쪽 컨테이너
+
 const RightContainer = styled.div`
     min-width: 85%;
     padding: 2% 5% 0 3%;
@@ -186,14 +271,13 @@ const RightContainer = styled.div`
         min-width: 63%;
     }
 `;
-//마이페이지 글자 컨테이너
+
 const MypageContaer = styled.div`
     font-weight: bold;
     margin-bottom: 25px;
-    font-size: 1.5vw; /* Adjusted font size */
+    font-size: 1.5vw;
 `;
 
-//메뉴바 글자 컨테이너
 const LinkContainer = styled.div`
     display: block;
     text-decoration: none;
@@ -217,14 +301,14 @@ const LinkContainer = styled.div`
         font-size: 14px;
     }
 `;
-//왼쪽 네비바 전체 컨테이너
+
 const ImformationContainer = styled.div`
     height: 100%;
     margin-top: 1vh;
     z-index: 3;
     justify-content: center;
 `;
-//유저 정보 컨테이너
+
 const UserContainer = styled.div`
     display: flex;
     flex-direction: row;
@@ -236,17 +320,17 @@ const UserContainer = styled.div`
     padding: 25px;
     height: 120px;
 `;
-//유저 상세 정보 컨테이너
+
 const UserDetails = styled.div`
     display: flex;
     flex-direction: column;
 `;
-//유저 이름 컨테이너
+
 const UserNameContainer = styled.div`
-    font-size: 32px; /* Adjusted font size */
+    font-size: 32px;
     margin-left: 30px;
 `;
-//유저 이미지 컨테이너
+
 const UserImage = styled.div`
     width: 13vw;
     height: 13vw;
@@ -258,25 +342,25 @@ const UserImage = styled.div`
     border-radius: 50%;
     margin: 0 2%;
 `;
-//유저 포지션 컨테이너
+
 const UserPos = styled.div`
-    font-size: 20px; /* Adjusted font size */
+    font-size: 20px;
     margin-left: 50%;
     width: 100%;
 `;
-//유저 이메일 컨테이너
+
 const UserEmail = styled.div`
-    font-size: 1.5vw; /* Adjusted font size */
+    font-size: 1.5vw;
     margin-left: 20%;
     width: 100%;
 `;
-//자기소개 컨테이너
+
 const OneLineContainer = styled.div`
-    font-size: 20px; /* Adjusted font size */
+    font-size: 20px;
     margin-left: 50%;
     width: 100%;
 `;
-//렌더링 컨테이너
+
 const ToolContainer = styled.div`
     display: flex;
     flex-direction: column;
@@ -286,13 +370,14 @@ const ToolContainer = styled.div`
     overflow-y: scroll;
     max-height: 65%;
 `;
+
 const InfoContainer = styled.div`
     display: flex;
-    justify-content: space-between; /* 양쪽 끝으로 배치 */
+    justify-content: space-between;
     align-items: center;
-    width: 100%; /* 전체 너비 사용 */
+    width: 100%;
 `;
-// ToggleButton의 스타일을 조정할 수 있습니다.
+
 const ToggleButton = styled.div`
     background-color: black;
     color: white;
@@ -300,13 +385,97 @@ const ToggleButton = styled.div`
     font-size: 14px;
     padding: 6px 10px;
     cursor: pointer;
-    height: 25px; /* 높이를 조정 */
+    height: 25px;
     text-align: center;
     align-items: center;
-    display: flex; /* 중앙 정렬을 위한 flex 사용 */
-    justify-content: center; /* 중앙 정렬 */
+    display: flex;
+    justify-content: center;
 `;
+
 const ButtonContainer = styled.div`
     display: flex;
     flex-direction: column;
+`;
+
+// New styled components for withdrawal
+const WithdrawButton = styled.div`
+    background-color: #ff4d4d;
+    color: white;
+    border-radius: 20px;
+    font-size: 14px;
+    padding: 6px 10px;
+    cursor: pointer;
+    height: 25px;
+    text-align: center;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    margin-top: 5px;
+`;
+
+const ConfirmationModal = styled.div`
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+`;
+
+const ModalContent = styled.div`
+    background-color: white;
+    padding: 30px;
+    border-radius: 10px;
+    text-align: center;
+    max-width: 400px;
+    width: 90%;
+`;
+
+const ModalButtonContainer = styled.div`
+    display: flex;
+    justify-content: space-around;
+    margin-top: 20px;
+`;
+
+const ConfirmButton = styled.button`
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+`;
+
+const CancelButton = styled.button`
+    background-color: #cccccc;
+    color: black;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+`;
+
+const PasswordInputContainer = styled.div`
+    margin-top: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+`;
+
+const PasswordInput = styled.input`
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+`;
+
+const ErrorMessage = styled.p`
+    color: red;
+    margin-top: 10px;
+    font-size: 14px;
 `;

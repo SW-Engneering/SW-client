@@ -17,6 +17,9 @@ export default function Management() {
     const [oppositionTeamData, setOppositionTeamData] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [isEditing, setIsEditing] = useState(false); // 수정 모드 상태
+    const [newTeamName, setNewTeamName] = useState(''); // 수정할 팀명
+    const [newTeamRegion, setNewTeamRegion] = useState(''); // 수정할 팀 지역
 
     useEffect(() => {
         const fetchTeamData = async () => {
@@ -49,6 +52,30 @@ export default function Management() {
         fetchTeamData();
     }, []);
 
+    const handleEditToggle = () => {
+        setIsEditing(!isEditing); // 수정 모드 토글
+    };
+
+    const handleSave = async () => {
+        const team_id = teamData.teamId; // 팀 ID 가져오기
+        try {
+            await axios.put(`https://3.34.133.247/teams/${team_id}?userId=${userId}`, {
+                teamName: newTeamName,
+                teamRegion: newTeamRegion
+            });
+            alert("팀 정보가 수정되었습니다.");
+            setIsEditing(false); // 수정 모드 종료
+            // 팀 데이터 다시 가져오기
+            const response = await axios.get(`https://3.34.133.247/teams/${team_id}`);
+            setTeamData(response.data);
+            console.log(response.data);
+        } catch (error) {
+            console.error('팀 정보 수정 실패:', error);
+            alert("팀 정보 수정에 실패했습니다.");
+            
+        }
+    };
+
     
 
     return (
@@ -61,10 +88,35 @@ export default function Management() {
             <Team>
                 <LeftTeam>
                     <Justbox>
-                        <TeamName>
-                            {teamData.teamName}
-                        </TeamName>
-                        <TeamRegion>{teamData.teamRegion}</TeamRegion>
+                        {isEditing ? (
+                            <>
+                                <InputBox>
+                                    <TeamNameInput
+                                        type="text"
+                                        value={newTeamName}
+                                        onChange={(e) => setNewTeamName(e.target.value)}
+                                        placeholder="팀명을 입력하세요"
+                                    />
+                                    <TeamRegionInput
+                                        type="text"
+                                        value={newTeamRegion}
+                                        onChange={(e) => setNewTeamRegion(e.target.value)}
+                                        placeholder="팀 지역을 입력하세요"
+                                    />
+                                </InputBox>
+                                <br/>
+                                <ButtonBox>
+                                    <SaveButton onClick={handleSave}>저장</SaveButton>
+                                    <CancelButton onClick={handleEditToggle}>취소</CancelButton>
+                                </ButtonBox>
+                            </>
+                        ) : (
+                            <>
+                                <TeamName>{teamData.teamName}</TeamName>
+                                <TeamRegion>{teamData.teamRegion}</TeamRegion>
+                                <TeamNamechange onClick={handleEditToggle}>정보 수정</TeamNamechange>
+                            </>
+                        )}
                     </Justbox>
                 </LeftTeam>
                 <RightTeam>
@@ -96,6 +148,7 @@ export default function Management() {
 
 const Container = styled.div`
     text-align: center;
+    font-family: '지마켓';
 `;
 
 const ImageContainer = styled.div`
@@ -130,26 +183,87 @@ const OverlayText2 = styled.div`
 const Team = styled.div`
     display: flex;
     padding: 0 200px;
-    height: 200px;
+    height: 230px;
 `;
 
 const LeftTeam = styled.div`
     margin-top: 30px;
-
     background-color: red;
     width: 30%;
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.2);
+    border-radius: 30px;
     
 `;
 
 const Justbox = styled.div`
     padding: 40px 0;
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); /* 그림자 추가 */
 `;
 
 const TeamName = styled.div`
     font-weight: bold;
     color: white;
     font-size: 30px;
+`;
+
+const InputBox = styled.div`
+    
+`;
+
+const TeamNameInput = styled.input`
+    height: 30px;
+    border-radius: 15px;
+    border: none;
+`;
+
+const TeamRegionInput = styled.input`
+    margin-top: 20px;
+    height: 30px;
+    border-radius: 15px;
+    border: none;
+`;
+
+const ButtonBox = styled.div`
+    
+`;
+
+const SaveButton = styled.button`
+    margin-right: 20px;
+    background-color: black;
+    color: white;
+    border-radius: 20px;
+    width: 60px;
+    height: 25px;
+    font-family: '지마켓';
+    
+    
+    cursor: pointer;
+
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); /* 그림자 추가 */
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
+    &:hover {
+        transform: translateY(2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
+    }
+`;
+
+const CancelButton = styled.button`
+    margin-right: 20px;
+    background-color: black;
+    color: white;
+    border-radius: 20px;
+    width: 60px;
+    height: 25px;
+    font-family: '지마켓';
+    
+    
+    cursor: pointer;
+
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); /* 그림자 추가 */
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
+    &:hover {
+        transform: translateY(2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
+    }
 `;
 
 
@@ -184,7 +298,26 @@ const MyTeamName = styled.div`
 `;
 
 const MyTeamRegion = styled.div`
-    margin-top: 10px;
+    margin-top: 5px;
+`;
+
+const TeamNamechange = styled.div`
+    background-color: black;
+    color: white;
+    border-radius: 20px;
+    width: 100px;
+    height: 25px;
+    margin: 0 auto;
+    margin-top: 20px;
+    padding-top: 10px;
+    cursor: pointer;
+
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); /* 그림자 추가 */
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
+    &:hover {
+        transform: translateY(2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
+    }
 `;
 
 const TeamRegion = styled.div`

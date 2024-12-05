@@ -7,11 +7,12 @@ import Cookies from "js-cookie";
 
 export default function Team() {
     const navigate = useNavigate();
-    const [teamList, setTeamList] = useState([]); // 게시물 상태 저장
+    const [teamList, setTeamList] = useState([]); // 팀 목록 상태 저장
+    const [filteredTeamList, setFilteredTeamList] = useState([]); // 필터링된 팀 목록
     const [error, setError] = useState(null); // 에러 상태
     const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 상태
+    const [searchTerm, setSearchTerm] = useState(''); // 검색어 상태
     const postsPerPage = 10; // 페이지당 게시글 수
-
 
     useEffect(() => {
         const fetchTeamList = async () => {
@@ -24,11 +25,12 @@ export default function Team() {
                     const userResponse = await axios.get(`https://3.34.133.247/user/${post.user_id}`);
                     return {
                         ...post,
-                        nickname: userResponse.data.nickname// nickname 추가
+                        nickname: userResponse.data.nickname // nickname 추가
                     };
                 }));
                 console.log('불러온 목록: ', TeamWithNicknames);
                 setTeamList(TeamWithNicknames);
+                setFilteredTeamList(TeamWithNicknames); // 초기에는 전체 목록을 필터링 목록으로 설정
             } catch (error) {
                 setError("게시물 가져오기 실패");
             } finally {
@@ -40,35 +42,54 @@ export default function Team() {
     }, []);
 
     const moveToWrite = () => {
-        const nickname = Cookies.get('nickname')
-        if(!nickname) {
+        const nickname = Cookies.get('nickname');
+        if (!nickname) {
             alert('로그인 안하면 글 못씁니다.');
+        } else {
+            navigate('/teamwrite');
         }
-        else {
-            navigate('/teamwrite')
-        }
-        
     };
 
     // 페이지네이션에 따른 현재 페이지의 게시글 가져오기
     const indexOfLastPost = currentPage * postsPerPage;
     const indexOfFirstPost = indexOfLastPost - postsPerPage;
-    const currentPosts = teamList.slice(indexOfFirstPost, indexOfLastPost);
+    const currentPosts = filteredTeamList.slice(indexOfFirstPost, indexOfLastPost);
 
     const teamDetail = async (post_id, post) => {
-        navigate(`/team/${post_id}`, { state: { post } } );
+        navigate(`/team/${post_id}`, { state: { post }});
     };
 
     const handlePageChange = (pageNumber) => {
         setCurrentPage(pageNumber);
     };
 
-    const totalPages = Math.ceil(teamList.length / postsPerPage);
+    const totalPages = Math.ceil(filteredTeamList.length / postsPerPage);
+
+    // 두 자리 숫자로 포맷팅하는 함수
+    const formatTime = (number) => {
+        return number.toString().padStart(2, '0'); // 2자리로 포맷팅
+    };
+
+    const goToSearch = () => {
+        if (searchTerm.trim()) {
+            const filteredPosts = teamList.filter(post => post.nickname.includes(searchTerm));
+            setFilteredTeamList(filteredPosts);
+            setCurrentPage(1); // 검색 후 첫 페이지로 이동
+        } else {
+            setFilteredTeamList(teamList); // 검색어가 없으면 전체 게시물 표시
+        }
+    };
+
+    const handleKeyPress = (event) => {
+        if (event.key === 'Enter') {
+            goToSearch();
+        }
+    };
 
     return(
         <Container>
             <BannerContainer>
-                <Image src={팀관리1} alt="ㅁㄴㅇㄹ" />
+                <Image src={팀관리1} alt="팀 관리" />
                 <OverlayText1>팀 구하기</OverlayText1>
                 <OverlayText2>저 축구 잘하니까 좀 데려가세요~</OverlayText2>
             </BannerContainer>
@@ -97,17 +118,28 @@ export default function Team() {
                         <ul>등록된 게시물이 없습니다.</ul>
                     ) : (
                         <PostsList>
-                            {currentPosts.map((post) => (
-                                <PostItem key={post.post_id}>
-                                    <PostId>{post.post_id}</PostId>
-                                    <PostTitle onClick={() => teamDetail(post.post_id, post)}>
-                                        {post.post_title}{post.post_comment_count > 0 && ` [${post.post_comment_count}]`}
-                                    </PostTitle>
-                                    <PostUserId>{post.nickname}</PostUserId>
-                                    <PostCreateTime>{post.post_created_time.split('T')[0]}</PostCreateTime>
-                                    <PostHits>{post.post_hits}</PostHits>
-                                </PostItem>
-                            ))}
+                            {currentPosts.map((post) => {
+                                const createdTime = new Date(post.post_created_time); // 날짜 객체로 변환
+                                const currentDate = new Date(); // 현재 날짜 객체
+                                const isToday = createdTime.toDateString() === currentDate.toDateString(); // 오늘인지 확인
+
+                                return (
+                                    <PostItem key={post.post_id}>
+                                        <PostId>{post.post_id}</PostId>
+                                        <PostTitle onClick={() => teamDetail(post.post_id, post)}>
+                                            {post.post_title}{post.post_comment_count > 0 && ` [${post.post_comment_count}]`}
+                                        </PostTitle>
+                                        <PostUserId>{post.nickname}</PostUserId>
+                                        <PostCreateTime>
+                                            {isToday 
+                                                ? `${formatTime(createdTime.getHours())}:${formatTime(createdTime.getMinutes())}` // 오늘이면 시간 표시
+                                                : createdTime.toISOString().split('T')[0] // 오늘이 아니면 날짜만 표시
+                                            }
+                                        </PostCreateTime>
+                                        <PostHits>{post.post_hits}</PostHits>
+                                    </PostItem>
+                                );
+                            })}
                         </PostsList>
                     )}
                 </div>
@@ -118,10 +150,19 @@ export default function Team() {
                         </PageButton>
                     ))}
                 </Pagination>
+                <Search>
+                    <input 
+                        type="text" 
+                        value={searchTerm} 
+                        onChange={(e) => setSearchTerm(e.target.value)} 
+                        placeholder="작성자를 입력하세요"
+                        onKeyPress={handleKeyPress}
+                    />
+                    <button onClick={goToSearch}>검색</button>
+                </Search>
                 <WriteButton onClick={moveToWrite}>글쓰기</WriteButton>
             </Padding200>
         </Container>
-        
     );
 }
 
@@ -286,6 +327,13 @@ const Pagination = styled.div`
     display: flex;
     justify-content: center;
     margin: 20px 0;
+`;
+
+const Search = styled.div`
+    display: flex;
+    
+    justify-content: center;
+    gap: 10px;
 `;
 
 const PageButton = styled.button`

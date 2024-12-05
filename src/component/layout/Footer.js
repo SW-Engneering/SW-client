@@ -32,6 +32,7 @@ function Footer() {
 }
 
 const Container = styled.div`
+    margin-top: 50px;
     border-top: 2px solid #ecedef;
     background-color: white;
     display: flex;

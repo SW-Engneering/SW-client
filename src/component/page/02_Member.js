@@ -6,12 +6,14 @@ import axios from "axios";
 import Cookies from "js-cookie";
 
 export default function Member() {
-    const [MemberList, setMemberList] = useState([]);
+    const [memberList, setMemberList] = useState([]); // 회원 목록
+    const [filteredMemberList, setFilteredMemberList] = useState([]); // 검색된 회원 목록
     const [error, setError] = useState(null);
+    const [searchTerm, setSearchTerm] = useState(''); // 검색어
     const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 상태
     const postsPerPage = 10; // 페이지당 게시글 수
     const navigate = useNavigate();
-    
+
     useEffect(() => {
         const fetchMemberList = async () => {
             try {
@@ -26,8 +28,9 @@ export default function Member() {
                         nickname: userResponse.data.nickname // nickname 추가
                     };
                 }));
-                console.log('불러온 목록: ', memberWithNicknames);
+                
                 setMemberList(memberWithNicknames);
+                setFilteredMemberList(memberWithNicknames); // 초기에는 전체 목록을 필터링 목록으로 설정
             } catch (error) {
                 setError("게시물 가져오기 실패");
             } finally {
@@ -50,22 +53,37 @@ export default function Member() {
     // 페이지네이션에 따른 현재 페이지의 게시글 가져오기
     const indexOfLastPost = currentPage * postsPerPage;
     const indexOfFirstPost = indexOfLastPost - postsPerPage;
-    const currentPosts = MemberList.slice(indexOfFirstPost, indexOfLastPost);
+    const currentPosts = filteredMemberList.slice(indexOfFirstPost, indexOfLastPost);
 
-    const memberDetail = async (post_id, post) => {
+    const memberDetail = (post_id, post) => {
         navigate(`/member/${post_id}`, { state: { post } });
-        console.log(post);
     };
 
     const handlePageChange = (pageNumber) => {
         setCurrentPage(pageNumber);
     };
 
-    const totalPages = Math.ceil(MemberList.length / postsPerPage);
+    const totalPages = Math.ceil(filteredMemberList.length / postsPerPage);
 
     // 두 자리 숫자로 포맷팅하는 함수
     const formatTime = (number) => {
         return number.toString().padStart(2, '0'); // 2자리로 포맷팅
+    };
+
+    const goToSearch = () => {
+        if (searchTerm.trim()) {
+            const filteredPosts = memberList.filter(post => post.nickname.includes(searchTerm));
+            setFilteredMemberList(filteredPosts);
+            setCurrentPage(1); // 검색 후 첫 페이지로 이동
+        } else {
+            setFilteredMemberList(memberList); // 검색어가 없으면 전체 게시물 표시
+        }
+    };
+
+    const handleKeyPress = (event) => {
+        if (event.key === 'Enter') {
+            goToSearch();
+        }
     };
 
     return (
@@ -132,6 +150,16 @@ export default function Member() {
                         </PageButton>
                     ))}
                 </Pagination>
+                <Search>
+                    <input 
+                        type="text" 
+                        value={searchTerm} 
+                        onChange={(e) => setSearchTerm(e.target.value)} 
+                        placeholder="작성자를 입력하세요"
+                        onKeyPress={handleKeyPress}
+                    />
+                    <button onClick={goToSearch}>검색</button>
+                </Search>
                 <WriteButton onClick={moveToWrite}>글쓰기</WriteButton>
             </Padding200>
         </Container>
@@ -299,6 +327,13 @@ const Pagination = styled.div`
     display: flex;
     justify-content: center;
     margin: 20px 0;
+`;
+
+const Search = styled.div`
+    display: flex;
+    
+    justify-content: center;
+    gap: 10px;
 `;
 
 const PageButton = styled.button`

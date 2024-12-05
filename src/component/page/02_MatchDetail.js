@@ -15,8 +15,9 @@ export default function MatchDetail() {
     const nickname = Cookies.get('nickname');
     const [comments, setComments] = useState([]);
     const [writeComment, setWriteComment] = useState('');
+    const [teamInfo, setTeamInfo] = useState('');
 
-    console.log(post);
+    
 
     useEffect(() => {
         const fetchComments = async () => {
@@ -39,8 +40,27 @@ export default function MatchDetail() {
                 console.log('로딩완료');
             }
         };
-        fetchComments();
-    }, [post.post_id]);
+
+        const getTeam = async () => {
+            try {
+                const response = await axios.get(`https://3.34.133.247/user/${post.user_id}`);
+                const { team_id } = response.data; 
+                
+                const secondResponse = await axios.get(`https://3.34.133.247/teams/${team_id}`);
+                setTeamInfo(secondResponse.data);
+            } catch(error) {
+                console.log('에러');
+                console.log(teamInfo);
+            }
+        }
+
+        const fetch = async () => {
+            await fetchComments();
+            await getTeam();
+        }
+
+        fetch();
+    }, []);
 
 
     const convertNewlinesToBreaks = (text) => {
@@ -53,7 +73,7 @@ export default function MatchDetail() {
     };
 
     const modifyGoGo = () => {
-        navigate('/memberwrite', { state : { post }});
+        navigate('/matchwrite', { state : { post }});
     }
 
     const deleteGoGo = async () => {
@@ -63,7 +83,7 @@ export default function MatchDetail() {
                 try {
                     await axios.delete(`https://3.34.133.247/post/${post.post_id}?userId=${userId}`);
                     alert("삭제되었습니다.");
-                    navigate('/member');
+                    navigate('/match');
                 } catch (error) {
                     console.error('삭제 실패:', error); // 에러 로그
                     alert("삭제에 실패했습니다."); // 사용자에게 알림
@@ -128,13 +148,27 @@ export default function MatchDetail() {
         }
     }
 
+    const matchGoGo = async () => {
+        try {
+            const response = await axios.get(`https://3.34.133.247/user/${userId}`);
+            const { team_id } = response.data;
+
+            await axios.post(`https://3.34.133.247/teamMatch?homeTeamId=${teamInfo.teamId}&awayTeamId=${team_id}`);
+        } catch(error) {
+            alert('준비중입니다.');
+            console.log(teamInfo.teamId);
+        }
+    }
+
+    
+
 
     return (
         <Container>
             <BannerContainer>
                 <Image src={팀관리1} alt="ㅁㄴㅇㄹ" />
-                <OverlayText1>팀원 구하기</OverlayText1>
-                <OverlayText2>같이 축구하실 분~</OverlayText2>
+                <OverlayText1>팀 매칭하기</OverlayText1>
+                <OverlayText2>같이 한판 하실 분~</OverlayText2>
             </BannerContainer>
             <Padding200>
                 <DetailContainer>
@@ -144,7 +178,19 @@ export default function MatchDetail() {
                         <CreateTime>작성일: {post.post_created_time.split('T')[0]}</CreateTime>
                         <Hits>조회수: {post.post_hits}</Hits>
                     </Flexbox>
-                    <Content>{convertNewlinesToBreaks(post.post_content)}</Content>
+                    <Justbox>
+                        <Content>
+                            {convertNewlinesToBreaks(post.post_content)}
+                            
+                        </Content>
+                        <TeamInfo>
+                                팀명: {teamInfo.teamName}<br/><br/>
+                                지역: {teamInfo.teamRegion}<br/>
+                                <MatchButton onClick={matchGoGo}>
+                                    매치 신청하기
+                                </MatchButton>
+                        </TeamInfo>
+                    </Justbox>
                 </DetailContainer>
                 <SujungDeleteFlexbox>
                     {nickname === post.nickname && ( // 작성자 본인일 때만 버튼 표시
@@ -253,12 +299,41 @@ const Hits = styled.div`
     text-align: center;
 `;
 
+const Justbox = styled.div`
+    border-bottom: 1px solid black;
+    padding-bottom: 30px;
+`;
+
 const Content = styled.div`
     padding-left: 50px;
     padding-right: 50px;
     padding-top: 30px;
     padding-bottom: 30px;
-    border-bottom: 1px solid black;
+    min-height: 50px;
+`;
+
+const TeamInfo = styled.div`
+    text-align: center;
+    width: 300px;
+    height: 110px;
+    border-radius: 30px;
+    box-shadow: 0px 4px 30px rgba(0, 0, 0, 0.1);
+    margin: 0 auto;
+    padding: 20px 0;
+    font-weight: bold;
+`;
+
+const MatchButton = styled.button`
+    margin-top: 30px;
+    background-color: black;
+    color: white;
+    font-weight: bold;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: transform 0.1s ease;
+    &:hover {
+        transform: translateY(3px);
+    }
 `;
 
 

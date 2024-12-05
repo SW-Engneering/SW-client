@@ -6,7 +6,7 @@ import 팀관리1 from "../images/팀관리1.jpg";
 import styled from 'styled-components';
 import Cookies from 'js-cookie';
 
-export default function MemberDetail() {
+export default function TeamDetail() {
     
     const navigate = useNavigate();
     const location = useLocation();
@@ -16,7 +16,7 @@ export default function MemberDetail() {
     const [comments, setComments] = useState([]);
     const [writeComment, setWriteComment] = useState('');
 
-    console.log(post);
+   
 
     useEffect(() => {
         const fetchComments = async () => {

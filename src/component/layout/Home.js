@@ -257,12 +257,16 @@ const PostsList = styled.div`
     //border-bottom: 0.1px solid grey; /* 하단 회색 줄 */
     text-align: center;
     font-size: 15px;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+    
 `;
 
 const PostItem = styled.div`
     border: 1px solid #ddd;
     padding: 10px;
     display: flex;
+    
 `;
 
 
@@ -271,6 +275,8 @@ const PostTitle = styled.div`
     margin-left: 20px;
     text-align: left;
     cursor: pointer;
+    
+    
 
     &:hover {
         color: green;

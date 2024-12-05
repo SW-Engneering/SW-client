@@ -16,7 +16,7 @@ export default function MemberDetail() {
     const [comments, setComments] = useState([]);
     const [writeComment, setWriteComment] = useState('');
 
-    console.log(post);
+    
 
     useEffect(() => {
         const fetchComments = async () => {

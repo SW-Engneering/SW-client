@@ -51,8 +51,10 @@ export default function Create_team() {
             </ImageContainer>
             <Flexbox>
                 <CreateBox>
-                    <TeamNameInput type="text" name="teamName" value={teamName} onChange={onChange} placeholder="팀 이름"></TeamNameInput>
-                    <TeamRegionInput type="text" name="teamRegion" value={teamRegion} onChange={onChange} placeholder="지역"></TeamRegionInput>
+                    <InputBox>
+                        <TeamNameInput type="text" name="teamName" value={teamName} onChange={onChange} placeholder="팀 이름"></TeamNameInput><br/>
+                        <TeamRegionInput type="text" name="teamRegion" value={teamRegion} onChange={onChange} placeholder="지역"></TeamRegionInput>
+                    </InputBox>
                     <CreateButton onClick={createTeam}>팀 생성</CreateButton>
                 </CreateBox>
             </Flexbox>
@@ -96,30 +98,52 @@ const OverlayText2 = styled.div`
 
 const Flexbox = styled.div`
     display: flex;
+    margin: 0 auto;
     justify-content: center;
     padding-top: 30px;
 `;
 
 const CreateBox = styled.div`
+    padding-top: 50px;
     width: 500px;
-    height: 100px;
+    height: 200px;
     display: relative;
     border-radius: 30px;
     box-shadow: 10px 3px 40px rgba(0, 0, 0, 0.1);
 `;
 
 const TeamNameInput = styled.input`
-
+    border-radius: 10px;
+    padding: 5px;
+    margin-bottom: 7px;
 `;
 
 const TeamRegionInput = styled.input`
+    border-radius: 10px;
+    padding: 5px;
+`;
 
+const InputBox = styled.div`
+    padding: 20px 0;
 `;
 
 const CreateButton = styled.div`
     cursor: pointer;
     color: white;
-    background-color: red;
-    width: 100px;
-    height: 50px;
+    background-color: black;
+    width: 80px;
+    height: 30px;
+    border-radius: 20px;
+    margin: 0 auto;
+    padding-top: 10px;
+    font-weight: bold;
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
+
+    &:hover {
+        background-color: #3F3F3F;
+        transform: translateY(4px);
+        box-shadow: 0 2px 15px rgba(0, 0, 0, 0.2);
+        
+    }
+
 `;
