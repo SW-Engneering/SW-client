@@ -1,61 +1,47 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import styled from "styled-components";
-import 팀관리1 from "../images/팀관리1.jpg";
-import axios from "axios";
-import Cookies from "js-cookie";
-import starFill from "../images/starfill.png";
-import starEmpty from "../images/starempty.png";
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
+import 팀관리1 from '../images/팀관리1.jpg';
+import axios from 'axios';
+import Cookies from 'js-cookie';
+import starFill from '../images/starfill.png';
+import starEmpty from '../images/starempty.png';
 
 export default function Member() {
-    const [MemberList, setMemberList] = useState([]);
+    const [memberList, setMemberList] = useState([]); // 회원 목록
+    const [filteredMemberList, setFilteredMemberList] = useState([]); // 검색된 회원 목록
     const [error, setError] = useState(null);
+    const [searchTerm, setSearchTerm] = useState(''); // 검색어
     const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 상태
     const postsPerPage = 10; // 페이지당 게시글 수
     const navigate = useNavigate();
-    const userId = Cookies.get("userId");
+    const userId = Cookies.get('userId');
 
     // 북마크 토글 함수
     const toggleBookmark = async (postId, currentState) => {
         try {
-            const response = await axios.post(
-                `https://3.34.133.247/bookmarks?userId=${userId}&postId=${postId}`,
-                { userId, postId },
-                { headers: { accept: "/" } }
-            );
+            const response = await axios.post(`https://3.34.133.247/bookmarks?userId=${userId}&postId=${postId}`, { userId, postId }, { headers: { accept: '/' } });
 
             if (response.status === 201) {
                 // 북마크 상태 업데이트
-                setMemberList((prevList) =>
-                    prevList.map((post) =>
-                        post.post_id === postId
-                            ? { ...post, isFavorite: !currentState }
-                            : post
-                    )
-                );
+                setMemberList((prevList) => prevList.map((post) => (post.post_id === postId ? { ...post, isFavorite: !currentState } : post)));
             }
         } catch (error) {
-            console.error("Bookmark toggle error:", error);
+            console.error('Bookmark toggle error:', error);
         }
     };
 
     useEffect(() => {
         const fetchMemberList = async () => {
             try {
-                const response = await axios.get("https://3.34.133.247/member");
-                const sortedMemberList = response.data.sort(
-                    (a, b) => b.post_id - a.post_id
-                );
+                const response = await axios.get('https://3.34.133.247/member');
+                const sortedMemberList = response.data.sort((a, b) => b.post_id - a.post_id);
 
                 // 각 게시물 작성자 및 북마크 초기 상태 가져오기
                 const memberWithDetails = await Promise.all(
                     sortedMemberList.map(async (post) => {
-                        const userResponse = await axios.get(
-                            `https://3.34.133.247/user/${post.user_id}`
-                        );
-                        const bookmarkResponse = await axios.get(
-                            `https://3.34.133.247/bookmarks?userId=${userId}&postId=${post.post_id}`
-                        );
+                        const userResponse = await axios.get(`https://3.34.133.247/user/${post.user_id}`);
+                        const bookmarkResponse = await axios.get(`https://3.34.133.247/bookmarks?userId=${userId}&postId=${post.post_id}`);
 
                         return {
                             ...post,
@@ -67,7 +53,7 @@ export default function Member() {
 
                 setMemberList(memberWithDetails);
             } catch (error) {
-                setError("게시물 가져오기 실패");
+                setError('게시물 가져오기 실패');
             }
         };
 
@@ -75,17 +61,17 @@ export default function Member() {
     }, [userId]);
 
     const moveToWrite = () => {
-        const nickname = Cookies.get("nickname");
+        const nickname = Cookies.get('nickname');
         if (!nickname) {
-            alert("로그인이 필요한 기능입니다.");
+            alert('로그인이 필요한 기능입니다.');
         } else {
-            navigate("/memberwrite");
+            navigate('/memberwrite');
         }
     };
 
     const indexOfLastPost = currentPage * postsPerPage;
     const indexOfFirstPost = indexOfLastPost - postsPerPage;
-    const currentPosts = MemberList.slice(indexOfFirstPost, indexOfLastPost);
+    const currentPosts = filteredMemberList.slice(indexOfFirstPost, indexOfLastPost);
 
     const memberDetail = (post_id, post) => {
         navigate(`/member/${post_id}`, { state: { post } });
@@ -95,7 +81,28 @@ export default function Member() {
         setCurrentPage(pageNumber);
     };
 
-    const totalPages = Math.ceil(MemberList.length / postsPerPage);
+    const totalPages = Math.ceil(filteredMemberList.length / postsPerPage);
+
+    // 두 자리 숫자로 포맷팅하는 함수
+    const formatTime = (number) => {
+        return number.toString().padStart(2, '0'); // 2자리로 포맷팅
+    };
+
+    const goToSearch = () => {
+        if (searchTerm.trim()) {
+            const filteredPosts = memberList.filter((post) => post.nickname.includes(searchTerm));
+            setFilteredMemberList(filteredPosts);
+            setCurrentPage(1); // 검색 후 첫 페이지로 이동
+        } else {
+            setFilteredMemberList(memberList); // 검색어가 없으면 전체 게시물 표시
+        }
+    };
+
+    const handleKeyPress = (event) => {
+        if (event.key === 'Enter') {
+            goToSearch();
+        }
+    };
 
     return (
         <Container>
@@ -124,24 +131,21 @@ export default function Member() {
                     {error ? (
                         <ul>{error}</ul>
                     ) : currentPosts.length === 0 ? (
-                        <ul>등록된 게시물이 없습니다.</ul>
+                        <NoPostBox>
+                            <NoPost>등록된 게시물이 없습니다.</NoPost>
+                        </NoPostBox>
                     ) : (
                         <PostsList>
                             {currentPosts.map((post) => (
                                 <PostItem key={post.post_id}>
-                                    <BookmarkButton
-                                        $isFavorite={post.isFavorite}
-                                        onClick={() => toggleBookmark(post.post_id, post.isFavorite)}
-                                    />
+                                    <BookmarkButton $isFavorite={post.isFavorite} onClick={() => toggleBookmark(post.post_id, post.isFavorite)} />
                                     <PostId>{post.post_id}</PostId>
                                     <PostTitle onClick={() => memberDetail(post.post_id, post)}>
                                         {post.post_title}
                                         {post.post_comment_count > 0 && ` [${post.post_comment_count}]`}
                                     </PostTitle>
                                     <PostUserId>{post.nickname}</PostUserId>
-                                    <PostCreateTime>
-                                        {post.post_created_time.split("T")[0]}
-                                    </PostCreateTime>
+                                    <PostCreateTime>{post.post_created_time.split('T')[0]}</PostCreateTime>
                                     <PostHits>{post.post_hits}</PostHits>
                                 </PostItem>
                             ))}
@@ -155,6 +159,10 @@ export default function Member() {
                         </PageButton>
                     ))}
                 </Pagination>
+                <Search>
+                    <input type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="작성자를 입력하세요" onKeyPress={handleKeyPress} />
+                    <button onClick={goToSearch}>검색</button>
+                </Search>
                 <WriteButton onClick={moveToWrite}>글쓰기</WriteButton>
             </Padding200>
         </Container>
@@ -163,12 +171,10 @@ export default function Member() {
 
 // ... styled-components 정의 그대로 유지
 
-
 const Container = styled.div`
     justify-content: center;
     align-items: center;
     font-family: 'Pretendard-Light';
-
 `;
 
 const BannerContainer = styled.div`
@@ -179,8 +185,6 @@ const Padding200 = styled.div`
     padding-left: 200px;
     padding-right: 200px;
 `;
-
-
 
 const TitleContainer = styled.div`
     display: flex;
@@ -197,27 +201,24 @@ const HeaderContainer = styled.div`
     font-weight: bold;
 `;
 
-const FirstContainer = styled.div` //글번호
-    margin-left:10px;
+const FirstContainer = styled.div`
+    //글번호
+    margin-left: 10px;
     margin-right: 20px;
 `;
 
-const SecondContainer = styled.div` //제목
+const SecondContainer = styled.div`
+    //제목
     margin-left: 300px;
     margin-right: 300px;
 `;
-
 
 const ThirdContainer = styled.div`
     margin-left: 17px;
     margin-right: 100px;
 `;
 
-
-const FourthContainer = styled.div`
-
-`;
-
+const FourthContainer = styled.div``;
 
 const FifthContainer = styled.div`
     margin-left: 107px;
@@ -259,6 +260,19 @@ const SitemapContainer = styled.div`
     padding: 20px 0; /* 위아래 패딩 추가 */
 `;
 
+const NoPostBox = styled.div`
+    display: flex;
+    height: 200px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+`;
+
+const NoPost = styled.div`
+    font-size: 40px;
+    font-weight: bold;
+`;
+
 const PostsList = styled.div`
     list-style: none;
     padding: 0;
@@ -271,7 +285,7 @@ const PostItem = styled.div`
     border: 1px solid #ddd;
     border-right: 1px solid white;
     border-left: 1px solid white;
-    
+
     padding: 10px;
     display: flex;
 `;
@@ -288,13 +302,11 @@ const PostTitle = styled.div`
 `;
 
 const PostUserId = styled.div`
-    
     width: 100px;
     margin-left: 38px;
 `;
 
 const PostCreateTime = styled.div`
-    
     margin-left: 10px;
     width: 160px;
 `;
@@ -305,7 +317,7 @@ const PostHits = styled.div`
 `;
 
 const WriteButton = styled.button`
-    background-color: #4CAF50;
+    background-color: #4caf50;
     color: white;
     border: none;
     border-radius: 5px;
@@ -324,6 +336,13 @@ const Pagination = styled.div`
     display: flex;
     justify-content: center;
     margin: 20px 0;
+`;
+
+const Search = styled.div`
+    display: flex;
+
+    justify-content: center;
+    gap: 10px;
 `;
 
 const PageButton = styled.button`
@@ -346,5 +365,5 @@ const BookmarkButton = styled.div`
     background-position: center;
     background-repeat: no-repeat;
     cursor: pointer;
-    background-image: url(${props => (props.$isFavorite ? starFill : starEmpty)});
+    background-image: url(${(props) => (props.$isFavorite ? starFill : starEmpty)});
 `;

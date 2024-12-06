@@ -13,7 +13,7 @@ export default function Nav() {
     
     
 
-    const teamGwanLiMotDeGa = async (asdf) => {
+    const teamGwanLiMotDeGa = async () => {
         try {
             const userResponse = await axios.get(`https://3.34.133.247/user/${userId}`);
             const { team_id } = userResponse.data; // team_id 추출

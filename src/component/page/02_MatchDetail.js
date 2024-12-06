@@ -15,8 +15,10 @@ export default function MatchDetail() {
     const nickname = Cookies.get('nickname');
     const [comments, setComments] = useState([]);
     const [writeComment, setWriteComment] = useState('');
+    const [teamInfo, setTeamInfo] = useState('');
+    const [commentCount, setCommentCount] = useState(post.post_comment_count);
 
-    console.log(post);
+    
 
     useEffect(() => {
         const fetchComments = async () => {
@@ -39,8 +41,27 @@ export default function MatchDetail() {
                 console.log('로딩완료');
             }
         };
-        fetchComments();
-    }, [post.post_id]);
+
+        const getTeam = async () => {
+            try {
+                const response = await axios.get(`https://3.34.133.247/user/${post.user_id}`);
+                const { team_id } = response.data; 
+                
+                const secondResponse = await axios.get(`https://3.34.133.247/teams/${team_id}`);
+                setTeamInfo(secondResponse.data);
+            } catch(error) {
+                console.log('에러');
+                console.log(teamInfo);
+            }
+        }
+
+        const fetch = async () => {
+            await fetchComments();
+            await getTeam();
+        }
+
+        fetch();
+    }, []);
 
 
     const convertNewlinesToBreaks = (text) => {
@@ -53,7 +74,7 @@ export default function MatchDetail() {
     };
 
     const modifyGoGo = () => {
-        navigate('/memberwrite', { state : { post }});
+        navigate('/matchwrite', { state : { post }});
     }
 
     const deleteGoGo = async () => {
@@ -63,7 +84,7 @@ export default function MatchDetail() {
                 try {
                     await axios.delete(`https://3.34.133.247/post/${post.post_id}?userId=${userId}`);
                     alert("삭제되었습니다.");
-                    navigate('/member');
+                    navigate('/match');
                 } catch (error) {
                     console.error('삭제 실패:', error); // 에러 로그
                     alert("삭제에 실패했습니다."); // 사용자에게 알림
@@ -104,19 +125,20 @@ export default function MatchDetail() {
                 }));
                 console.log('불러온 목록: ', commentWithNickname);
                 setComments(commentWithNickname);
+                setCommentCount(commentCount + 1);
         } catch (error) {
             console.error('댓글 작성 실패:', error);
             alert("댓글 작성에 실패했습니다.");
         }
     };
 
-    const CommentDeleteGoGo = async() => {
+    const CommentDeleteGoGo = async(comment_id) => {
         const confirmDelete = window.confirm("정말로 삭제하시겠습니까?");
         if(confirmDelete) {
             try {
-                await axios.delete(`https://3.34.133.247/comments/${comments.comment_id}?userId=${userId}`);
+                await axios.delete(`https://3.34.133.247/comments/${comment_id}?userId=${userId}`);
                 alert("삭제되었습니다.");
-                navigate('/member');
+                window.location.reload();
             } catch(error) {
                 console.log(comments.comment_id, '가 표시가 안되나?');
                 console.log('아니면', userId, '가 표시가 안되나?');
@@ -128,13 +150,41 @@ export default function MatchDetail() {
         }
     }
 
+    const matchGoGo = async (user_id) => {
+        const confirm = window.confirm('매칭을 잡으시겠습니까?')
+        if(confirm) {
+            try {
+                const response = await axios.get(`https://3.34.133.247/user/${userId}`);
+                const { team_id } = response.data;
+
+                const secondResponse = await axios.get(`https://3.34.133.247/user/${user_id}`);
+                const yourTeamId = secondResponse.data.team_id;
+
+                console.log(`Sending request to: https://3.34.133.247/matches?teamId=${team_id}&awayTeamId=${yourTeamId}`);
+    
+                await axios.post(`https://3.34.133.247/matches?homeTeamId=${team_id}&awayTeamId=${yourTeamId}`);
+                alert('매칭이 성사되었습니다! \n팀 관리 화면으로 이동합니다.');
+    
+            } catch(error) {
+                alert('이미 타 팀과 매칭이 잡혀있습니다.');
+                
+            }
+        }
+        else {
+            return;
+        }
+        
+    }
+
+    
+
 
     return (
         <Container>
             <BannerContainer>
                 <Image src={팀관리1} alt="ㅁㄴㅇㄹ" />
-                <OverlayText1>팀원 구하기</OverlayText1>
-                <OverlayText2>같이 축구하실 분~</OverlayText2>
+                <OverlayText1>팀 매칭하기</OverlayText1>
+                <OverlayText2>같이 한판 하실 분~</OverlayText2>
             </BannerContainer>
             <Padding200>
                 <DetailContainer>
@@ -144,7 +194,19 @@ export default function MatchDetail() {
                         <CreateTime>작성일: {post.post_created_time.split('T')[0]}</CreateTime>
                         <Hits>조회수: {post.post_hits}</Hits>
                     </Flexbox>
-                    <Content>{convertNewlinesToBreaks(post.post_content)}</Content>
+                    <Justbox>
+                        <Content>
+                            {convertNewlinesToBreaks(post.post_content)}
+                            
+                        </Content>
+                        <TeamInfo>
+                                팀명: {teamInfo.teamName}<br/><br/>
+                                지역: {teamInfo.teamRegion}<br/>
+                                <MatchButton onClick={() => {matchGoGo(post.user_id)}}>
+                                    매치 신청하기
+                                </MatchButton>
+                        </TeamInfo>
+                    </Justbox>
                 </DetailContainer>
                 <SujungDeleteFlexbox>
                     {nickname === post.nickname && ( // 작성자 본인일 때만 버튼 표시
@@ -163,6 +225,7 @@ export default function MatchDetail() {
                     />
                     <SubmitButton type="submit">댓글 작성</SubmitButton>
                 </CommentForm>
+                <CommentCount>댓글 {commentCount}개</CommentCount>
                 <CommentsSection>
                     {comments.map((comment) => (
                         <Comment key={comment.comment_id}>
@@ -171,7 +234,7 @@ export default function MatchDetail() {
                             <CommentinsertTime>{comment.comment_insert_time.split('T')[0]} {comment.comment_insert_time.split('T')[1].split('.')[0]}</CommentinsertTime>
                             {nickname === comment.nickname && ( // 작성자 본인일 때만 버튼 표시
                                 <>
-                                    <CommentDelete onClick={CommentDeleteGoGo}>삭제</CommentDelete>
+                                    <CommentDelete onClick={() => CommentDeleteGoGo(comment.comment_id)}>삭제</CommentDelete>
                                 </>
                             )}
                             
@@ -202,6 +265,7 @@ const BannerContainer = styled.div`
 
 const Image = styled.img`
     align-items: center;
+    width: 100%;
 `;
 
 const OverlayText1 = styled.div`
@@ -253,12 +317,41 @@ const Hits = styled.div`
     text-align: center;
 `;
 
+const Justbox = styled.div`
+    border-bottom: 1px solid black;
+    padding-bottom: 30px;
+`;
+
 const Content = styled.div`
     padding-left: 50px;
     padding-right: 50px;
     padding-top: 30px;
     padding-bottom: 30px;
-    border-bottom: 1px solid black;
+    min-height: 50px;
+`;
+
+const TeamInfo = styled.div`
+    text-align: center;
+    width: 300px;
+    height: 110px;
+    border-radius: 30px;
+    box-shadow: 0px 4px 30px rgba(0, 0, 0, 0.1);
+    margin: 0 auto;
+    padding: 20px 0;
+    font-weight: bold;
+`;
+
+const MatchButton = styled.button`
+    margin-top: 30px;
+    background-color: black;
+    color: white;
+    font-weight: bold;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: transform 0.1s ease;
+    &:hover {
+        transform: translateY(3px);
+    }
 `;
 
 
@@ -318,8 +411,14 @@ const SubmitButton = styled.button`
     }
 `;
 
+const CommentCount = styled.div`
+    font-size: 15px;
+    font-weight: bold;
+    padding-top: 20px;
+`;
+
 const CommentsSection = styled.div`
-    margin-top: 20px;
+    
 `;
 
 const Comment = styled.div`
@@ -332,6 +431,7 @@ const Comment = styled.div`
 const CommentNickname = styled.span`
     font-weight: bold;
     width: 70px;
+    overflow: hidden;
 `;
 
 const CommentContent = styled.div`

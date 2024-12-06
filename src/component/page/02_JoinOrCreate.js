@@ -54,6 +54,7 @@ const Container = styled.div`
     text-align: center;
     position: relative;
     font-family: '지마켓';
+    padding-bottom: 40px;
 `;
 
 const TitleContainer = styled.div`

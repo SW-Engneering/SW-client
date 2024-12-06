@@ -42,11 +42,12 @@ export default function Match() {
 
     const moveToWrite = () => {
         const nickname = Cookies.get('nickname')
+
         if(!nickname) {
             alert('로그인이 필요한 기능입니다.');
         }
         else {
-            navigate('/matchwrite')
+            navigate('/matchwrite');
         }
         
     };
@@ -95,7 +96,9 @@ export default function Match() {
                     {error ? (
                         <ul>{error}</ul>
                     ) : currentPosts.length === 0 ? (
-                        <ul>등록된 게시물이 없습니다.</ul>
+                        <NoPostBox>
+                            <NoPost>등록된 게시물이 없습니다.</NoPost>
+                        </NoPostBox>
                     ) : (
                         <PostsList>
                             {currentPosts.map((post) => (
@@ -219,6 +222,21 @@ const OverlayText2 = styled.div`
 const SitemapContainer = styled.div`
     font-size: 15px;
     padding: 20px 0; /* 위아래 패딩 추가 */
+`;
+
+const NoPostBox = styled.div`
+    display: flex;
+    height: 200px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+`;
+
+const NoPost = styled.div`
+    
+    font-size: 40px;
+    font-weight: bold;
+    
 `;
 
 const PostsList = styled.div`
