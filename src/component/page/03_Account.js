@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import axios from 'axios';
 
 export default function Account() {
+    const [position, setPosition] = useState(null);
     return (
         <Container>
             <LineContainer>
@@ -11,19 +12,36 @@ export default function Account() {
             </LineContainer>
             <LineContainer>
                 <TextContainer>포지션</TextContainer>
-                <InputContainer type="text" placeholder="포지션을 입력하세요" />
+                <PosSelect value={position} onChange={(e) => setPosition(e.target.value)}>
+                    <option value="">포지션 선택</option>
+                    <option value="CF">중앙 공격수(CF)</option>
+                    <option value="LWF">좌측 윙 포워드(LWF)</option>
+                    <option value="SS">세컨드 스트라이커(SS)</option>
+                    <option value="AM">공격형 미드필더(AM)</option>
+                    <option value="RWF">우측 윙 포워드(RWF)</option>
+                    <option value="LM">좌측 측면 미드필더(LM)</option>
+                    <option value="CM">중앙 미드필더(CM)</option>
+                    <option value="RM">우측 측면 미드필더(RM)</option>
+                    <option value="DM">수비형 미드필더(DM)</option>
+                    <option value="LWB">좌측 윙백(LWB)</option>
+                    <option value="RWB">우측 윙백(RWB)</option>
+                    <option value="LB">좌측 풀백(LB)</option>
+                    <option value="CB">중앙 수비수(CB)</option>
+                    <option value="RB">우측풀백(RB)</option>
+                    <option value="GK">골키퍼(GK)</option>                
+                </PosSelect>
             </LineContainer>
             <LineContainer>
-                <TextContainer>이메일</TextContainer>
-                <InputContainer type="email" placeholder="이메일을 입력하세요" />
+                <TextContainer>비밀번호</TextContainer>
+                <InputContainer type="passwd" placeholder="이메일을 입력하세요" />
             </LineContainer>
             <LineContainer>
-                <TextContainer>전화번호</TextContainer>
+                <TextContainer>휴대폰</TextContainer>
                 <InputContainer type="tel" placeholder="전화번호를 입력하세요" />
             </LineContainer>
             <LineContainer>
-                <TextContainer>자기소개</TextContainer>
-                <TextAreaContainer placeholder="자기소개를 입력하세요" />
+                <TextContainer>지역</TextContainer>
+                <InputContainer placeholder="지역을 입력하세요" />
             </LineContainer>
             <ButtonContainer>
                 <SubmitButton>저장</SubmitButton>
@@ -57,36 +75,6 @@ const TextContainer = styled.div`
     color: #333;
 `;
 
-const InputContainer = styled.input`
-    width: 70%;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    padding: 10px;
-    font-size: 16px;
-    transition: border-color 0.3s;
-
-    &:focus {
-        border-color: #4caf50;
-        outline: none;
-    }
-`;
-
-const TextAreaContainer = styled.textarea`
-    width: 70%;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    padding: 10px;
-    font-size: 16px;
-    resize: none;
-    height: 100px;
-    transition: border-color 0.3s;
-
-    &:focus {
-        border-color: #4caf50;
-        outline: none;
-    }
-`;
-
 const ButtonContainer = styled.div`
     display: flex;
     justify-content: flex-end;
@@ -110,4 +98,27 @@ const SubmitButton = styled.button`
     &:active {
         background-color: #388e3c;
     }
+`;
+
+const sharedStyles = `
+    width: 70%;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    font-size: 16px;
+    transition: border-color 0.3s;
+
+    &:focus {
+        border-color: #4caf50;
+        outline: none;
+    }
+`;
+
+const InputContainer = styled.input`
+    ${sharedStyles}
+`;
+
+const PosSelect = styled.select`
+    ${sharedStyles}
+
 `;

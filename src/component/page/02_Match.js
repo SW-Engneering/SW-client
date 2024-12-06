@@ -44,7 +44,7 @@ export default function Match() {
         const nickname = Cookies.get('nickname')
 
         if(!nickname) {
-            alert('로그인 안하면 글 못씁니다.');
+            alert('로그인이 필요한 기능입니다.');
         }
         else {
             navigate('/matchwrite');

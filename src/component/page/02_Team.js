@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios"; // axios 임포트
 import Cookies from "js-cookie";
+import starFill from '../images/starfill.png';
+import starEmpty from '../images/starempty.png';
 
 export default function Team() {
     const navigate = useNavigate();
@@ -13,6 +15,32 @@ export default function Team() {
     const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 상태
     const [searchTerm, setSearchTerm] = useState(''); // 검색어 상태
     const postsPerPage = 10; // 페이지당 게시글 수
+    const userId = Cookies.get('userId');
+
+    const [isFavorite, setIsFavorite] = useState(false);
+
+    const toggleBookmark = async (postId, currentState) => {
+        try {
+            const response = await axios.post(`https://3.34.133.247/bookmarks?userId=${userId}&postId=${postId}`,
+                { userId, postId },
+                { headers: { accept: '/' } }
+            );
+
+            if (response.status === 201) {
+                // 북마크 상태 토글
+                setTeamList((prevList) =>
+                    prevList.map((post) =>
+                        post.post_id === postId
+                            ? { ...post, isFavorite: !currentState }
+                            : post
+                    )
+                );
+            }
+        } catch (error) {
+            console.error('Bookmark toggle error:', error);
+        }
+    };
+
 
     useEffect(() => {
         const fetchTeamList = async () => {
@@ -127,6 +155,10 @@ export default function Team() {
 
                                 return (
                                     <PostItem key={post.post_id}>
+                                        <BookmarkButton
+                                            $isFavorite={post.isFavorite}
+                                            onClick={() => toggleBookmark(post.post_id, post.isFavorite)}
+                                        />
                                         <PostId>{post.post_id}</PostId>
                                         <PostTitle onClick={() => teamDetail(post.post_id, post)}>
                                             {post.post_title}{post.post_comment_count > 0 && ` [${post.post_comment_count}]`}
@@ -364,4 +396,14 @@ const PageButton = styled.button`
     &:hover {
         background-color: #ddd;
     }
+`;
+
+const BookmarkButton = styled.div`
+    width: 18px;
+    height: 18px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    cursor: pointer;
+    background-image: url(${props => (props.$isFavorite ? starFill : starEmpty)});
 `;
