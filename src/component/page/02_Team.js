@@ -15,12 +15,28 @@ export default function Team() {
     const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 상태
     const [searchTerm, setSearchTerm] = useState(''); // 검색어 상태
     const postsPerPage = 10; // 페이지당 게시글 수
+    const userId = Cookies.get('userId');
+
+    const [isFavorite, setIsFavorite] = useState(false);
+
+    const toggleBookmark = async (postId, currentState) => {
+        try {
+            const response = await axios.post(`https://3.34.133.247/bookmarks?userId=${userId}&postId=${postId}`, { userId, postId }, { headers: { accept: '/' } });
+
+            if (response.status === 201) {
+                // 북마크 상태 토글
+                setTeamList((prevList) => prevList.map((post) => (post.post_id === postId ? { ...post, isFavorite: !currentState } : post)));
+            }
+        } catch (error) {
+            console.error('Bookmark toggle error:', error);
+        }
+    };
 
     useEffect(() => {
         const fetchTeamList = async () => {
             try {
                 const response = await axios.get('https://3.34.133.247/team');
-                const sortedTeamList = response.data.sort((a, b) => b.post_id - a.post_id);
+                const sortedTeamList = response.data.sort((a, b) => b.post_id - a.post_id); // 내림차순 정렬
 
                 // 각 게시물에 대해 작성자의 nickname을 가져오는 API를 호출
                 const TeamWithNicknames = await Promise.all(
@@ -34,13 +50,16 @@ export default function Team() {
                 );
                 console.log('불러온 목록: ', TeamWithNicknames);
                 setTeamList(TeamWithNicknames);
+                setFilteredTeamList(TeamWithNicknames); // 초기에는 전체 목록을 필터링 목록으로 설정
             } catch (error) {
                 setError('게시물 가져오기 실패');
+            } finally {
+                console.log('게시물 로딩 완료');
             }
         };
 
         fetchTeamList();
-    }, [userId]);
+    }, []);
 
     const moveToWrite = () => {
         const nickname = Cookies.get('nickname');
@@ -57,6 +76,7 @@ export default function Team() {
     const currentPosts = filteredTeamList.slice(indexOfFirstPost, indexOfLastPost);
 
     const teamDetail = async (post_id, post) => {
+        navigate(`/team/${post_id}`, { state: { post } });
         navigate(`/team/${post_id}`, { state: { post } });
     };
 
@@ -119,18 +139,31 @@ export default function Team() {
                         </NoPostBox>
                     ) : (
                         <PostsList>
-                            {currentPosts.map((post) => (
-                                <PostItem key={post.post_id}>
-                                    <PostId>{post.post_id}</PostId>
-                                    <PostTitle onClick={() => teamDetail(post.post_id, post)}>
-                                        {post.post_title}
-                                        {post.post_comment_count > 0 && ` [${post.post_comment_count}]`}
-                                    </PostTitle>
-                                    <PostUserId>{post.nickname}</PostUserId>
-                                    <PostCreateTime>{post.post_created_time.split('T')[0]}</PostCreateTime>
-                                    <PostHits>{post.post_hits}</PostHits>
-                                </PostItem>
-                            ))}
+                            {currentPosts.map((post) => {
+                                const createdTime = new Date(post.post_created_time); // 날짜 객체로 변환
+                                const currentDate = new Date(); // 현재 날짜 객체
+                                const isToday = createdTime.toDateString() === currentDate.toDateString(); // 오늘인지 확인
+
+                                return (
+                                    <PostItem key={post.post_id}>
+                                        <BookmarkButton $isFavorite={post.isFavorite} onClick={() => toggleBookmark(post.post_id, post.isFavorite)} />
+                                        <PostId>{post.post_id}</PostId>
+                                        <PostTitle onClick={() => teamDetail(post.post_id, post)}>
+                                            {post.post_title}
+                                            {post.post_comment_count > 0 && ` [${post.post_comment_count}]`}
+                                        </PostTitle>
+                                        <PostUserId>{post.nickname}</PostUserId>
+                                        <PostCreateTime>
+                                            {
+                                                isToday
+                                                    ? `${formatTime(createdTime.getHours())}:${formatTime(createdTime.getMinutes())}` // 오늘이면 시간 표시
+                                                    : createdTime.toISOString().split('T')[0] // 오늘이 아니면 날짜만 표시
+                                            }
+                                        </PostCreateTime>
+                                        <PostHits>{post.post_hits}</PostHits>
+                                    </PostItem>
+                                );
+                            })}
                         </PostsList>
                     )}
                 </div>
@@ -179,16 +212,6 @@ const HeaderContainer = styled.div`
     border-bottom: 2px solid #cecece; /* 하단 회색 줄 */
     padding: 5px;
     font-weight: bold;
-`;
-
-const BookmarkButton = styled.div`
-    width: 18px;
-    height: 18px;
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    cursor: pointer;
-    background-image: url(${(props) => (props.$isFavorite ? starFill : starEmpty)});
 `;
 
 const FirstContainer = styled.div`
@@ -346,4 +369,14 @@ const PageButton = styled.button`
     &:hover {
         background-color: #ddd;
     }
+`;
+
+const BookmarkButton = styled.div`
+    width: 18px;
+    height: 18px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    cursor: pointer;
+    background-image: url(${(props) => (props.$isFavorite ? starFill : starEmpty)});
 `;

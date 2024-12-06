@@ -8,10 +8,8 @@ import starFill from '../images/starfill.png';
 import starEmpty from '../images/starempty.png';
 
 export default function Member() {
-    const [memberList, setMemberList] = useState([]); // 회원 목록
-    const [filteredMemberList, setFilteredMemberList] = useState([]); // 검색된 회원 목록
+    const [MemberList, setMemberList] = useState([]);
     const [error, setError] = useState(null);
-    const [searchTerm, setSearchTerm] = useState(''); // 검색어
     const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 상태
     const postsPerPage = 10; // 페이지당 게시글 수
     const navigate = useNavigate();
@@ -71,7 +69,7 @@ export default function Member() {
 
     const indexOfLastPost = currentPage * postsPerPage;
     const indexOfFirstPost = indexOfLastPost - postsPerPage;
-    const currentPosts = filteredMemberList.slice(indexOfFirstPost, indexOfLastPost);
+    const currentPosts = MemberList.slice(indexOfFirstPost, indexOfLastPost);
 
     const memberDetail = (post_id, post) => {
         navigate(`/member/${post_id}`, { state: { post } });
@@ -81,28 +79,7 @@ export default function Member() {
         setCurrentPage(pageNumber);
     };
 
-    const totalPages = Math.ceil(filteredMemberList.length / postsPerPage);
-
-    // 두 자리 숫자로 포맷팅하는 함수
-    const formatTime = (number) => {
-        return number.toString().padStart(2, '0'); // 2자리로 포맷팅
-    };
-
-    const goToSearch = () => {
-        if (searchTerm.trim()) {
-            const filteredPosts = memberList.filter((post) => post.nickname.includes(searchTerm));
-            setFilteredMemberList(filteredPosts);
-            setCurrentPage(1); // 검색 후 첫 페이지로 이동
-        } else {
-            setFilteredMemberList(memberList); // 검색어가 없으면 전체 게시물 표시
-        }
-    };
-
-    const handleKeyPress = (event) => {
-        if (event.key === 'Enter') {
-            goToSearch();
-        }
-    };
+    const totalPages = Math.ceil(MemberList.length / postsPerPage);
 
     return (
         <Container>
@@ -131,9 +108,7 @@ export default function Member() {
                     {error ? (
                         <ul>{error}</ul>
                     ) : currentPosts.length === 0 ? (
-                        <NoPostBox>
-                            <NoPost>등록된 게시물이 없습니다.</NoPost>
-                        </NoPostBox>
+                        <ul>등록된 게시물이 없습니다.</ul>
                     ) : (
                         <PostsList>
                             {currentPosts.map((post) => (
@@ -159,10 +134,6 @@ export default function Member() {
                         </PageButton>
                     ))}
                 </Pagination>
-                <Search>
-                    <input type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="작성자를 입력하세요" onKeyPress={handleKeyPress} />
-                    <button onClick={goToSearch}>검색</button>
-                </Search>
                 <WriteButton onClick={moveToWrite}>글쓰기</WriteButton>
             </Padding200>
         </Container>
@@ -260,19 +231,6 @@ const SitemapContainer = styled.div`
     padding: 20px 0; /* 위아래 패딩 추가 */
 `;
 
-const NoPostBox = styled.div`
-    display: flex;
-    height: 200px;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-`;
-
-const NoPost = styled.div`
-    font-size: 40px;
-    font-weight: bold;
-`;
-
 const PostsList = styled.div`
     list-style: none;
     padding: 0;
@@ -336,13 +294,6 @@ const Pagination = styled.div`
     display: flex;
     justify-content: center;
     margin: 20px 0;
-`;
-
-const Search = styled.div`
-    display: flex;
-
-    justify-content: center;
-    gap: 10px;
 `;
 
 const PageButton = styled.button`
