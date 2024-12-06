@@ -2,7 +2,7 @@ import styled from "styled-components";
 import 팀만들기 from "../images/팀관리1.jpg";
 import Cookies from "js-cookie";
 import axios from "axios";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 
 export default function Create_team() {

@@ -10,8 +10,10 @@ import 오른쪽화살표 from '../images/Right_arrow.png'; // 우측 화살표 
 import Member from '../page/02_Member';
 import Team from '../page/02_Team';
 import Match from '../page/02_Match';
+import 메인 from '../images/메인이미지.jpg';
 import 팀원 from '../images/팀원구하기1.png';
 import 팀 from '../images/팀구하기1.png';
+import ball from '../images/ball.png';
 import axios from 'axios';
 
 
@@ -93,6 +95,14 @@ export default function Home() {
         <Container>
             <Slider {...settings}>
                 <SliderContainer>
+                    <ImageWrapper>
+                        <Flexbox>
+                            <Image src={메인} alt="메인" />
+                            <OverlayText>SPORTMATCH</OverlayText> {/* 새로 추가된 텍스트 */}
+                        </Flexbox>
+                    </ImageWrapper>
+                </SliderContainer>
+                <SliderContainer>
                     <Navi activeClassName="active" to="/member">
                         <Image src={팀원} alt="팀원 구하기" />
                     </Navi>
@@ -102,10 +112,6 @@ export default function Home() {
                         <Image src={팀} alt="팀 구하기" />
                     </Navi>
                 </SliderContainer>
-                <SliderContainer>ㅁㅇㄹㄴㅇ</SliderContainer>
-                <SliderContainer>네번째 화면</SliderContainer>
-                <SliderContainer>다섯번째 화면</SliderContainer>
-                <SliderContainer>여섯번째 화면</SliderContainer>
             </Slider>
         <Gray>
             <RecentContainer>최근 올라온 글</RecentContainer>
@@ -188,8 +194,7 @@ const Arrow = styled.img`
     cursor: pointer;
     z-index: 1;
     position: absolute;
-    background-color: white;
-    border-radius: 30px;
+    
 `;
 
 const LeftArrow = styled(Arrow)`
@@ -198,6 +203,25 @@ const LeftArrow = styled(Arrow)`
 
 const RightArrow = styled(Arrow)`
     right: 10px; /* 오른쪽 위치 조정 */
+`;
+
+const ImageWrapper = styled.div`
+    position: relative; /* 자식 요소의 절대 위치 설정을 위해 상대 위치 지정 */
+    display : flex;
+`;
+
+const Flexbox = styled.div`
+    display: flex;
+`;
+
+const OverlayText = styled.div`
+    position: absolute;
+    bottom: 20px; /* 아래에서의 거리 */
+    right: 20px; /* 오른쪽에서의 거리 */
+    color: white; /* 텍스트 색상 */
+    font-size: 50px; /* 텍스트 크기 */
+    font-family: 'NFL';
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7); /* 텍스트 그림자 효과 */
 `;
 
 const Gray = styled.div`

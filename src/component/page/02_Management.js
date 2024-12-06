@@ -1,82 +1,211 @@
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import 로고 from "../images/로고.jpg";
 import 팀관리1 from "../images/팀관리1.jpg";
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Cookies from "js-cookie";
 
-
-
 export default function Management() {
-    
-
     const userId = Cookies.get('userId');
+    const navigate = useNavigate();
     const [teamData, setTeamData] = useState([]);
     const [matchData, setMatchData] = useState([]);
     const [oppositionTeamData, setOppositionTeamData] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-    const [isEditing, setIsEditing] = useState(false); // 수정 모드 상태
-    const [newTeamName, setNewTeamName] = useState(''); // 수정할 팀명
-    const [newTeamRegion, setNewTeamRegion] = useState(''); // 수정할 팀 지역
+    const [membersInfo, setMembersInfo] = useState([]);
+    const [isEditing, setIsEditing] = useState(false);
+    const [isReading, setIsReading] = useState(false);
+    const [newTeamName, setNewTeamName] = useState('');
+    const [newTeamRegion, setNewTeamRegion] = useState('');
+    const [noticeList, setNoticeList] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 3; // 페이지당 항목 수
+    const [selectedNotice, setSelectedNotice] = useState(null);
+    const [newNoticeTitle, setNewNoticeTitle] = useState('');
+    const [newNoticeContent, setNewNoticeContent] = useState('');
+    const [isCreating, setIsCreating] = useState(false); // 공지사항 작성 모드 상태
 
     useEffect(() => {
         const fetchTeamData = async () => {
             try {
-                // 1번 API 주소에서 사용자 정보 가져오기
                 const userResponse = await axios.get(`https://3.34.133.247/user/${userId}`);
-                const { team_id } = userResponse.data; // team_id 추출
+                const { team_id } = userResponse.data;
 
-                // 2번 API 주소에 team_id를 사용하여 팀 정보 가져오기
+                const noticeResponse = await axios.get(`https://3.34.133.247/teams/${team_id}/announcements`);
+                const sortedNoticeList = noticeResponse.data.sort((a, b) => b.announcementId - a.announcementId);
+                setNoticeList(sortedNoticeList);
+
                 const teamResponse = await axios.get(`https://3.34.133.247/teams/${team_id}`);
-                setTeamData(teamResponse.data); // 팀 데이터 저장
+                setTeamData(teamResponse.data);
 
-                // 3번 team_id를 이용해 상대팀 아이디 가져오기
-                const matchResponse = await axios.get(`https://3.34.133.247/teams/${team_id}/matches`)
+                const { memberIds } = teamResponse.data;
+
+                const membersPromises = memberIds.map(async (id) => {
+                    const memberResponse = await axios.get(`https://3.34.133.247/user/${id}`);
+                    return {
+                        nickname: memberResponse.data.nickname,
+                        position: memberResponse.data.position,
+                        userId: memberResponse.data.user_id,
+                    };
+                });
+
+                // 모든 사용자 정보가 로드될 때까지 기다림
+                const members = await Promise.all(membersPromises);
+                setMembersInfo(members);
+
+                const matchResponse = await axios.get(`https://3.34.133.247/matches/{teamId}?teamId=${team_id}`);
+                const awayTeamId = matchResponse.data[0]?.awayTeamId;
                 setMatchData(matchResponse.data);
+                
+                console.log(awayTeamId);
+                console.log(matchData);
 
-                // 4번 그걸로 상대팀 이름 갖고오기
-                const oppositionTeamResponse = await axios.get(`https://3.34.133.247/teams/${matchData.team_id}`);
+                const oppositionTeamResponse = await axios.get(`https://3.34.133.247/teams/${awayTeamId}`);
                 setOppositionTeamData(oppositionTeamResponse.data);
 
             } catch (error) {
                 console.log(teamData);
-                console.log(matchData);
-                console.log(oppositionTeamData);
-            } finally {
-                setLoading(false); // 로딩 상태 종료
             }
         };
+        
 
         fetchTeamData();
     }, []);
 
     const handleEditToggle = () => {
-        setIsEditing(!isEditing); // 수정 모드 토글
+        setIsEditing(!isEditing);
     };
 
-    const handleSave = async () => {
-        const team_id = teamData.teamId; // 팀 ID 가져오기
+    const handleNoticeToggle = async (announcementId) => {
+        
         try {
-            await axios.put(`https://3.34.133.247/teams/${team_id}?userId=${userId}`, {
+            const response = await axios.get(`https://3.34.133.247/teams/announcement/${announcementId}`);
+            setSelectedNotice(response.data);
+            setIsReading(true);
+        } catch(error) {
+            console.log('에러');
+        }
+    }
+
+    const handleSave = async () => {
+        const team_id = teamData.teamId;
+        try {
+            await axios.put(`https://3.34.133.247/teams/${team_id}?leaderId=${userId}`, {
                 teamName: newTeamName,
                 teamRegion: newTeamRegion
             });
             alert("팀 정보가 수정되었습니다.");
-            setIsEditing(false); // 수정 모드 종료
-            // 팀 데이터 다시 가져오기
+            setIsEditing(false);
             const response = await axios.get(`https://3.34.133.247/teams/${team_id}`);
             setTeamData(response.data);
-            console.log(response.data);
         } catch (error) {
             console.error('팀 정보 수정 실패:', error);
             alert("팀 정보 수정에 실패했습니다.");
-            
         }
     };
 
+    // 페이지 변경 핸들러
+    const handlePageChange = (page) => {
+        setCurrentPage(page);
+    };
+
+    // 현재 페이지에 해당하는 공지사항 가져오기
+    const indexOfLastNotice = currentPage * itemsPerPage;
+    const indexOfFirstNotice = indexOfLastNotice - itemsPerPage;
+    const currentNotices = noticeList.slice(indexOfFirstNotice, indexOfLastNotice);
+
+    // 총 페이지 수 계산
+    const totalPages = Math.ceil(noticeList.length / itemsPerPage);
+
+    const handleCreateNoticeToggle = () => {
+        setIsCreating(!isCreating);
+    };
     
+    const handleCreateNotice = async (teamId, leaderId) => {
+        try {
+            const response = await axios.post(`https://3.34.133.247/teams/${teamId}/announcement?leaderId=${leaderId}`, {
+                title: newNoticeTitle,
+                content: newNoticeContent,
+            });
+            // 새 공지사항이 추가된 후 상태 업데이트
+            setNoticeList((prev) => [response.data, ...prev]); // 새로운 공지사항을 상단에 추가
+            setIsCreating(false); // 모달 닫기
+            setNewNoticeTitle(''); // 입력 초기화
+            setNewNoticeContent(''); // 입력 초기화
+            window.location.reload();
+        } catch (error) {
+            console.error('공지사항 작성 실패:', error);
+            alert("공지사항 작성에 실패했습니다.");
+        }
+    };
+
+    const handleRealeseTeamOne = async (teamId, userId, leaderId) => {
+        const confirm = window.confirm("방출하시겠습니까?");
+        if(confirm) {
+            try {
+                await axios.delete(`https://3.34.133.247/teams/${teamId}/members/${userId}?leaderId=${leaderId}`);
+                alert('방출했습니다.');
+                window.location.reload();
+            } catch(error) {
+                alert('팀장은 방출이 불가능합니다.');
+            }
+        }
+    }
+
+    const leaveTeam = async (teamId) => {
+        const confirm = window.confirm('정말로 팀을 나가시겠습니까?');
+        if(confirm) {
+            try {
+                await axios.delete(`https://3.34.133.247/teams/${teamId}/leave?userId=${userId}`);
+                alert('팀에서 나갔습니다. \n다른 팀을 찾아봅시다');
+                navigate('/');
+            } catch(error) {
+                console.log('asdf');
+            }
+        }
+        else {
+            return;
+        }
+        
+        
+    }
+
+    const explodeTeam = async (teamId) => {
+        const confirm = window.confirm('정말로 팀을 삭제하시겠습니까?');
+        if(confirm) {
+            try {
+                await axios.delete(`https://3.34.133.247/teams/${teamId}?userId=${userId}`);
+                alert('팀이 삭제되었습니다.');
+                navigate('/');
+            } catch(error) {
+                console.log('asdf');
+                alert('으엑');
+            }
+        }
+        else {
+            return;
+        }
+    }
+
+    const cancelMatch = async (teamId) => {
+        const confirm = window.confirm('매칭을 취소하시겠습니까?');
+        if(confirm) {
+            try {
+                const response = await axios.get(`https://3.34.133.247/matches/{teamId}?teamId=${teamId}`);
+                const matchId = response.data[0]?.matchId;
+
+                await axios.delete(`https://3.34.133.247/matches/${matchId}/{userId}`);
+                alert('매칭이 취소되었습니다.');
+                window.location.reload();
+            } catch(error) {
+                console.log('asdf');
+                alert('으엑');
+            }
+        }
+        else {
+            return;
+        }
+    } 
 
     return (
         <Container>
@@ -104,7 +233,7 @@ export default function Management() {
                                         placeholder="팀 지역을 입력하세요"
                                     />
                                 </InputBox>
-                                <br/>
+                                <br />
                                 <ButtonBox>
                                     <SaveButton onClick={handleSave}>저장</SaveButton>
                                     <CancelButton onClick={handleEditToggle}>취소</CancelButton>
@@ -114,7 +243,9 @@ export default function Management() {
                             <>
                                 <TeamName>{teamData.teamName}</TeamName>
                                 <TeamRegion>{teamData.teamRegion}</TeamRegion>
-                                <TeamNamechange onClick={handleEditToggle}>정보 수정</TeamNamechange>
+                                {teamData.leaderId === Number(userId) && (
+                                    <TeamNamechange onClick={handleEditToggle}>정보 수정</TeamNamechange>
+                                )}
                             </>
                         )}
                     </Justbox>
@@ -133,15 +264,124 @@ export default function Management() {
                                 <VS>VS</VS>
                                 <OppositionTeam>
                                     <MyTeamName>{oppositionTeamData.teamName}</MyTeamName>
-                                    <TeamRegion>{oppositionTeamData.teamRegion}</TeamRegion>
+                                    <MyTeamRegion>{oppositionTeamData.teamRegion}</MyTeamRegion>
                                 </OppositionTeam>
                             </>
                         ) : (
-                            <NoMatch>매치 정보가 없습니다.</NoMatch> // 매칭 정보가 없을 때 메시지 표시
+                            <NoMatch>매치 정보가 없습니다.</NoMatch>
                         )}
                     </TeamList>
                 </RightTeam>
             </Team>
+            <NoticeTeamone>
+                <Notice>
+                    <NoticeTitle>
+                        공지사항
+                    </NoticeTitle>
+                    <NoticeBonmoon>
+                        {!isReading ? (
+                            <>
+                                {currentNotices.length === 0 ? (
+                                    <NoNotice>공지사항이 없습니다.</NoNotice>
+                                ) : (
+                                    currentNotices.map((notice) => {
+                                        const noticeDate = new Date(notice.createdAt);
+                                        const now = new Date();
+                                        const isToday = noticeDate.toDateString() === now.toDateString();
+
+                                        return (
+                                            <NoticeItem key={notice.id}>
+                                                <NoticeJemok onClick={() => handleNoticeToggle(notice.announcementId)}>{notice.title}</NoticeJemok>
+                                                <NoticeDate>
+                                                    {isToday
+                                                        ? `${String(noticeDate.getHours()).padStart(2, '0')}:${String(noticeDate.getMinutes()).padStart(2, '0')}`
+                                                        : noticeDate.toLocaleDateString()}
+                                                </NoticeDate>
+                                            </NoticeItem>
+                                        );
+                                    })
+                                )}
+                                <Pagination>
+                                    {Array.from({ length: totalPages }, (_, index) => (
+                                        <PageButton key={index + 1} onClick={() => handlePageChange(index + 1)}>
+                                            {index + 1}
+                                        </PageButton>
+                                    ))}
+                                </Pagination>
+
+                            </>
+                        ) : (
+                            selectedNotice && ( // selectedNotice가 null이 아닐 때만 렌더링
+                                <>
+                                    <JustFlex>
+                                        <SelectedNoticeTitle>{selectedNotice.title}</SelectedNoticeTitle>
+                                        <SelectedNoticeCreatedAt>{new Date(selectedNotice.createdAt).toLocaleString()}</SelectedNoticeCreatedAt>
+                                    </JustFlex>
+                                    <SelectedNoticeContent>{selectedNotice.content}</SelectedNoticeContent>
+                                    <BackToList onClick={() => setIsReading(false)}>뒤로가기</BackToList>
+                                </>
+                            )
+                        )}
+                        {isCreating && ( // 공지사항 작성 모달
+                            <Modal>
+                                <h2>공지사항 작성하기</h2>
+                                <input
+                                    type="text"
+                                    value={newNoticeTitle}
+                                    onChange={(e) => setNewNoticeTitle(e.target.value)}
+                                    placeholder="제목"
+                                />
+                                <textarea
+                                    value={newNoticeContent}
+                                    onChange={(e) => setNewNoticeContent(e.target.value)}
+                                    placeholder="내용"
+                                />
+                                <button onClick={() => handleCreateNotice(teamData.teamId, teamData.leaderId)}>작성하기</button>
+                                <button onClick={handleCreateNoticeToggle}>취소</button>
+                            </Modal>
+                        )}
+                        {Number(userId) === teamData.leaderId && (
+                            <button onClick={handleCreateNoticeToggle}>작성하기</button>
+                            )}
+                    </NoticeBonmoon>
+                    
+                </Notice>
+                <TeamOne>
+                    <TeamOneTitle>
+                        팀원목록
+                    </TeamOneTitle>
+                    <div>
+                        {membersInfo.map((member, index) => (
+                            <TeamFlex key={index}>
+                                <TeamOneName 
+                                    onClick={() => {
+                                        if (Number(userId) === teamData.leaderId) {
+                                            handleRealeseTeamOne(teamData.teamId, member.userId, teamData.leaderId);
+                                        } else {
+                                            alert('권한이 없습니다.'); // 사용자에게 권한이 없음을 알림
+                                        }
+                                    }}
+                                >
+                                    {member.nickname}
+                                </TeamOneName>
+                                <TeamOnePosition>
+                                    {member.position}
+                                </TeamOnePosition>
+                            </TeamFlex>
+                        ))}
+                    </div>
+                </TeamOne>
+            </NoticeTeamone>
+            <Last>
+                {oppositionTeamData && oppositionTeamData.teamName && (
+                    <CancelMatching onClick={() => {cancelMatch(teamData.teamId)}}>매칭 취소</CancelMatching>
+                )}
+                {teamData.leaderId === Number(userId) ? (
+                    <ExplodeTeam onClick={() => {explodeTeam(teamData.teamId)}}>팀 삭제</ExplodeTeam>
+                ) : (
+                    <ExplodeTeam onClick={() => {leaveTeam(teamData.teamId)}}>팀 나가기</ExplodeTeam>
+                )}
+            </Last>
         </Container>
     );
 }
@@ -183,15 +423,15 @@ const OverlayText2 = styled.div`
 const Team = styled.div`
     display: flex;
     padding: 0 200px;
-    height: 230px;
+    
 `;
 
 const LeftTeam = styled.div`
     margin-top: 30px;
     background-color: red;
     width: 30%;
-    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.2);
-    border-radius: 30px;
+    border-radius: 8px; /* 모서리를 둥글게 */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* 그림자 추가 */
     
 `;
 
@@ -269,36 +509,39 @@ const CancelButton = styled.button`
 
 const RightTeam = styled.div`
     margin-top: 30px;
-    border: 3px solid #ecedef;
     width: 70%;
     margin-left: 30px;
+    background-color: white; /* 배경색을 추가하여 그림자가 더 잘 보이도록 함 */
+    border-radius: 8px; /* 모서리를 둥글게 */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* 그림자 추가 */
     
 `;
 
 const Matching = styled.div`
     padding: 10px 0;
-    background-color: #4f599f;
+    background-color: green;
     color: white;
     font-size: 20px;
     font-weight: bold;
+    border-radius: 8px;
 `;
 
 const TeamList = styled.div`
-    
-    align-items: center;
+    display: flex;
 `;
 
 const MyTeam = styled.div`
     width: 350px;
+    margin-top: 40px;
 `;
 
 const MyTeamName = styled.div`
-    font-size: 20px;
+    font-size: 30px;
     font-weight: bold;
 `;
 
 const MyTeamRegion = styled.div`
-    margin-top: 5px;
+    padding: 30px;
 `;
 
 const TeamNamechange = styled.div`
@@ -329,15 +572,195 @@ const VS = styled.div`
     text-align: center;
     font-size: 50px;
     padding: 20px 0;
+    margin-top: 30px;
 `;
 
 const OppositionTeam = styled.div`
     width: 350px;
+    margin-top: 40px;
 `;
 
 const NoMatch = styled.div`
-    padding: 32px 0;
-    text-align: center;
+    margin: 0 auto;
+    padding: 60px;
     font-size: 30px;
     font-weight: bold;
+`;
+
+
+const NoticeTeamone = styled.div`
+    height: 100%;
+    text-align: center;
+    justify-content: center;
+    gap: 50px;
+    margin-top: 40px;
+    font-size: 30px;
+    display: flex;
+`;
+
+const Notice = styled.div`
+    height: 300px;
+    width: 540px;
+    background-color: white; /* 배경색을 추가하여 그림자가 더 잘 보이도록 함 */
+    border-radius: 8px; /* 모서리를 둥글게 */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* 그림자 추가 */
+    
+    overflow: auto; /* 내용이 넘칠 경우 스크롤 가능 */
+`;
+
+const NoticeTitle = styled.div`
+    background-color: green; /* 배경색 설정 */
+    color: white; /* 텍스트 색상 설정 (읽기 쉽게 하기 위해) */
+    padding: 10px; /* 내부 여백 추가 */
+    border-radius: 4px; /* 모서리를 둥글게 */
+    font-weight: bold; /* 글씨 두껍게 */
+`;
+
+const NoticeBonmoon = styled.div`
+
+`;
+
+const NoticeItem = styled.div`
+    display: flex;
+    justify-content: space-between;
+    padding: 15px 10px;
+    font-size: 15px;
+`;
+
+const NoticeJemok = styled.div`
+    cursor: pointer;
+
+    &:hover {
+        text-shadow: 0px 2px 10px rgba(0, 0, 0, 0.3);
+    }
+`;
+
+const NoticeDate = styled.div`
+
+`;
+
+const NoNotice = styled.div`
+    padding: 30px 0;
+    font-size: 15px;
+`;
+
+const TeamOne = styled.div`
+    height: 300px;
+    width: 540px;
+    background-color: white; /* 배경색을 추가하여 그림자가 더 잘 보이도록 함 */
+    border-radius: 8px; /* 모서리를 둥글게 */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* 그림자 추가 */
+    overflow: auto; /* 내용이 넘칠 경우 스크롤 가능 */
+`;
+
+const TeamOneTitle = styled.div`
+    background-color: green; /* 배경색 설정 */
+    color: white; /* 텍스트 색상 설정 (읽기 쉽게 하기 위해) */
+    padding: 10px; /* 내부 여백 추가 */
+    border-radius: 4px; /* 모서리를 둥글게 */
+    font-weight: bold; /* 글씨 두껍게 */    
+`;
+
+const Pagination = styled.div`
+    margin-top: 20px;
+`;
+
+const PageButton = styled.button`
+    margin: 0 5px;
+    padding: 5px 10px;
+    background-color: green;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+
+    &:hover {
+        background-color: darkgreen;
+    }
+`;
+
+const JustFlex = styled.div`
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    border-bottom: 1px solid black;
+`;
+
+const SelectedNoticeTitle = styled.div`
+    margin-top: 10px;
+`;
+
+const SelectedNoticeCreatedAt = styled.div`
+    font-size: 15px;
+    margin-top: 20px;
+`;
+
+const SelectedNoticeContent = styled.div`
+    margin-top: 30px;
+    margin-left: 15px;
+    display: flex;
+    font-size: 15px;
+`;
+
+const BackToList = styled.div`
+    padding-right: 10px;
+    margin-top: 60px;
+    font-size: 15px;
+    cursor: pointer;
+    
+    &:hover {
+        text-shadow: 0px 2px 10px rgba(0, 0, 0, 0.3);
+    }
+`;
+
+const TeamFlex = styled.div`
+    display: flex;
+    justify-content: space-between;
+    padding: 20px 50px;
+`;
+
+const TeamOneName = styled.div`
+    cursor: pointer;
+    font-size: 20px;
+`;
+
+const TeamOnePosition = styled.div`
+    font-size: 20px;
+`;
+
+const Modal = styled.div`
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    z-index: 1000; /* 모달이 다른 요소 위에 나타나도록 설정 */
+`;
+
+const ExplodeTeam = styled.div`
+    padding: 20px 10px;
+    background-color: red;
+    color: white;
+    width: 100px;
+    height: 20px;
+    cursor: pointer;
+`;
+
+const CancelMatching = styled.div`
+    padding: 20px 10px;
+    background-color: black;
+    color: white;
+    width: 100px;
+    height: 20px;
+    cursor: pointer;
+`;
+
+const Last = styled.div`
+    display: flex;
+    align-items: right;
+    justify-content: flex-end;
+    padding-right: 200px;
+    padding-top: 40px;
 `;

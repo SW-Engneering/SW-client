@@ -15,6 +15,7 @@ export default function MemberDetail() {
     const nickname = Cookies.get('nickname');
     const [comments, setComments] = useState([]);
     const [writeComment, setWriteComment] = useState('');
+    const [commentCount, setCommentCount] = useState(post.post_comment_count);
 
     
 
@@ -103,6 +104,7 @@ export default function MemberDetail() {
                 }));
                 console.log('불러온 목록: ', commentWithNickname);
                 setComments(commentWithNickname);
+                setCommentCount(commentCount + 1);
         } catch (error) {
             console.error('댓글 작성 실패:', error);
             alert("댓글 작성에 실패했습니다.");
@@ -161,6 +163,7 @@ export default function MemberDetail() {
                     />
                     <SubmitButton type="submit">댓글 작성</SubmitButton>
                 </CommentForm>
+                <CommentCount>댓글 {commentCount}개</CommentCount>
                 <CommentsSection>
                     {comments.map((comment) => (
                         <Comment key={comment.comment_id}>
@@ -200,6 +203,7 @@ const BannerContainer = styled.div`
 
 const Image = styled.img`
     align-items: center;
+    width: 100%;
 `;
 
 const OverlayText1 = styled.div`
@@ -257,6 +261,7 @@ const Content = styled.div`
     padding-top: 30px;
     padding-bottom: 30px;
     border-bottom: 1px solid black;
+    min-height: 50px;
 `;
 
 
@@ -316,8 +321,14 @@ const SubmitButton = styled.button`
     }
 `;
 
+const CommentCount = styled.div`
+    font-size: 15px;
+    font-weight: bold;
+    padding-top: 20px;
+`;
+
 const CommentsSection = styled.div`
-    margin-top: 20px;
+    margin-top: 
 `;
 
 const Comment = styled.div`
@@ -330,6 +341,7 @@ const Comment = styled.div`
 const CommentNickname = styled.span`
     font-weight: bold;
     width: 70px;
+    overflow: hidden;
 `;
 
 const CommentContent = styled.div`

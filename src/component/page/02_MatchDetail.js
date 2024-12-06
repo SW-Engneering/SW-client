@@ -16,6 +16,7 @@ export default function MatchDetail() {
     const [comments, setComments] = useState([]);
     const [writeComment, setWriteComment] = useState('');
     const [teamInfo, setTeamInfo] = useState('');
+    const [commentCount, setCommentCount] = useState(post.post_comment_count);
 
     
 
@@ -124,19 +125,20 @@ export default function MatchDetail() {
                 }));
                 console.log('불러온 목록: ', commentWithNickname);
                 setComments(commentWithNickname);
+                setCommentCount(commentCount + 1);
         } catch (error) {
             console.error('댓글 작성 실패:', error);
             alert("댓글 작성에 실패했습니다.");
         }
     };
 
-    const CommentDeleteGoGo = async() => {
+    const CommentDeleteGoGo = async(comment_id) => {
         const confirmDelete = window.confirm("정말로 삭제하시겠습니까?");
         if(confirmDelete) {
             try {
-                await axios.delete(`https://3.34.133.247/comments/${comments.comment_id}?userId=${userId}`);
+                await axios.delete(`https://3.34.133.247/comments/${comment_id}?userId=${userId}`);
                 alert("삭제되었습니다.");
-                navigate('/member');
+                window.location.reload();
             } catch(error) {
                 console.log(comments.comment_id, '가 표시가 안되나?');
                 console.log('아니면', userId, '가 표시가 안되나?');
@@ -148,16 +150,30 @@ export default function MatchDetail() {
         }
     }
 
-    const matchGoGo = async () => {
-        try {
-            const response = await axios.get(`https://3.34.133.247/user/${userId}`);
-            const { team_id } = response.data;
+    const matchGoGo = async (user_id) => {
+        const confirm = window.confirm('매칭을 잡으시겠습니까?')
+        if(confirm) {
+            try {
+                const response = await axios.get(`https://3.34.133.247/user/${userId}`);
+                const { team_id } = response.data;
 
-            await axios.post(`https://3.34.133.247/teamMatch?homeTeamId=${teamInfo.teamId}&awayTeamId=${team_id}`);
-        } catch(error) {
-            alert('준비중입니다.');
-            console.log(teamInfo.teamId);
+                const secondResponse = await axios.get(`https://3.34.133.247/user/${user_id}`);
+                const yourTeamId = secondResponse.data.team_id;
+
+                console.log(`Sending request to: https://3.34.133.247/matches?teamId=${team_id}&awayTeamId=${yourTeamId}`);
+    
+                await axios.post(`https://3.34.133.247/matches?homeTeamId=${team_id}&awayTeamId=${yourTeamId}`);
+                alert('매칭이 성사되었습니다! \n팀 관리 화면으로 이동합니다.');
+    
+            } catch(error) {
+                alert('이미 타 팀과 매칭이 잡혀있습니다.');
+                
+            }
         }
+        else {
+            return;
+        }
+        
     }
 
     
@@ -186,7 +202,7 @@ export default function MatchDetail() {
                         <TeamInfo>
                                 팀명: {teamInfo.teamName}<br/><br/>
                                 지역: {teamInfo.teamRegion}<br/>
-                                <MatchButton onClick={matchGoGo}>
+                                <MatchButton onClick={() => {matchGoGo(post.user_id)}}>
                                     매치 신청하기
                                 </MatchButton>
                         </TeamInfo>
@@ -209,6 +225,7 @@ export default function MatchDetail() {
                     />
                     <SubmitButton type="submit">댓글 작성</SubmitButton>
                 </CommentForm>
+                <CommentCount>댓글 {commentCount}개</CommentCount>
                 <CommentsSection>
                     {comments.map((comment) => (
                         <Comment key={comment.comment_id}>
@@ -217,7 +234,7 @@ export default function MatchDetail() {
                             <CommentinsertTime>{comment.comment_insert_time.split('T')[0]} {comment.comment_insert_time.split('T')[1].split('.')[0]}</CommentinsertTime>
                             {nickname === comment.nickname && ( // 작성자 본인일 때만 버튼 표시
                                 <>
-                                    <CommentDelete onClick={CommentDeleteGoGo}>삭제</CommentDelete>
+                                    <CommentDelete onClick={() => CommentDeleteGoGo(comment.comment_id)}>삭제</CommentDelete>
                                 </>
                             )}
                             
@@ -248,6 +265,7 @@ const BannerContainer = styled.div`
 
 const Image = styled.img`
     align-items: center;
+    width: 100%;
 `;
 
 const OverlayText1 = styled.div`
@@ -393,8 +411,14 @@ const SubmitButton = styled.button`
     }
 `;
 
+const CommentCount = styled.div`
+    font-size: 15px;
+    font-weight: bold;
+    padding-top: 20px;
+`;
+
 const CommentsSection = styled.div`
-    margin-top: 20px;
+    
 `;
 
 const Comment = styled.div`
@@ -407,6 +431,7 @@ const Comment = styled.div`
 const CommentNickname = styled.span`
     font-weight: bold;
     width: 70px;
+    overflow: hidden;
 `;
 
 const CommentContent = styled.div`

@@ -15,7 +15,7 @@ export default function TeamDetail() {
     const nickname = Cookies.get('nickname');
     const [comments, setComments] = useState([]);
     const [writeComment, setWriteComment] = useState('');
-
+    const [commentCount, setCommentCount] = useState(post.post_comment_count);
    
 
     useEffect(() => {
@@ -73,6 +73,21 @@ export default function TeamDetail() {
         }
     };
 
+    const scoutGoGo = async (user_id) => {
+        const confirm = window.confirm('영입하시겠습니까?');
+        if(confirm) {
+            try {
+                const response = await axios.get(`https://3.34.133.247/user/${userId}`);
+                const { team_id } = response.data;
+                await axios.post(`https://3.34.133.247/teams/${team_id}/members?userId=${user_id}`);
+                alert('영입이 완료되었습니다. 축하합니다!');
+                navigate('/management');
+            } catch(error) {
+                alert('불가능합니다.');
+            }
+        }
+    }
+
     const handleCommentChange = (e) => {
         setWriteComment(e.target.value);
     };
@@ -104,19 +119,20 @@ export default function TeamDetail() {
                 }));
                 console.log('불러온 목록: ', commentWithNickname);
                 setComments(commentWithNickname);
+                setCommentCount(commentCount + 1);
         } catch (error) {
             console.error('댓글 작성 실패:', error);
             alert("댓글 작성에 실패했습니다.");
         }
     };
 
-    const CommentDeleteGoGo = async() => {
+    const CommentDeleteGoGo = async(comment_id) => {
         const confirmDelete = window.confirm("정말로 삭제하시겠습니까?");
         if(confirmDelete) {
             try {
-                await axios.delete(`https://3.34.133.247/comments/${comments.comment_id}?userId=${userId}`);
+                await axios.delete(`https://3.34.133.247/comments/${comment_id}?userId=${userId}`);
                 alert("삭제되었습니다.");
-                navigate('/member');
+                window.location.reload();
             } catch(error) {
                 console.log(comments.comment_id, '가 표시가 안되나?');
                 console.log('아니면', userId, '가 표시가 안되나?');
@@ -153,6 +169,7 @@ export default function TeamDetail() {
                             <Deletebutton onClick={deleteGoGo}>삭제</Deletebutton>
                         </>
                     )}
+                    <Modifybutton onClick={() => {scoutGoGo(post.user_id)}}>영입하기</Modifybutton>
                 </SujungDeleteFlexbox>
                 <CommentForm onSubmit={handleCommentSubmit}>
                     <CommentInput 
@@ -163,6 +180,7 @@ export default function TeamDetail() {
                     />
                     <SubmitButton type="submit">댓글 작성</SubmitButton>
                 </CommentForm>
+                <CommentCount>댓글 {commentCount}개</CommentCount>
                 <CommentsSection>
                     {comments.map((comment) => (
                         <Comment key={comment.comment_id}>
@@ -171,7 +189,7 @@ export default function TeamDetail() {
                             <CommentinsertTime>{comment.comment_insert_time.split('T')[0]} {comment.comment_insert_time.split('T')[1].split('.')[0]}</CommentinsertTime>
                             {nickname === comment.nickname && ( // 작성자 본인일 때만 버튼 표시
                                 <>
-                                    <CommentDelete onClick={CommentDeleteGoGo}>삭제</CommentDelete>
+                                    <CommentDelete onClick={() => CommentDeleteGoGo(comment.comment_id)}>삭제</CommentDelete>
                                 </>
                             )}
                             
@@ -202,6 +220,7 @@ const BannerContainer = styled.div`
 
 const Image = styled.img`
     align-items: center;
+    width: 100%;
 `;
 
 const OverlayText1 = styled.div`
@@ -259,6 +278,7 @@ const Content = styled.div`
     padding-top: 30px;
     padding-bottom: 30px;
     border-bottom: 1px solid black;
+    min-height: 50px;
 `;
 
 
@@ -318,8 +338,14 @@ const SubmitButton = styled.button`
     }
 `;
 
+const CommentCount = styled.div`
+    font-size: 15px;
+    font-weight: bold;
+    padding-top: 20px;
+`;
+
 const CommentsSection = styled.div`
-    margin-top: 20px;
+    
 `;
 
 const Comment = styled.div`
