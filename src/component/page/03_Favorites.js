@@ -1,41 +1,70 @@
-// MyPosts.js
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import starfill from '../images/starfill.png';
 import starempty from '../images/starempty.png';
+import axios from 'axios';
+import Cookies from 'js-cookie'
 
 export default function Favorite() {
     const [favorite, setFavorite] = useState(true);
+    const [reviews, setReviews] = useState([]);
+    const userId = Cookies.get('userId')
 
-    const [posts, setPosts] = useState([
-        { id: 1, title: '첫 번째 게시글', content: '내용 1' },
-        { id: 2, title: '두 번째 게시글', content: '내용 2' },
-       
-    ]);
+    const [posts, setPosts] = useState([]);
+
+    const fetchBookmarkData = async () =>{
+        try{
+            const response = await axios.get(`https://3.34.133.247/bookmarks?userId=${userId}`,{
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            console.log('리뷰데이터 불러오기 성공', response.data);
+            setReviews(response.data);            
+        }catch(error){
+            console.log("리뷰 불러오기에 실패했습니다");
+        }        
+    }
+    useEffect(()=>{
+        if(userId)
+            fetchBookmarkData()
+    },[userId])
     
     const handleFavorite = ( ) =>{
         setFavorite(!favorite);
     } 
 
-    const handleDelete = (id) => {
-        setPosts(posts.filter((post) => post.id !== id));
-    };
+    const handleDelete = async (postId) => {
+        try {
+            const response = await fetch(`https://3.34.133.247/bookmarks?userId=${userId}&postId=${postId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Accept': '*/*',
+                },
+            });
+            alert("즐겨찾기 삭제 성공");
+            console.log("즐겨찾기 삭제", response);           
+            fetchBookmarkData(); // Refresh data after deletion
+        } catch (error) {
+            console.error('오류 발생:', error);
+        }
+    };    
 
     return (
         <Container>
             <Title>즐겨찾기 한 글</Title>
-            {posts.length === 0 ? (
+            {reviews.length === 0 ? (
                 <NoPosts>즐겨찾기한 글이 없습니다.</NoPosts>
             ) : (
-                posts.map((post) => (
-                    <PostContainer key={post.id}>
+                reviews.map((post) => (
+                    <PostContainer key={post.post_id}>
                         <FavoriteContainer>
                             <StarContainer>
-                                <DeleteButton onClick={() => handleDelete(post.id)}/>
+                                <DeleteButton onClick={() => handleDelete(post.post_id)}/>
                             </StarContainer>
                             <PostWrapper>
-                                <PostTitle>{post.title}</PostTitle>
-                                <PostContent>{post.content}</PostContent>         
+                                <PostTitle>{post.post_title}</PostTitle>
+                                <PostContent>{post.post_content}</PostContent>         
                             </PostWrapper>     
                         </FavoriteContainer>          
                     </PostContainer>

@@ -1,6 +1,6 @@
 import './App.css';
 import React from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import Header from './component/layout/Header';
 import Nav from './component/layout/Nav';
@@ -22,37 +22,50 @@ import Team from './component/page/02_Team';
 import TeamWrite from './component/page/02_Team_Write';
 import TeamDetail from './component/page/02_TeamDetail';
 import Vote from './component/page/02_Vote';
+import InquiryPopup from './component/page/04_InquiryPopup';
 
 function App() {
     return (
         <BrowserRouter>
-            <Container>
-                    <Header />
-                    <Nav />
-                    <InsideContainer>
-                        <Routes>
-                            <Route path="/" element={<Home />} />
-                            <Route path="/mypage" element={<Mypage />} />
-                            <Route path="/login" element={<Login />} />
-                            <Route path="/member" element={<Member />} />
-                            <Route path="/memberwrite" element={<MemberWrite />} />
-                            <Route path="/member/:post_id" element={<MemberDetail />} />
-                            <Route path="/team" element={<Team />} />
-                            <Route path="/teamwrite" element={<TeamWrite />} />
-                            <Route path="/team/:post_id" element={<TeamDetail />} />
-                            <Route path="/match" element={<Match />} />
-                            <Route path="matchwrite" element={<MatchWrite />} />
-                            <Route path="match/:post_id" element={<MatchDetail />} />
-                            <Route path="/management" element={<Management />} />
-                            <Route path="/join_or_create" element={<JoinOrCreate />} />
-                            <Route path="/create_team" element={<Createteam />} />
-                            <Route path="/signup" element={<Signup />} />
-                            <Route path="/  " element={<Vote />} />
-                        </Routes>
-                    </InsideContainer>
-                <Footer />
-            </Container>
+            <AppContent />
         </BrowserRouter>
+    );
+}
+
+function AppContent() {
+    const location = useLocation();
+
+    const hideHeader = location.pathname === '/InquiryPopup';
+    const hideFooter = location.pathname === '/InquiryPopup';
+
+    return (
+        <Container>
+            {!hideHeader && <Header />}
+            {!hideHeader && <Nav />}
+            <InsideContainer>
+                <Routes>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/mypage" element={<Mypage />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/member" element={<Member />} />
+                    <Route path="/memberwrite" element={<MemberWrite />} />
+                    <Route path="/member/:post_id" element={<MemberDetail />} />
+                    <Route path="/team" element={<Team />} />
+                    <Route path="/teamwrite" element={<TeamWrite />} />
+                    <Route path="/team/:post_id" element={<TeamDetail />} />
+                    <Route path="/match" element={<Match />} />
+                    <Route path="/matchwrite" element={<MatchWrite />} />
+                    <Route path="/match/:post_id" element={<MatchDetail />} />
+                    <Route path="/management" element={<Management />} />
+                    <Route path="/join_or_create" element={<JoinOrCreate />} />
+                    <Route path="/create_team" element={<Createteam />} />
+                    <Route path="/signup" element={<Signup />} />
+                    <Route path="/vote" element={<Vote />} />
+                    <Route path="/InquiryPopup" element={<InquiryPopup />} />
+                </Routes>
+            </InsideContainer>
+            {!hideFooter && <Footer />}
+        </Container>
     );
 }
 

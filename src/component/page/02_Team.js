@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import axios from 'axios'; // axios 임포트
 import Cookies from 'js-cookie';
+import starFill from '../images/starfill.png';
+import starEmpty from '../images/starempty.png';
 
 export default function Team() {
     const navigate = useNavigate();
@@ -11,34 +13,63 @@ export default function Team() {
     const [error, setError] = useState(null); // 에러 상태
     const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 상태
     const postsPerPage = 10; // 페이지당 게시글 수
+    const userId = Cookies.get('userId');
+
+    const [isFavorite, setIsFavorite] = useState(false);
+
+    const toggleBookmark = async (postId, currentState) => {
+        try {
+            const response = await axios.post(`https://3.34.133.247/bookmarks?userId=${userId}&postId=${postId}`,
+                { userId, postId },
+                { headers: { accept: '/' } }
+            );
+
+            if (response.status === 201) {
+                // 북마크 상태 토글
+                setTeamList((prevList) =>
+                    prevList.map((post) =>
+                        post.post_id === postId
+                            ? { ...post, isFavorite: !currentState }
+                            : post
+                    )
+                );
+            }
+        } catch (error) {
+            console.error('Bookmark toggle error:', error);
+        }
+    };
+
 
     useEffect(() => {
         const fetchTeamList = async () => {
             try {
                 const response = await axios.get('https://3.34.133.247/team');
-                const sortedTeamList = response.data.sort((a, b) => b.post_id - a.post_id); // 내림차순 정렬
+                const sortedTeamList = response.data.sort((a, b) => b.post_id - a.post_id);
 
-                // 각 게시물에 대해 작성자의 nickname을 가져오는 API를 호출
-                const TeamWithNicknames = await Promise.all(
+                // 각 게시물의 작성자 및 초기 북마크 상태 가져오기
+                const TeamWithDetails = await Promise.all(
                     sortedTeamList.map(async (post) => {
                         const userResponse = await axios.get(`https://3.34.133.247/user/${post.user_id}`);
+                        const bookmarkResponse = await axios.get(
+                            `https://3.34.133.247/bookmarks?userId=${userId}&postId=${post.post_id}`
+                        );
+
                         return {
                             ...post,
-                            nickname: userResponse.data.nickname, // nickname 추가
+                            nickname: userResponse.data.nickname,
+                            isFavorite: bookmarkResponse.data.isBookmarked || false,
                         };
                     })
                 );
-                console.log('불러온 목록: ', TeamWithNicknames);
-                setTeamList(TeamWithNicknames);
+
+                setTeamList(TeamWithDetails);
             } catch (error) {
                 setError('게시물 가져오기 실패');
-            } finally {
-                console.log('게시물 로딩 완료');
             }
         };
 
         fetchTeamList();
-    }, []);
+    }, [userId]);
 
     const moveToWrite = () => {
         const nickname = Cookies.get('nickname');
@@ -80,7 +111,7 @@ export default function Team() {
                         <strong> 팀 구하기</strong>
                     </SitemapContainer>
                 </TitleContainer>
-                <HeaderContainer>
+                <HeaderContainer>                    
                     <FirstContainer>글 번호</FirstContainer>
                     <SecondContainer>제목</SecondContainer>
                     <ThirdContainer>작성자</ThirdContainer>
@@ -94,19 +125,23 @@ export default function Team() {
                         <ul>등록된 게시물이 없습니다.</ul>
                     ) : (
                         <PostsList>
-                            {currentPosts.map((post) => (
-                                <PostItem key={post.post_id}>
-                                    <PostId>{post.post_id}</PostId>
-                                    <PostTitle onClick={() => teamDetail(post.post_id, post)}>
-                                        {post.post_title}
-                                        {post.post_comment_count > 0 && ` [${post.post_comment_count}]`}
-                                    </PostTitle>
-                                    <PostUserId>{post.nickname}</PostUserId>
-                                    <PostCreateTime>{post.post_created_time.split('T')[0]}</PostCreateTime>
-                                    <PostHits>{post.post_hits}</PostHits>
-                                </PostItem>
-                            ))}
-                        </PostsList>
+                {currentPosts.map((post) => (
+                    <PostItem key={post.post_id}>
+                        <BookmarkButton
+                            $isFavorite={post.isFavorite}
+                            onClick={() => toggleBookmark(post.post_id, post.isFavorite)}
+                        />
+                        <PostId>{post.post_id}</PostId>
+                        <PostTitle onClick={() => teamDetail(post.post_id, post)}>
+                            {post.post_title}
+                            {post.post_comment_count > 0 && ` [${post.post_comment_count}]`}
+                        </PostTitle>
+                        <PostUserId>{post.nickname}</PostUserId>
+                        <PostCreateTime>{post.post_created_time.split('T')[0]}</PostCreateTime>
+                        <PostHits>{post.post_hits}</PostHits>
+                    </PostItem>
+                ))}
+            </PostsList>
                     )}
                 </div>
                 <Pagination>
@@ -150,6 +185,16 @@ const HeaderContainer = styled.div`
     border-bottom: 2px solid #cecece; /* 하단 회색 줄 */
     padding: 5px;
     font-weight: bold;
+`;
+
+const BookmarkButton = styled.div`
+    width: 18px;
+    height: 18px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    cursor: pointer;
+    background-image: url(${props => (props.$isFavorite ? starFill : starEmpty)});
 `;
 
 const FirstContainer = styled.div`
@@ -288,3 +333,4 @@ const PageButton = styled.button`
         background-color: #ddd;
     }
 `;
+
