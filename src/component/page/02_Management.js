@@ -178,8 +178,7 @@ export default function Management() {
                 alert('팀이 삭제되었습니다.');
                 navigate('/');
             } catch(error) {
-                console.log('asdf');
-                alert('으엑');
+                alert('삭제가 불가능합니다.');
             }
         }
         else {
@@ -198,8 +197,7 @@ export default function Management() {
                 alert('매칭이 취소되었습니다.');
                 window.location.reload();
             } catch(error) {
-                console.log('asdf');
-                alert('으엑');
+                alert('취소가 거부되었습니다.');
             }
         }
         else {
