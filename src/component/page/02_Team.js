@@ -17,29 +17,6 @@ export default function Team() {
     const postsPerPage = 10; // 페이지당 게시글 수
     const userId = Cookies.get('userId');
 
-    const [isFavorite, setIsFavorite] = useState(false);
-
-    const toggleBookmark = async (postId, currentState) => {
-        try {
-            const response = await axios.post(`https://3.34.133.247/bookmarks?userId=${userId}&postId=${postId}`,
-                { userId, postId },
-                { headers: { accept: '/' } }
-            );
-
-            if (response.status === 201) {
-                // 북마크 상태 토글
-                setTeamList((prevList) =>
-                    prevList.map((post) =>
-                        post.post_id === postId
-                            ? { ...post, isFavorite: !currentState }
-                            : post
-                    )
-                );
-            }
-        } catch (error) {
-            console.error('Bookmark toggle error:', error);
-        }
-    };
 
 
     useEffect(() => {
@@ -51,10 +28,20 @@ export default function Team() {
                 // 각 게시물에 대해 작성자의 nickname을 가져오는 API를 호출
                 const TeamWithNicknames = await Promise.all(sortedTeamList.map(async (post) => {
                     const userResponse = await axios.get(`https://3.34.133.247/user/${post.user_id}`);
-                    return {
-                        ...post,
-                        nickname: userResponse.data.nickname // nickname 추가
-                    };
+                    if(userId) {
+                        const bookmarkResponse = await axios.get(`https://3.34.133.247/bookmarks?userId=${userId}&postId=${post.post_id}`);
+                        return {
+                            ...post,
+                            nickname: userResponse.data.nickname, // nickname 추가
+                            isFavorite: bookmarkResponse.data.isBookmarked || false
+                        };
+                    }
+                    else {
+                        return {
+                            ...post,
+                            nickname: userResponse.data.nickname // nickname 추가
+                        };
+                    }
                 }));
                 console.log('불러온 목록: ', TeamWithNicknames);
                 setTeamList(TeamWithNicknames);
@@ -68,6 +55,30 @@ export default function Team() {
 
         fetchTeamList();
     }, []);
+
+    const toggleBookmark = async (postId, currentState) => {
+        try {
+            const response = await axios.post(`https://3.34.133.247/bookmarks?userId=${userId}&postId=${postId}`,
+                { userId, postId },
+                { headers: { accept: '/' } }
+            );
+
+            if (response.status === 201) {
+                // 북마크 상태 토글
+                setFilteredTeamList((prevList) =>
+                    prevList.map((post) =>
+                        post.post_id === postId
+                            ? { ...post, isFavorite: !currentState }
+                            : post
+                    )
+                );
+                alert('즐겨찾기에 등록되었습니다.');
+            }
+        } catch (error) {
+            alert('이미 즐겨찾기에 등록되어있는 글입니다.');
+            console.error('Bookmark toggle error:', error);
+        }
+    };
 
     const moveToWrite = () => {
         const nickname = Cookies.get('nickname');

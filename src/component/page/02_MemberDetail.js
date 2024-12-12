@@ -74,6 +74,26 @@ export default function MemberDetail() {
         }
     };
 
+    const scoutGoGo = async (user_id, postUserId) => {
+        if(Number(userId) === postUserId) { //유저id랑 글쓴이id랑 같아야 발동
+            const confirm = window.confirm('영입하시겠습니까?');
+            if(confirm) {
+                try {
+                    const response = await axios.get(`https://3.34.133.247/user/${userId}`);
+                    const { team_id } = response.data;
+                    await axios.post(`https://3.34.133.247/teams/${team_id}/members?userId=${user_id}`);
+                    alert('영입이 완료되었습니다. 축하합니다!');
+                    navigate('/management');
+                } catch(error) {
+                    alert('이미 내 팀 혹은 타 팀에 소속돼있는 회원입니다.');
+                }
+            }
+        }
+        else {
+            alert('글쓴이만 영입이 가능합니다.');
+        }
+    }
+
     const handleCommentChange = (e) => {
         setWriteComment(e.target.value);
     };
@@ -167,7 +187,7 @@ export default function MemberDetail() {
                 <CommentsSection>
                     {comments.map((comment) => (
                         <Comment key={comment.comment_id}>
-                            <CommentNickname>{comment.nickname} </CommentNickname>
+                            <CommentNickname onClick={() => {scoutGoGo(comment.user_id, post.user_id)}}>{comment.nickname} </CommentNickname>
                             <CommentContent>{comment.comment_content}</CommentContent>
                             <CommentinsertTime>{comment.comment_insert_time.split('T')[0]} {comment.comment_insert_time.split('T')[1].split('.')[0]}</CommentinsertTime>
                             {nickname === comment.nickname && ( // 작성자 본인일 때만 버튼 표시
@@ -342,6 +362,7 @@ const CommentNickname = styled.span`
     font-weight: bold;
     width: 70px;
     overflow: hidden;
+    cursor: pointer;
 `;
 
 const CommentContent = styled.div`
