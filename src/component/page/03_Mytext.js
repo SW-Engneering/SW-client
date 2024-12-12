@@ -4,22 +4,23 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import Cookies from 'js-cookie';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 export default function Mytext() {
     const [posts, setPosts] = useState([]);
     const [id, setId] = useState(null);
     const cookieId = Cookies.get('userId');
+    const navigate = useNavigate();
 
     useEffect(() => {
         setId(cookieId);
         console.log(cookieId);
     }, [cookieId]);
 
-    const handleEdit = (id) => {
-        // 수정 로직을 여기에 추가
-        alert(`게시글 ${id} 수정하기 기능을 구현하세요.`);
+    const handleEdit = (postId) => {
+        navigate('/memberwrite', { state: { post: posts.find((post) => post.post_id === postId) } });
     };
-    
+
     const handleDelete = async (postId) => {
         try {
             const response = await axios.delete(`https://3.34.133.247/post/${postId}?userId=${cookieId}`, {
@@ -31,7 +32,7 @@ export default function Mytext() {
             if (response.status === 204) {
                 setPosts(posts.filter((post) => post.post_id !== postId));
                 alert('게시글이 삭제되었습니다.');
-                console.log("삭제성공");
+                console.log('삭제성공');
             }
         } catch (error) {
             console.error('게시글 삭제 중 오류 발생', error);
@@ -39,24 +40,22 @@ export default function Mytext() {
         }
     };
 
-    const fetchUserBulletin = async ()=>{
-        try{
-            const response = await axios.get(`https://3.34.133.247/board/${cookieId}`,{
+    const fetchUserBulletin = async () => {
+        try {
+            const response = await axios.get(`https://3.34.133.247/board/${cookieId}`, {
                 headers: {
                     'Content-Type': 'application/json',
-                }
-
+                },
             });
             console.log('내가 쓴 글 불러오기 성공', response.data);
             setPosts(response.data);
-        }catch(error){
+        } catch (error) {
             console.error('API 요청 에러', error);
         }
-    }
-    useEffect(()=>{
-        if(cookieId)
-        fetchUserBulletin();
-    },[cookieId])
+    };
+    useEffect(() => {
+        if (cookieId) fetchUserBulletin();
+    }, [cookieId]);
 
     return (
         <Container>
