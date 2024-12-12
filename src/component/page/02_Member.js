@@ -21,7 +21,7 @@ export default function Member() {
     useEffect(() => {
         const fetchMemberList = async () => {
             try {
-                const response = await axios.get('https://3.34.133.247/team');
+                const response = await axios.get('https://3.34.133.247/member');
                 const sortedMemberList = response.data.sort((a, b) => b.post_id - a.post_id); // 내림차순 정렬
 
                 // 각 게시물에 대해 작성자의 nickname을 가져오는 API를 호출
