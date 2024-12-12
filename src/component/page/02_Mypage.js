@@ -53,12 +53,12 @@ export default function MyPage() {
 
             if (response.status === 200) {
                 console.log('유저 상세 정보 불러오기 성공:', response.data);
-                const { nickname, phone_number, position, passwd } = response.data;
-                setNickname(nickname);
+                const { user_name, phone_number, position, passwd } = response.data;
+                setNickname(user_name);
                 setPassword(passwd);
                 setNumber(formatPhoneNumber(phone_number));
                 setPosition(position);
-                console.log(password);                
+                console.log(password);
             }
         } catch (error) {
             console.log(error.response);
@@ -81,18 +81,18 @@ export default function MyPage() {
                     'Content-Type': 'application/json',
                 },
                 data: {
-                    password: withdrawalPassword
-                }
+                    password: withdrawalPassword,
+                },
             });
 
             if (response.status === 204) {
                 // Clear cookies and redirect to login page
-                Cookies.remove('userId'); 
-                Cookies.remove('nickname');                
-                
+                Cookies.remove('userId');
+                Cookies.remove('nickname');
+
                 // Show withdrawal success message
                 alert('회원탈퇴가 완료되었습니다.');
-                
+
                 // Redirect to login page
                 navigate('/');
             }
@@ -124,7 +124,7 @@ export default function MyPage() {
         return activeTabComponent ? activeTabComponent.component : <DefaultPage />;
     };
 
-    function formatPhoneNumber(phoneNumber){
+    function formatPhoneNumber(phoneNumber) {
         if (phoneNumber.length !== 11) {
             return '유효하지 않은 전화번호입니다.';
         }
@@ -162,12 +162,8 @@ export default function MyPage() {
                         <ButtonContainer>
                             {activeTab === null && (
                                 <>
-                                    <ToggleButton onClick={handleToggleClick}>
-                                        {isEditing ? '완료' : '수정'} 
-                                    </ToggleButton>
-                                    <WithdrawButton onClick={() => setShowWithdrawConfirmation(true)}>
-                                        회원탈퇴
-                                    </WithdrawButton>
+                                    <ToggleButton onClick={handleToggleClick}>{isEditing ? '완료' : '수정'}</ToggleButton>
+                                    <WithdrawButton onClick={() => setShowWithdrawConfirmation(true)}>회원탈퇴</WithdrawButton>
                                 </>
                             )}
                         </ButtonContainer>
@@ -176,34 +172,38 @@ export default function MyPage() {
 
                 {/* Withdrawal Confirmation Modal */}
                 {showWithdrawConfirmation && (
-                <ConfirmationModal>
-                    <ModalContent>
-                        <p>정말로 회원탈퇴를 하시겠습니까?</p>
-                        <p>탈퇴 시 모든 데이터는 삭제되며 복구할 수 없습니다.</p>
-                        
-                        <PasswordInputContainer>
-                            <label htmlFor="withdrawal-password">비밀번호 확인:</label>
-                            <PasswordInput 
-                                type="password" 
-                                id="withdrawal-password"
-                                value={withdrawalPassword}
-                                onChange={(e) => setWithdrawalPassword(e.target.value)}
-                                placeholder="비밀번호를 입력해주세요"
-                            />
-                            {passwordError && <ErrorMessage>{passwordError}</ErrorMessage>}
-                        </PasswordInputContainer>
+                    <ConfirmationModal>
+                        <ModalContent>
+                            <p>정말로 회원탈퇴를 하시겠습니까?</p>
+                            <p>탈퇴 시 모든 데이터는 삭제되며 복구할 수 없습니다.</p>
 
-                        <ModalButtonContainer>
-                            <ConfirmButton onClick={handleWithdraw}>확인</ConfirmButton>
-                            <CancelButton onClick={() => {
-                                setShowWithdrawConfirmation(false);
-                                setPasswordError('');
-                                setWithdrawalPassword('');
-                            }}>취소</CancelButton>
-                        </ModalButtonContainer>
-                    </ModalContent>
-                </ConfirmationModal>
-            )}
+                            <PasswordInputContainer>
+                                <label htmlFor="withdrawal-password">비밀번호 확인:</label>
+                                <PasswordInput
+                                    type="password"
+                                    id="withdrawal-password"
+                                    value={withdrawalPassword}
+                                    onChange={(e) => setWithdrawalPassword(e.target.value)}
+                                    placeholder="비밀번호를 입력해주세요"
+                                />
+                                {passwordError && <ErrorMessage>{passwordError}</ErrorMessage>}
+                            </PasswordInputContainer>
+
+                            <ModalButtonContainer>
+                                <ConfirmButton onClick={handleWithdraw}>확인</ConfirmButton>
+                                <CancelButton
+                                    onClick={() => {
+                                        setShowWithdrawConfirmation(false);
+                                        setPasswordError('');
+                                        setWithdrawalPassword('');
+                                    }}
+                                >
+                                    취소
+                                </CancelButton>
+                            </ModalButtonContainer>
+                        </ModalContent>
+                    </ConfirmationModal>
+                )}
 
                 <ToolContainer>
                     {menuVisible && <Account />}
