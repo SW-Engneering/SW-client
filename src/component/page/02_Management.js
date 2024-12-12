@@ -323,17 +323,19 @@ export default function Management() {
                         {isCreating && ( // 공지사항 작성 모달
                             <Modal>
                                 <h2>공지사항 작성하기</h2>
-                                <input
-                                    type="text"
-                                    value={newNoticeTitle}
-                                    onChange={(e) => setNewNoticeTitle(e.target.value)}
-                                    placeholder="제목"
-                                />
-                                <textarea
-                                    value={newNoticeContent}
-                                    onChange={(e) => setNewNoticeContent(e.target.value)}
-                                    placeholder="내용"
-                                />
+                                <JemokNaeyong>
+                                    <input
+                                        type="text"
+                                        value={newNoticeTitle}
+                                        onChange={(e) => setNewNoticeTitle(e.target.value)}
+                                        placeholder="제목"
+                                    />
+                                    <Textarea1
+                                        value={newNoticeContent}
+                                        onChange={(e) => setNewNoticeContent(e.target.value)}
+                                        placeholder="내용"
+                                    />
+                                </JemokNaeyong>
                                 <button onClick={() => handleCreateNotice(teamData.teamId, teamData.leaderId)}>작성하기</button>
                                 <button onClick={handleCreateNoticeToggle}>취소</button>
                             </Modal>
@@ -735,6 +737,16 @@ const Modal = styled.div`
     padding: 20px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
     z-index: 1000; /* 모달이 다른 요소 위에 나타나도록 설정 */
+`;
+
+const JemokNaeyong = styled.div`
+    display: flex;
+    flex-direction: column; /* 세로 방향으로 배치 */
+    gap: 10px; /* 항목 간 간격 조정 */
+`;
+
+const Textarea1 = styled.textarea`
+    height: 100px;
 `;
 
 const ExplodeTeam = styled.div`
