@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Slider from 'react-slick';
 import styled from 'styled-components';
-import { NavLink ,useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import '../css/Font.css';
@@ -16,14 +16,11 @@ import 팀 from '../images/팀구하기1.png';
 import ball from '../images/ball.png';
 import axios from 'axios';
 
-
 export default function Home() {
-
     const [memberList, setMemberList] = useState([]);
     const [teamList, setTeamList] = useState([]);
     const [matchList, setMatchList] = useState([]);
     const navigate = useNavigate();
-    
 
     const settings = {
         dots: false,
@@ -46,10 +43,10 @@ export default function Home() {
                 const goodData = response.data.sort((a, b) => b.post_id - a.post_id);
                 const recentPosts = goodData.slice(0, 5);
                 setMemberList(recentPosts);
-            } catch(error) {
-                console.log('에러')
+            } catch (error) {
+                console.log('에러');
             }
-        }
+        };
         getFiveMemberList();
 
         const getFiveTeamList = async () => {
@@ -58,10 +55,10 @@ export default function Home() {
                 const goodData = response.data.sort((a, b) => b.post_id - a.post_id);
                 const recentPosts = goodData.slice(0, 5);
                 setTeamList(recentPosts);
-            } catch(error) {
-                console.log('에러')
+            } catch (error) {
+                console.log('에러');
             }
-        }
+        };
 
         const getMatchList = async () => {
             try {
@@ -69,10 +66,10 @@ export default function Home() {
                 const goodData = response.data.sort((a, b) => b.post_id - a.post_id);
                 const recentPosts = goodData.slice(0, 5);
                 setMatchList(recentPosts);
-            } catch(error) {
-                console.log('에러')
+            } catch (error) {
+                console.log('에러');
             }
-        }
+        };
 
         getFiveMemberList();
         getFiveTeamList();
@@ -80,15 +77,15 @@ export default function Home() {
     }, []);
 
     const memberDetail = async (post_id, post) => {
-        navigate(`/member/${post_id}`, { state: { post } } );
+        navigate(`/member/${post_id}`, { state: { post } });
     };
 
     const teamDetail = async (post_id, post) => {
-        navigate(`/team/${post_id}`, { state: { post } } );
+        navigate(`/team/${post_id}`, { state: { post } });
     };
 
     const matchDetail = async (post_id, post) => {
-        navigate(`/team/${post_id}`, { state: { post } } );
+        navigate(`/team/${post_id}`, { state: { post } });
     };
 
     return (
@@ -113,69 +110,70 @@ export default function Home() {
                     </Navi>
                 </SliderContainer>
             </Slider>
-        <Gray>
-            <RecentContainer>최근 올라온 글</RecentContainer>
-            <TeamContainer>
-                <BulletinContainer>
-                    <BulletinNameContainer>팀원 구하기</BulletinNameContainer>
-                    <PostsList>
-                        {memberList.length > 0 ? (
-                            memberList.map((post) => (
-                                <PostItem key={post.post_id}>
-                                    <PostTitle onClick={() => memberDetail(post.post_id, post)}>
-                                        {post.post_title}{post.post_comment_count > 0 && ` [${post.post_comment_count}]`}
-                                    </PostTitle>
-                                </PostItem>
-                            ))
-                        ) : (
-                            <NoPost>등록된 게시물이 없습니다.</NoPost>
-                        )}
-                    </PostsList>
-                </BulletinContainer>
-                <BulletinContainer>
-                    <BulletinNameContainer>팀 구하기</BulletinNameContainer>
-                    <PostsList>
-                        {teamList.length > 0 ? (
-                            teamList.map((post) => (
-                                <PostItem key={post.post_id}>
-                                    <PostTitle onClick={() => teamDetail(post.post_id, post)}>
-                                        {post.post_title}{post.post_comment_count > 0 && ` [${post.post_comment_count}]`}
-                                    </PostTitle>
-                                </PostItem>
-                            ))
-                        ) : (
-                            <NoPost>등록된 게시물이 없습니다.</NoPost>
-                        )}
-                    </PostsList>
-                </BulletinContainer>
-                <BulletinContainer>
-                    <BulletinNameContainer>팀 매칭하기</BulletinNameContainer>
-                    <PostsList>
-                        {matchList.length > 0 ? (
-                            matchList.map((post) => (
-                                <PostItem key={post.post_id}>
-                                    <PostTitle onClick={() => matchDetail(post.post_id, post)}>
-                                        {post.post_title}{post.post_comment_count > 0 && ` [${post.post_comment_count}]`}
-                                    </PostTitle>
-                                </PostItem>
-                            ))
-                        ) : (
-                            <NoPost>등록된 게시물이 없습니다.</NoPost>
-                        )}
-                    </PostsList>
-                </BulletinContainer>
-            </TeamContainer>
-            <ToBeContinued>to be continued...</ToBeContinued>
-        </Gray>
-
-            
+            <Gray>
+                <RecentContainer>최근 올라온 글</RecentContainer>
+                <TeamContainer>
+                    <BulletinContainer>
+                        <BulletinNameContainer>팀원 구하기</BulletinNameContainer>
+                        <PostsList>
+                            {memberList.length > 0 ? (
+                                memberList.map((post) => (
+                                    <PostItem key={post.post_id}>
+                                        <PostTitle onClick={() => memberDetail(post.post_id, post)}>
+                                            {post.post_title}
+                                            {post.post_comment_count > 0 && ` [${post.post_comment_count}]`}
+                                        </PostTitle>
+                                    </PostItem>
+                                ))
+                            ) : (
+                                <NoPost>등록된 게시물이 없습니다.</NoPost>
+                            )}
+                        </PostsList>
+                    </BulletinContainer>
+                    <BulletinContainer>
+                        <BulletinNameContainer>팀 구하기</BulletinNameContainer>
+                        <PostsList>
+                            {teamList.length > 0 ? (
+                                teamList.map((post) => (
+                                    <PostItem key={post.post_id}>
+                                        <PostTitle onClick={() => teamDetail(post.post_id, post)}>
+                                            {post.post_title}
+                                            {post.post_comment_count > 0 && ` [${post.post_comment_count}]`}
+                                        </PostTitle>
+                                    </PostItem>
+                                ))
+                            ) : (
+                                <NoPost>등록된 게시물이 없습니다.</NoPost>
+                            )}
+                        </PostsList>
+                    </BulletinContainer>
+                    <BulletinContainer>
+                        <BulletinNameContainer>팀 매칭하기</BulletinNameContainer>
+                        <PostsList>
+                            {matchList.length > 0 ? (
+                                matchList.map((post) => (
+                                    <PostItem key={post.post_id}>
+                                        <PostTitle onClick={() => matchDetail(post.post_id, post)}>
+                                            {post.post_title}
+                                            {post.post_comment_count > 0 && ` [${post.post_comment_count}]`}
+                                        </PostTitle>
+                                    </PostItem>
+                                ))
+                            ) : (
+                                <NoPost>등록된 게시물이 없습니다.</NoPost>
+                            )}
+                        </PostsList>
+                    </BulletinContainer>
+                </TeamContainer>
+                <ToBeContinued>to be continued...</ToBeContinued>
+            </Gray>
         </Container>
     );
 }
 
 const Container = styled.div`
     font-family: 'Pretendard-Light';
-    
+
     max-width: 100%;
 `;
 const SliderContainer = styled.div`
@@ -194,7 +192,6 @@ const Arrow = styled.img`
     cursor: pointer;
     z-index: 1;
     position: absolute;
-    
 `;
 
 const LeftArrow = styled(Arrow)`
@@ -207,7 +204,7 @@ const RightArrow = styled(Arrow)`
 
 const ImageWrapper = styled.div`
     position: relative; /* 자식 요소의 절대 위치 설정을 위해 상대 위치 지정 */
-    display : flex;
+    display: flex;
 `;
 
 const Flexbox = styled.div`
@@ -249,7 +246,7 @@ const BulletinContainer = styled.div`
     flex: 1;
     width: 25%;
     height: 240px;
-    
+
     text-align: center;
     border: 0.5px solid #ecedef;
 `;
@@ -259,10 +256,7 @@ const BulletinNameContainer = styled.div`
     padding: 4%;
     border-top: 2px solid black;
     border-bottom: 0.25px solid #ecedef;
-    
 `;
-
-
 
 const Navi = styled(NavLink)`
     display: flex;
@@ -271,7 +265,7 @@ const Navi = styled(NavLink)`
 `;
 const Image = styled.img`
     width: 100%;
-    height:100%;
+    height: 100%;
     object-fit: contain;
 `;
 
@@ -283,28 +277,23 @@ const PostsList = styled.div`
     font-size: 15px;
     overflow-x: hidden;
     text-overflow: ellipsis;
-    
 `;
 
 const PostItem = styled.div`
     border: 1px solid #ddd;
     padding: 10px;
     display: flex;
-    
 `;
-
 
 const PostTitle = styled.div`
     width: 536px;
     margin-left: 20px;
     text-align: left;
     cursor: pointer;
-    
-    
 
     &:hover {
         color: green;
-        }
+    }
 `;
 
 const ToBeContinued = styled.div`
