@@ -1,9 +1,9 @@
-import styled from "styled-components";
-import 팀관리1 from "../images/팀관리1.jpg";
-import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
-import axios from "axios"; // axios 임포트
-import Cookies from "js-cookie";
+import styled from 'styled-components';
+import 팀관리1 from '../images/팀관리1.jpg';
+import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import axios from 'axios'; // axios 임포트
+import Cookies from 'js-cookie';
 import starFill from '../images/starfill.png';
 import starEmpty from '../images/starempty.png';
 
@@ -17,8 +17,6 @@ export default function Team() {
     const postsPerPage = 10; // 페이지당 게시글 수
     const userId = Cookies.get('userId');
 
-
-
     useEffect(() => {
         const fetchTeamList = async () => {
             try {
@@ -26,30 +24,31 @@ export default function Team() {
                 const sortedTeamList = response.data.sort((a, b) => b.post_id - a.post_id); // 내림차순 정렬
 
                 // 각 게시물에 대해 작성자의 nickname을 가져오는 API를 호출
-                const TeamWithNicknames = await Promise.all(sortedTeamList.map(async (post) => {
-                    const userResponse = await axios.get(`https://3.34.133.247/user/${post.user_id}`);
-                    if(userId) {
-                        const bookmarkResponse = await axios.get(`https://3.34.133.247/bookmarks?userId=${userId}&postId=${post.post_id}`);
-                        return {
-                            ...post,
-                            nickname: userResponse.data.nickname, // nickname 추가
-                            isFavorite: bookmarkResponse.data.isBookmarked || false
-                        };
-                    }
-                    else {
-                        return {
-                            ...post,
-                            nickname: userResponse.data.nickname // nickname 추가
-                        };
-                    }
-                }));
+                const TeamWithNicknames = await Promise.all(
+                    sortedTeamList.map(async (post) => {
+                        const userResponse = await axios.get(`https://3.34.133.247/user/${post.user_id}`);
+                        if (userId) {
+                            const bookmarkResponse = await axios.get(`https://3.34.133.247/bookmarks?userId=${userId}&postId=${post.post_id}`);
+                            return {
+                                ...post,
+                                nickname: userResponse.data.nickname, // nickname 추가
+                                isFavorite: bookmarkResponse.data.isBookmarked || false,
+                            };
+                        } else {
+                            return {
+                                ...post,
+                                nickname: userResponse.data.nickname, // nickname 추가
+                            };
+                        }
+                    })
+                );
                 console.log('불러온 목록: ', TeamWithNicknames);
                 setTeamList(TeamWithNicknames);
                 setFilteredTeamList(TeamWithNicknames); // 초기에는 전체 목록을 필터링 목록으로 설정
             } catch (error) {
-                setError("게시물 가져오기 실패");
+                setError('게시물 가져오기 실패');
             } finally {
-                console.log("게시물 로딩 완료");
+                console.log('게시물 로딩 완료');
             }
         };
 
@@ -58,20 +57,11 @@ export default function Team() {
 
     const toggleBookmark = async (postId, currentState) => {
         try {
-            const response = await axios.post(`https://3.34.133.247/bookmarks?userId=${userId}&postId=${postId}`,
-                { userId, postId },
-                { headers: { accept: '/' } }
-            );
+            const response = await axios.post(`https://3.34.133.247/bookmarks?userId=${userId}&postId=${postId}`, { userId, postId }, { headers: { accept: '/' } });
 
             if (response.status === 201) {
                 // 북마크 상태 토글
-                setFilteredTeamList((prevList) =>
-                    prevList.map((post) =>
-                        post.post_id === postId
-                            ? { ...post, isFavorite: !currentState }
-                            : post
-                    )
-                );
+                setFilteredTeamList((prevList) => prevList.map((post) => (post.post_id === postId ? { ...post, isFavorite: !currentState } : post)));
                 alert('즐겨찾기에 등록되었습니다.');
             }
         } catch (error) {
@@ -95,7 +85,7 @@ export default function Team() {
     const currentPosts = filteredTeamList.slice(indexOfFirstPost, indexOfLastPost);
 
     const teamDetail = async (post_id, post) => {
-        navigate(`/team/${post_id}`, { state: { post }});
+        navigate(`/team/${post_id}`, { state: { post } });
     };
 
     const handlePageChange = (pageNumber) => {
@@ -111,7 +101,7 @@ export default function Team() {
 
     const goToSearch = () => {
         if (searchTerm.trim()) {
-            const filteredPosts = teamList.filter(post => post.nickname.includes(searchTerm));
+            const filteredPosts = teamList.filter((post) => post.nickname.includes(searchTerm));
             setFilteredTeamList(filteredPosts);
             setCurrentPage(1); // 검색 후 첫 페이지로 이동
         } else {
@@ -125,7 +115,7 @@ export default function Team() {
         }
     };
 
-    return(
+    return (
         <Container>
             <BannerContainer>
                 <Image src={팀관리1} alt="팀 관리" />
@@ -134,9 +124,7 @@ export default function Team() {
             </BannerContainer>
             <Padding200>
                 <TitleContainer>
-                    <TeamContainer>
-                        팀 구하기
-                    </TeamContainer>
+                    <TeamContainer>팀 구하기</TeamContainer>
                     <SitemapContainer>
                         <a href="/">메인 </a>
                         &gt;
@@ -166,19 +154,18 @@ export default function Team() {
 
                                 return (
                                     <PostItem key={post.post_id}>
-                                        <BookmarkButton
-                                            $isFavorite={post.isFavorite}
-                                            onClick={() => toggleBookmark(post.post_id, post.isFavorite)}
-                                        />
+                                        <BookmarkButton $isFavorite={post.isFavorite} onClick={() => toggleBookmark(post.post_id, post.isFavorite)} />
                                         <PostId>{post.post_id}</PostId>
                                         <PostTitle onClick={() => teamDetail(post.post_id, post)}>
-                                            {post.post_title}{post.post_comment_count > 0 && ` [${post.post_comment_count}]`}
+                                            {post.post_title}
+                                            {post.post_comment_count > 0 && ` [${post.post_comment_count}]`}
                                         </PostTitle>
                                         <PostUserId>{post.nickname}</PostUserId>
                                         <PostCreateTime>
-                                            {isToday 
-                                                ? `${formatTime(createdTime.getHours())}:${formatTime(createdTime.getMinutes())}` // 오늘이면 시간 표시
-                                                : createdTime.toISOString().split('T')[0] // 오늘이 아니면 날짜만 표시
+                                            {
+                                                isToday
+                                                    ? `${formatTime(createdTime.getHours())}:${formatTime(createdTime.getMinutes())}` // 오늘이면 시간 표시
+                                                    : createdTime.toISOString().split('T')[0] // 오늘이 아니면 날짜만 표시
                                             }
                                         </PostCreateTime>
                                         <PostHits>{post.post_hits}</PostHits>
@@ -196,13 +183,7 @@ export default function Team() {
                     ))}
                 </Pagination>
                 <Search>
-                    <input 
-                        type="text" 
-                        value={searchTerm} 
-                        onChange={(e) => setSearchTerm(e.target.value)} 
-                        placeholder="작성자를 입력하세요"
-                        onKeyPress={handleKeyPress}
-                    />
+                    <input type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="작성자를 입력하세요" onKeyPress={handleKeyPress} />
                     <button onClick={goToSearch}>검색</button>
                 </Search>
                 <WriteButton onClick={moveToWrite}>글쓰기</WriteButton>
@@ -215,7 +196,6 @@ const Container = styled.div`
     justify-content: center;
     align-items: center;
     font-family: 'Pretendard-Light';
-
 `;
 
 const BannerContainer = styled.div`
@@ -226,8 +206,6 @@ const Padding200 = styled.div`
     padding-left: 200px;
     padding-right: 200px;
 `;
-
-
 
 const TitleContainer = styled.div`
     display: flex;
@@ -244,28 +222,24 @@ const HeaderContainer = styled.div`
     font-weight: bold;
 `;
 
-const FirstContainer = styled.div` //글번호
-    margin-left:10px;
+const FirstContainer = styled.div`
+    //글번호
+    margin-left: 10px;
     margin-right: 20px;
 `;
 
-const SecondContainer = styled.div` //제목
+const SecondContainer = styled.div`
+    //제목
     margin-left: 300px;
     margin-right: 300px;
-    mar
 `;
-
 
 const ThirdContainer = styled.div`
     margin-left: 17px;
     margin-right: 100px;
 `;
 
-
-const FourthContainer = styled.div`
-
-`;
-
+const FourthContainer = styled.div``;
 
 const FifthContainer = styled.div`
     margin-left: 107px;
@@ -278,7 +252,7 @@ const TeamContainer = styled.div`
 `;
 
 const Image = styled.img`
-    width: 100%;  
+    width: 100%;
 `;
 
 const OverlayText1 = styled.div`
@@ -316,10 +290,8 @@ const NoPostBox = styled.div`
 `;
 
 const NoPost = styled.div`
-    
     font-size: 40px;
     font-weight: bold;
-    
 `;
 
 const PostsList = styled.div`
@@ -334,7 +306,7 @@ const PostItem = styled.div`
     border: 1px solid #ddd;
     border-right: 1px solid white;
     border-left: 1px solid white;
-    
+
     padding: 10px;
     display: flex;
 `;
@@ -351,13 +323,11 @@ const PostTitle = styled.div`
 `;
 
 const PostUserId = styled.div`
-    
     width: 100px;
     margin-left: 38px;
 `;
 
 const PostCreateTime = styled.div`
-    
     margin-left: 10px;
     width: 160px;
 `;
@@ -368,7 +338,7 @@ const PostHits = styled.div`
 `;
 
 const WriteButton = styled.button`
-    background-color: #4CAF50;
+    background-color: #4caf50;
     color: white;
     border: none;
     border-radius: 5px;
@@ -391,7 +361,7 @@ const Pagination = styled.div`
 
 const Search = styled.div`
     display: flex;
-    
+
     justify-content: center;
     gap: 10px;
 `;
@@ -416,5 +386,5 @@ const BookmarkButton = styled.div`
     background-position: center;
     background-repeat: no-repeat;
     cursor: pointer;
-    background-image: url(${props => (props.$isFavorite ? starFill : starEmpty)});
+    background-image: url(${(props) => (props.$isFavorite ? starFill : starEmpty)});
 `;
