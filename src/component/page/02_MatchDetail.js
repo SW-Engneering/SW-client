@@ -162,8 +162,14 @@ export default function MatchDetail() {
 
                 console.log(`Sending request to: https://3.34.133.247/matches?teamId=${team_id}&awayTeamId=${yourTeamId}`);
     
-                await axios.post(`https://3.34.133.247/matches?homeTeamId=${team_id}&awayTeamId=${yourTeamId}`);
+                await axios.post(`https://3.34.133.247/matches?homeTeamId=${team_id}&awayTeamId=${yourTeamId}`, {
+                    homeTeamId: team_id,
+                    awayTeamId: yourTeamId,
+                    matchDate: new Date(),
+                    location: 'IT관 114호',
+                });
                 alert('매칭이 성사되었습니다! \n팀 관리 화면으로 이동합니다.');
+                navigate('/management');
     
             } catch(error) {
                 alert('이미 타 팀과 매칭이 잡혀있습니다.');

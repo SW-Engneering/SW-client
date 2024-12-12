@@ -53,7 +53,7 @@ export default function Management() {
                 const members = await Promise.all(membersPromises);
                 setMembersInfo(members);
 
-                const matchResponse = await axios.get(`https://3.34.133.247/matches/{teamId}?teamId=${team_id}`);
+                const matchResponse = await axios.get(`https://3.34.133.247/matches/team/${team_id}`);
                 const awayTeamId = matchResponse.data[0]?.awayTeamId;
                 setMatchData(matchResponse.data);
                 
@@ -190,7 +190,7 @@ export default function Management() {
         const confirm = window.confirm('매칭을 취소하시겠습니까?');
         if(confirm) {
             try {
-                const response = await axios.get(`https://3.34.133.247/matches/{teamId}?teamId=${teamId}`);
+                const response = await axios.get(`https://3.34.133.247/matches/team/${teamId}`);
                 const matchId = response.data[0]?.matchId;
 
                 await axios.delete(`https://3.34.133.247/matches/${matchId}/{userId}`);
@@ -255,15 +255,19 @@ export default function Management() {
                     <TeamList>
                         {oppositionTeamData && oppositionTeamData.teamName ? (
                             <>
-                                <MyTeam>
-                                    <MyTeamName>{teamData.teamName}</MyTeamName>
-                                    <MyTeamRegion>{teamData.teamRegion}</MyTeamRegion>
-                                </MyTeam>
-                                <VS>VS</VS>
-                                <OppositionTeam>
-                                    <MyTeamName>{oppositionTeamData.teamName}</MyTeamName>
-                                    <MyTeamRegion>{oppositionTeamData.teamRegion}</MyTeamRegion>
-                                </OppositionTeam>
+                                <Flexbox>
+                                    <Teambox>
+                                        <MyTeam>
+                                            <MyTeamName>{teamData.teamName}</MyTeamName>
+                                            <MyTeamRegion>{teamData.teamRegion}</MyTeamRegion>
+                                        </MyTeam>
+                                        <VS>VS</VS>
+                                        <OppositionTeam>
+                                            <MyTeamName>{oppositionTeamData.teamName}</MyTeamName>
+                                            <MyTeamRegion>{oppositionTeamData.teamRegion}</MyTeamRegion>
+                                        </OppositionTeam>
+                                    </Teambox>
+                                </Flexbox>
                             </>
                         ) : (
                             <NoMatch>매치 정보가 없습니다.</NoMatch>
@@ -529,6 +533,15 @@ const Matching = styled.div`
 const TeamList = styled.div`
     display: flex;
 `;
+
+const Flexbox = styled.div`
+
+`;
+
+const Teambox = styled.div`
+    display: flex;
+`;
+
 
 const MyTeam = styled.div`
     width: 350px;
